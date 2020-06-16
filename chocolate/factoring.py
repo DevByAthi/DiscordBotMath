@@ -5,12 +5,11 @@ Python code that implements Pollard's rho algorithm to find factor of a given nu
 import random as rand
 from math import gcd, sqrt, floor, ceil
 
-factors = dict()
-
+# For use in Pollard's Rho Algorithm
 def f(x, n):
     return (x ** 2 - 1) % n
 
-
+# TODO: Implement Pollard's Rho Algorithm
 def pollardRho(n, factorSet):
     x = rand.random() * n
     y = f(x, n)
@@ -20,18 +19,22 @@ def pollardRho(n, factorSet):
         x = f(x, n)
 
 
-def naiveFactoring(n):
-    factors_n = set()
-    init_val = n
-    for i in range(1, ceil(sqrt(init_val))):
-        if n % i == 0:
+def naivePrimeFactorization(n):
+    factor_list = []
+    original = n
+
+    for i in range(2, n):
+        if i ** 2 >= n:
+            break
+
+        while n % i == 0:
             n /= i
-            factors_n.add(i)
-    return factors_n
+            factor_list.append(i)
 
-
-
+    if n > 1:
+        factor_list.append(int(n))
+    return factor_list
 
 if __name__ == "__main__":
-    factors_n = naiveFactoring(10)
+    factors_n = naivePrimeFactorization(500)
     print(factors_n)
