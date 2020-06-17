@@ -10,10 +10,10 @@ from chocolate import factoring
 # returns a dictionary with dimensions of one-break approximations of desired area for each dimension
 def approximateOneBreaks(width, height, desired_area):
     return {
-        "break_height-wise_width": width,
-        "break_height-wise_height": (desired_area // width),
-        "break_width-wise_width": (desired_area // height),
-        "break_width-wise_height": height
+        "width_preserving_break-width": width,
+        "width_preserving_break-height": (desired_area // width),
+        "height_preserving_break-width": (desired_area // height),
+        "height_preserving_break-height": height
     }
 
 # PRECONDITION: The width w and height h are whole numbers
