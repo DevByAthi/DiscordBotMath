@@ -1,27 +1,11 @@
 '''
-Python code that implements Pollard's rho algorithm to find factor of a given number n
+Code for finding all pairs of factors for a given number, n. That is to say, all x,y such that n = x*y.
 '''
 
-import random as rand
-from math import gcd, sqrt, floor, ceil
-
-# For use in Pollard's Rho Algorithm
-def f(x, n):
-    return (x ** 2 - 1) % n
-
-# TODO: Implement Pollard's Rho Algorithm
-def pollardRho(n, factorSet):
-    x = rand.random() * n
-    y = f(x, n)
-    factor = gcd(abs(x - y), n)
-
-    while (factor == 1):
-        x = f(x, n)
-
+from functools import reduce
 
 def naivePrimeFactorization(n):
     factor_list = []
-    original = n
 
     for i in range(2, n):
         if i ** 2 >= n:
@@ -35,6 +19,17 @@ def naivePrimeFactorization(n):
         factor_list.append(int(n))
     return factor_list
 
+def factorPairs(n):
+    factor_list = naivePrimeFactorization(n)
+    pair_list = [(1, n)]
+    for i in range(1, len(factor_list)):
+        fac_1 = factor_list[0] if len(factor_list[:i]) == 1 else reduce(lambda x, y: x*y, factor_list[:i])
+        fac_2 = factor_list[-1] if len(factor_list[i:]) == 1 else reduce(lambda x, y: x*y, factor_list[i:])
+        pair_list.append((fac_1, fac_2))
+    return pair_list
+
+
 if __name__ == "__main__":
-    factors_n = naivePrimeFactorization(500)
+    factors_n = naivePrimeFactorization(500000)
     print(factors_n)
+    print(factorPairs(50000))
