@@ -7,9 +7,14 @@ import numpy as np
 from chocolate import factoring
 
 
-# returns a tuple with dimensions needed for one-break approximations of desired area
+# returns a dictionary with dimensions of one-break approximations of desired area for each dimension
 def approximateOneBreaks(width, height, desired_area):
-    return (desired_area // width, desired_area // height)
+    return {
+        "break_height-wise_width": width,
+        "break_height-wise_height": (desired_area // width),
+        "break_width-wise_width": (desired_area // height),
+        "break_width-wise_height": height
+    }
 
 # PRECONDITION: The width w and height h are whole numbers
 #			    representing the dimensions of the given chocolate bar
@@ -49,10 +54,7 @@ def breakBar(width, height, desired_area, spaceLeft=1):
 
     # No valid factor pairs could be found, so we must divide-and-conquer
     if len(factors_list) == 0:
-        print("asdf")
         breakConstants = approximateOneBreaks(w, h, m)
-
-
 
 
 # return number of breaks
@@ -65,4 +67,4 @@ def breakBar(width, height, desired_area, spaceLeft=1):
 
 if __name__ == "__main__":
     print("HI")
-    print(breakBar(3, 9, 16))
+    print(breakBar(3, 8, 13))
