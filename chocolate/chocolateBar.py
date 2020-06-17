@@ -52,10 +52,25 @@ def breakBar(width, height, desired_area, spaceLeft=1):
                     (max(m_1, m_2) <= max(w, h)) and (min(m_1, m_2) <= min(w, h))]
     print(factors_list)  # DEBUG
 
+    # DIVIDE-AND-CONQUER occurs here
+
     # No valid factor pairs could be found, so we must divide-and-conquer
     if len(factors_list) == 0:
         breakConstants = approximateOneBreaks(w, h, m)
+        print(breakConstants)
+        new_width = breakConstants["height_preserving_break-width"]
+        new_height = breakConstants["width_preserving_break-height"]
 
+        # Determine number of breaks needed if we first do a width-preserving one-break
+        print("Test")
+        subproblem_width = breakBar(w,h - new_height, m - (w * new_height), spaceLeft-1)
+        width_preserving_breaks = 1 + subproblem_width
+        return width_preserving_breaks
+        # Determine number of breaks needed if we first do a height-preserving one-break
+
+    # if there exists a pair of factors of m that fit in the chocolate bar
+    # make two breaks and you're done!
+    return 2
 
 # return number of breaks
 
@@ -67,4 +82,4 @@ def breakBar(width, height, desired_area, spaceLeft=1):
 
 if __name__ == "__main__":
     print("HI")
-    print(breakBar(3, 8, 13))
+    print(breakBar(8, 3, 13, 2))
