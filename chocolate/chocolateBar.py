@@ -8,10 +8,10 @@ from chocolate import factoring
 # PRECONDITION: The width w and height h are whole numbers
 #			    representing the dimensions of the given chocolate bar
 # PRECONDITION: The desired area, m, is a whole number such that m <= w*h
-def breakBar(width, height, desired_area, collectionSpace):
+def breakBar(width, height, desired_area, spaceLeft):
 
     # If no space left in collection, stop
-    if (collectionSpace == 0):
+    if (spaceLeft == 0):
         return -1
 
     # Redefined for simplicity in code
@@ -21,7 +21,6 @@ def breakBar(width, height, desired_area, collectionSpace):
 
     # Check that preconditions are met
     if (min(m, w, h) < 1 or m > w * h):
-        print("INVALID INPUTS")
         return -1
 
     '''
@@ -29,13 +28,16 @@ def breakBar(width, height, desired_area, collectionSpace):
 	'''
 
     # Check if m equals the area of the original chocolate bar!
+    # This checks for a zero-break case
     if m == w * h:
         # print out bar
         return 0
 
-    # Check if m can be factored into two numbers, m_1 and m_2, such that
-    # max(m_1,m_2) <= min(w,h)
-    # If this is not possible, return -1 and state IMPOSSIBLE
+
+
+    # Find factors of m that fit in given chocolate bar
+    factors_list = factoring.factorPairs(m)
+    factors_list = [(a,b) for (a,b) in factors_list ]
 
     '''
     End of edge cases
