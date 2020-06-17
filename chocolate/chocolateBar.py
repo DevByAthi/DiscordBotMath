@@ -2,13 +2,14 @@
 This function assumes no merges are allowed, only breaks
 '''
 
+from math import gcd
 import numpy as np
 from chocolate import factoring
 
 # PRECONDITION: The width w and height h are whole numbers
 #			    representing the dimensions of the given chocolate bar
 # PRECONDITION: The desired area, m, is a whole number such that m <= w*h
-def breakBar(width, height, desired_area, spaceLeft):
+def breakBar(width, height, desired_area, spaceLeft=1):
 
     # If no space left in collection, stop
     if (spaceLeft == 0):
@@ -30,10 +31,13 @@ def breakBar(width, height, desired_area, spaceLeft):
     # Check if m equals the area of the original chocolate bar!
     # This checks for a zero-break case
     if m == w * h:
-        # print out bar
         return 0
 
-
+    # Check if m can be achieved by splitting chocolate bar in two
+    # This checks for a one-break case
+    denominator = gcd(w*h, m)
+    if denominator == w or denominator == h:
+        return 1
 
     # Find factors of m that fit in given chocolate bar
     factors_list = factoring.factorPairs(m)
