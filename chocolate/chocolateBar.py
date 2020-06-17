@@ -6,11 +6,11 @@ from math import gcd
 import numpy as np
 from chocolate import factoring
 
+
 # PRECONDITION: The width w and height h are whole numbers
 #			    representing the dimensions of the given chocolate bar
 # PRECONDITION: The desired area, m, is a whole number such that m <= w*h
 def breakBar(width, height, desired_area, spaceLeft=1):
-
     # If no space left in collection, stop
     if (spaceLeft == 0):
         return -1
@@ -35,14 +35,17 @@ def breakBar(width, height, desired_area, spaceLeft=1):
 
     # Check if m can be achieved by splitting chocolate bar in two
     # This checks for a one-break case
-    denominator = gcd(w*h, m)
+    denominator = gcd(w * h, m)
     if denominator == w or denominator == h:
         return 1
 
-    # Find factors of m that fit in given chocolate bar
-    factors_list = factoring.factorPairs(m)
-    factors_list = [(a,b) for (a,b) in factors_list ]
+    # If the chocolate bar cannot be split once to yield desired area
+    # We must make two consecutive breaks to yield a rectangle with the desired area
 
+    # Find factors of m that fit in given chocolate bar
+    factors_list = [(m_1, m_2) for (m_1, m_2) in factoring.factorPairs(m) if
+                    (max(m_1, m_2) <= max(w, h)) and (min(m_1, m_2) <= min(w, h))]
+    print(factors_list)  # DEBUG
     '''
     End of edge cases
     '''
@@ -91,8 +94,10 @@ def breakBarWithMerge(width, height, desired_area):
     if (initialBreak != -1):
         return initialBreak
 
+
 # Otherwise,
 
 
 if __name__ == "__main__":
     print("HI")
+    print(breakBar(3, 9, 16))
