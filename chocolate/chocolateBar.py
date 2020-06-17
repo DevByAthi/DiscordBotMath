@@ -3,11 +3,17 @@ This function assumes no merges are allowed, only breaks
 '''
 
 import numpy as np
+from chocolate import factoring
 
 # PRECONDITION: The width w and height h are whole numbers
 #			    representing the dimensions of the given chocolate bar
 # PRECONDITION: The desired area, m, is a whole number such that m <= w*h
-def breakBar(width, height, desired_area):
+def breakBar(width, height, desired_area, collectionSpace):
+
+    # If no space left in collection, stop
+    if (collectionSpace == 0):
+        return -1
+
     # Redefined for simplicity in code
     w = width
     h = height
@@ -26,14 +32,6 @@ def breakBar(width, height, desired_area):
     if m == w * h:
         # print out bar
         return 0
-
-    # Check if m > w*h - min(w,h). If true, return -1 and state IMPOSSIBLE
-    # This is a valid edge case because if true, then breaking off an entire row or column
-    # of the original chocolate bar would yield pieces each with an area less than m.
-    # Thus, obtaining an area of m would be impossible in this case.
-    if m > (w * h - min(w, h)):
-        print("IMPOSSIBLE")
-        return -1
 
     # Check if m can be factored into two numbers, m_1 and m_2, such that
     # max(m_1,m_2) <= min(w,h)
@@ -88,3 +86,7 @@ def breakBarWithMerge(width, height, desired_area):
         return initialBreak
 
 # Otherwise,
+
+
+if __name__ == "__main__":
+    print("HI")
