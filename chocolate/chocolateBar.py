@@ -62,11 +62,14 @@ def breakBar(width, height, desired_area, spaceLeft=1):
         new_height = breakConstants["width_preserving_break-height"]
 
         # Determine number of breaks needed if we first do a width-preserving one-break
-        print("Test")
         subproblem_width = breakBar(w,h - new_height, m - (w * new_height), spaceLeft-1)
         width_preserving_breaks = 1 + subproblem_width
-        return width_preserving_breaks
+
         # Determine number of breaks needed if we first do a height-preserving one-break
+        subproblem_height = breakBar(w - new_width, h, m - (new_width * h), spaceLeft - 1)
+        height_preserving_breaks = 1 + subproblem_height
+        print(width_preserving_breaks, height_preserving_breaks)
+        return min(width_preserving_breaks, height_preserving_breaks)
 
     # if there exists a pair of factors of m that fit in the chocolate bar
     # make two breaks and you're done!
