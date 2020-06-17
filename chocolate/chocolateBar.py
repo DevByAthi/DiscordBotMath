@@ -24,10 +24,6 @@ def breakBar(width, height, desired_area, spaceLeft=1):
     if (min(m, w, h) < 1 or m > w * h):
         return -1
 
-    '''
-	Edge cases covered here (e.g. m equals area of chocolate bar)
-	'''
-
     # Check if m equals the area of the original chocolate bar!
     # This checks for a zero-break case
     if m == w * h:
@@ -46,24 +42,7 @@ def breakBar(width, height, desired_area, spaceLeft=1):
     factors_list = [(m_1, m_2) for (m_1, m_2) in factoring.factorPairs(m) if
                     (max(m_1, m_2) <= max(w, h)) and (min(m_1, m_2) <= min(w, h))]
     print(factors_list)  # DEBUG
-    '''
-    End of edge cases
-    '''
 
-    # Define the number of breaks as 0 initially
-
-    # Factor m into m_1 and m_2. Let m_2 be the larger of the two factors
-    '''
-    Let L be the larger dimension between the width and the height of the chocolate bar
-    Let l be the smaller dimension between the width and the height of the chocolate bar
-    
-    If m_2 is not equal to the length along dimension L
-    	add 1 to the number of breaks
-    	Print out the original chocolate bar with a dashed line after the m_2'th piece along dimension L
-	If m_1 is not equal to the length along dimension l
-		add 1 to the number of breaks
-		Print out the original chocolate bar with a dashed line after the m_1'th piece along dimension L
-	'''
 
 
 # return number of breaks
@@ -72,30 +51,6 @@ def breakBar(width, height, desired_area, spaceLeft=1):
 # POSTCONDITION: Return a whole number representing the minimum number 
 # of breaks needed to obtain desired area from the original chocolate bar, OR...
 # "IMPOSSIBLE" if the desired area cannot be obtained
-
-
-'''
-'''
-
-
-def breakBarWithMerge(width, height, desired_area):
-    # Redefined for simplicity in code
-    w = width
-    h = height
-    m = desired_area
-
-    # Check that preconditions are met
-    if (min(m, w, h) < 1) or (m > w * h):
-        print("INVALID INPUTS")
-        return -1
-
-    # Check if any merges are truly needed
-    initialBreak = breakBar(width, height, desired_area)
-    if (initialBreak != -1):
-        return initialBreak
-
-
-# Otherwise,
 
 
 if __name__ == "__main__":
