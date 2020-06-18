@@ -3,6 +3,7 @@
 # whenever certain events occur within the server. 
 
 import discord
+from chocolate.chocolateBar import breakBar
 
 client = discord.Client()
 
@@ -51,7 +52,10 @@ async def on_message(message):
         await message.channel.send('Sounds good. Let me show you how to break that up.')
 
         # insert chocolate bar problem solving function here
-        # chocolateBarSolution = chocolateBarProblem(barHeight,barLenght,numSquares) or whatever
+        sequence = []
+        chocolateBarSolution = breakBar(barLength, barHeight, numSquares, sequence, 2)
+        for step in sequence:
+            await message.channel.send(step )
 
 # This line is used for authentication purposes to allow interaction with the Discord api
 client.run('NzIxNzc5NDc1MDIwNTEzMzkx.XuZfkg.LnP80sKgvtyEVSSYwbK2t5nmeJo')
