@@ -66,17 +66,22 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
 
         # Determine number of breaks needed if we first do a width-preserving one-break
         width_sequence = ["We are breaking off a {}-by-{} piece of chocolate from the bottom".format(w, new_height)]
-        width_sequence.append("The remaining desired_area is thus reduced to {}".format(m - (w * new_height)))
+        width_sequence.append("The remaining desired area is thus reduced to {}".format(m - (w * new_height)))
         subproblem_width = breakBar(w,h - new_height, m - (w * new_height), width_sequence, spaceLeft-1)
         width_preserving_breaks = 1 + subproblem_width
 
         # Determine number of breaks needed if we first do a height-preserving one-break
         height_sequence = ["We are breaking off a {}-by-{} piece of chocolate from the left".format(new_width, h)]
-        height_sequence.append("The remaining desired_area is thus reduced to {}".format(m - (new_width * h)))
+        height_sequence.append("The remaining desired area is thus reduced to {}".format(m - (new_width * h)))
         subproblem_height = breakBar(w - new_width, h, m - (new_width * h), height_sequence, spaceLeft - 1)
         height_preserving_breaks = 1 + subproblem_height
 
-        if (width_preserving_breaks < height_preserving_breaks):
+        # This occurs if neither one-break yields a valid solution
+        if (width_preserving_breaks == 0) and (height_preserving_breaks == 0):
+            sequence.append("Oh dear, this is simply not possible!")
+            return -1
+        # Append the sequence with fewer steps
+        elif (width_preserving_breaks < height_preserving_breaks):
             sequence += width_sequence
         else:
             sequence += height_sequence
@@ -98,6 +103,6 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
 
 if __name__ == "__main__":
     seq = []
-    numBreaks = breakBar(8, 5, 13, seq, 2)
+    numBreaks = breakBar(8, 5, 13, seq, 1)
     for s in seq:
         print(s)
