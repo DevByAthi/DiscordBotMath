@@ -29,6 +29,8 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
 
     # Check that preconditions are met
     if (min(m, w, h) < 1 or m > w * h):
+        sequence.append("Now wait a minute, that's not possible!")
+        sequence.append("I'm a bot, not a miracle worker!")
         return -1
 
     # Check if m equals the area of the original chocolate bar!
