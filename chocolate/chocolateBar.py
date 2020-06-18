@@ -40,11 +40,11 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
     # Check if m can be achieved by splitting chocolate bar in two
     # This checks for a one-break case
     denominator = gcd(w * h, m)
-    if denominator == w:
+    if m % w == 0:
         sequence.append("The desired area of {} can be obtained by breaking off a {}-by-{} piece from the bottom".format(m, w, m // w))
         return 1
 
-    if denominator == h:
+    if m % h == 0:
         sequence.append("The desired area of {} can be obtained by breaking off a {}-by-{} piece from the left side".format(m, w, m // w))
         return 1
 
