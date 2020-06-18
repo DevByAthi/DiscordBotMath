@@ -55,7 +55,9 @@ async def on_message(message):
         sequence = []
         chocolateBarSolution = breakBar(barLength, barHeight, numSquares, sequence, 2)
         for step in sequence:
-            await message.channel.send(step )
+            await message.channel.send(step)
+        if chocolateBarSolution != -1:
+            await message.channel.send('A total of {} breaks were needed'.format(chocolateBarSolution))
 
 # This line is used for authentication purposes to allow interaction with the Discord api
 client.run('NzIxNzc5NDc1MDIwNTEzMzkx.XuZfkg.LnP80sKgvtyEVSSYwbK2t5nmeJo')
