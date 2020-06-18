@@ -34,12 +34,18 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
     # Check if m equals the area of the original chocolate bar!
     # This checks for a zero-break case
     if m == w * h:
+        sequence.append("No breaks needed to obtain the desired area of {} from a {}-by-{} piece of chocolate".format(m, w, h))
         return 0
 
     # Check if m can be achieved by splitting chocolate bar in two
     # This checks for a one-break case
     denominator = gcd(w * h, m)
-    if denominator == w or denominator == h:
+    if denominator == w:
+        sequence.append("The desired area of {} can be obtained by breaking off a {}-by-{} piece from the bottom".format(m, w, m // w))
+        return 1
+
+    if denominator == h:
+        sequence.append("The desired area of {} can be obtained by breaking off a {}-by-{} piece from the left side".format(m, w, m // w))
         return 1
 
     # If the chocolate bar cannot be split once to yield desired area
@@ -79,4 +85,6 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
 
 
 if __name__ == "__main__":
-    print(breakBar(8, 3, 13, [], 2))
+    seq = []
+    print(breakBar(8, 8, 16, seq, 2))
+    print(seq)
