@@ -37,15 +37,16 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
         sequence.append("No breaks needed to obtain the desired area of {} from a {}-by-{} piece of chocolate".format(m, w, h))
         return 0
 
+    sequence.append("We are breaking up a chocolate bar of width {} and height {}".format(w, h))
+
     # Check if m can be achieved by splitting chocolate bar in two
     # This checks for a one-break case
-    denominator = gcd(w * h, m)
     if m % w == 0:
         sequence.append("The desired area of {} can be obtained by breaking off a {}-by-{} piece from the bottom".format(m, w, m // w))
         return 1
 
     if m % h == 0:
-        sequence.append("The desired area of {} can be obtained by breaking off a {}-by-{} piece from the left side".format(m, w, m // w))
+        sequence.append("The desired area of {} can be obtained by breaking off a {}-by-{} piece from the left side".format(m, h, m // h))
         return 1
 
     # If the chocolate bar cannot be split once to yield desired area
@@ -64,16 +65,19 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
         new_height = breakConstants["width_preserving_break-height"]
 
         # Determine number of breaks needed if we first do a width-preserving one-break
-        subproblem_width = breakBar(w,h - new_height, m - (w * new_height), sequence, spaceLeft-1)
+        width_sequence = []
+        subproblem_width = breakBar(w,h - new_height, m - (w * new_height), width_sequence, spaceLeft-1)
         width_preserving_breaks = 1 + subproblem_width
 
         # Determine number of breaks needed if we first do a height-preserving one-break
-        subproblem_height = breakBar(w - new_width, h, m - (new_width * h), sequence, spaceLeft - 1)
+        height_sequence = []
+        subproblem_height = breakBar(w - new_width, h, m - (new_width * h), height_sequence, spaceLeft - 1)
         height_preserving_breaks = 1 + subproblem_height
         return min(width_preserving_breaks, height_preserving_breaks)
 
     # if there exists a pair of factors of m that fit in the chocolate bar
     # make two breaks and you're done!
+    sequence.append("The desired area {} can be obtained from a {}-by-{} chocolate")
     return 2
 
 # return number of breaks
@@ -86,5 +90,5 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
 
 if __name__ == "__main__":
     seq = []
-    print(breakBar(8, 8, 16, seq, 2))
+    print(breakBar(8, 7, 13, seq, 2))
     print(seq)
