@@ -19,14 +19,12 @@ def approximateOneBreaks(width, height, desired_area):
 # PRECONDITION: The width w and height h are whole numbers
 #			    representing the dimensions of the given chocolate bar
 # PRECONDITION: The desired area, m, is a whole number such that m <= w*h
-def breakBar(width, height, desired_area, sequence, spaceLeft=1):
+def breakBar(w, h, desired_area, sequence, spaceLeft=1):
     # If no space left in collection, stop
     if (spaceLeft == 0):
         return -1
 
     # Redefined for simplicity in code
-    w = width
-    h = height
     m = desired_area
 
     # Check that preconditions are met
