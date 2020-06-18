@@ -40,8 +40,9 @@ def breakBar(width, height, desired_area, spaceLeft=1):
 
     # Check if m can be achieved by splitting chocolate bar in two
     # This checks for a one-break case
-    denominator = gcd(w * h, m)
-    if denominator == w or denominator == h:
+    if m % w == 0:
+        return 1
+    if m % h == 0:
         return 1
 
     # If the chocolate bar cannot be split once to yield desired area
@@ -85,4 +86,4 @@ def breakBar(width, height, desired_area, spaceLeft=1):
 
 if __name__ == "__main__":
     print("HI")
-    print(breakBar(8, 3, 13, 2))
+    print(breakBar(8, 3, 16, 2))
