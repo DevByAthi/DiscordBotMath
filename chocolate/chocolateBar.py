@@ -19,7 +19,7 @@ def approximateOneBreaks(width, height, desired_area):
 # PRECONDITION: The width w and height h are whole numbers
 #			    representing the dimensions of the given chocolate bar
 # PRECONDITION: The desired area, m, is a whole number such that m <= w*h
-def breakBar(width, height, desired_area, spaceLeft=1):
+def breakBar(width, height, desired_area, sequence, spaceLeft=1):
     # If no space left in collection, stop
     if (spaceLeft == 0):
         return -1
@@ -62,11 +62,11 @@ def breakBar(width, height, desired_area, spaceLeft=1):
         new_height = breakConstants["width_preserving_break-height"]
 
         # Determine number of breaks needed if we first do a width-preserving one-break
-        subproblem_width = breakBar(w,h - new_height, m - (w * new_height), spaceLeft-1)
+        subproblem_width = breakBar(w,h - new_height, m - (w * new_height), sequence, spaceLeft-1)
         width_preserving_breaks = 1 + subproblem_width
 
         # Determine number of breaks needed if we first do a height-preserving one-break
-        subproblem_height = breakBar(w - new_width, h, m - (new_width * h), spaceLeft - 1)
+        subproblem_height = breakBar(w - new_width, h, m - (new_width * h), sequence, spaceLeft - 1)
         height_preserving_breaks = 1 + subproblem_height
         print(width_preserving_breaks, height_preserving_breaks)
         return min(width_preserving_breaks, height_preserving_breaks)
@@ -85,4 +85,4 @@ def breakBar(width, height, desired_area, spaceLeft=1):
 
 if __name__ == "__main__":
     print("HI")
-    print(breakBar(8, 3, 13, 2))
+    print(breakBar(8, 3, 13, [], 2))
