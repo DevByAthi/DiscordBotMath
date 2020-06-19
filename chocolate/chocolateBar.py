@@ -33,6 +33,7 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
         sequence.append("I'm a bot, not a miracle worker!")
         return -1
 
+    # ---Sa(Solvable immediately?): Zero breaks are needed
     # Check if m equals the area of the original chocolate bar!
     # This checks for a zero-break case
     if m == w * h:
@@ -61,19 +62,20 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
                     (max(m_1, m_2) <= max(w, h)) and (min(m_1, m_2) <= min(w, h))]
 
     # DIVIDE-AND-CONQUER occurs here
-
     # No valid factor pairs could be found, so we must divide-and-conquer
     if len(factors_list) == 0:
         breakConstants = approximateOneBreaks(w, h, m)
         new_width = breakConstants["height_preserving_break-width"]
         new_height = breakConstants["width_preserving_break-height"]
 
+        # ---Sb1: Remove a rectangular piece along the width
         # Determine number of breaks needed if we first do a width-preserving one-break
         width_sequence = ["We are breaking off a {}-by-{} piece of chocolate from the bottom".format(w, new_height)]
         width_sequence.append("The remaining desired area is thus reduced to {}".format(m - (w * new_height)))
         subproblem_width = breakBar(w,h - new_height, m - (w * new_height), width_sequence, spaceLeft-1)
         width_preserving_breaks = 1 + subproblem_width
 
+        # ---Sb2: Remove a rectangular piece along the height
         # Determine number of breaks needed if we first do a height-preserving one-break
         height_sequence = ["We are breaking off a {}-by-{} piece of chocolate from the left".format(new_width, h)]
         height_sequence.append("The remaining desired area is thus reduced to {}".format(m - (new_width * h)))
@@ -101,12 +103,13 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
 
 
 # POSTCONDITION: Return a whole number representing the minimum number
-# of breaks needed to obtain desired area from the original chocolate bar, OR...
-# "IMPOSSIBLE" if the desired area cannot be obtained
+# of breaks needed to obtain desired area from the original chocolate bar, if possible
+# POSTCONDITION: Return a list with the steps needs to obtain desired area,
+# or state if it is impossible (for ReMBot to display)
 
 
 if __name__ == "__main__":
     seq = []
-    numBreaks = breakBar(8, 5, 13, seq, 1)
+    numBreaks = breakBar(8, 5, 13, seq, 2)
     for s in seq:
         print(s)

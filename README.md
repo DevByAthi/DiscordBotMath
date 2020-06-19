@@ -29,8 +29,21 @@ for you to break apart the chocolate bar and get your desired amount.
 If it is not possible to obtain the desired number of squares, ReMBot will tell you in so many words.
 
 To give the width and height of a chocolate bar and ask ReMBot to help you get a particular amount of chocolate,
-run the command `$chocolate` in the test server, and follow the directions. Enjoy! 
+run the command `$chocolate` in the test server, and follow the directions. Enjoy!
 
+### Divide and Conquer
+
+The divide-and-conquer method is applied to the Chocolate Bar Problem in a 
+special case where one can create sub-problems of the Chocolate Bar Problem. Oftentimes, a user will request a
+desired area that _cannot_ be obtained in a single break (this would occur if the desired area is a multiple of at least one of the side lengths).
+When this occurs, we first attempt to take as large a piece of the side of the original chocolate bar as possible. 
+We reduce the desired area by this reduced amount in preparation for the sub-problem.
+
+In this sub-problem, we take the remaining, unused portion of the original chocolate bar
+and attempt to obtain the remaining desired area for it. The "conquering" part of the method is where we combine the 
+first break with the number of breaks needed in the sub-problem to determine the total number of breaks needed.
+
+To see this divide-and-conquer method in action, give ReMBot an input of a 5-by-7 chocolate bar and a desired area of 32.
 
 ## References
 https://discordpy.readthedocs.io/en/latest/index.html
