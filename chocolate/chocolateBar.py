@@ -50,6 +50,8 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
     if m % h == 0:
         sequence.append("The desired area of {} can be obtained by breaking off a {}-by-{} piece from the left side".format(m, h, m // h))
         return 1
+    if m % h == 0:
+        return 1
 
     # If the chocolate bar cannot be split once to yield desired area
     # We must make two consecutive breaks to yield a rectangle with the desired area
@@ -98,7 +100,7 @@ def breakBar(w, h, desired_area, sequence, spaceLeft=1):
 # return number of breaks
 
 
-# POSTCONDITION: Return a whole number representing the minimum number 
+# POSTCONDITION: Return a whole number representing the minimum number
 # of breaks needed to obtain desired area from the original chocolate bar, OR...
 # "IMPOSSIBLE" if the desired area cannot be obtained
 
