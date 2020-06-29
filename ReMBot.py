@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 
+# --------------------------------
 # ----- ADMINISTRATIVE SETUP -----
+# --------------------------------
 # This file allows the bot to operate in a discord server. A bot itself doesn't actually
 # need to be a class. Instead, it exists as a set of callback functions which are triggered
 # whenever certain events occur within the server. 
@@ -16,7 +18,9 @@ client = discord.Client()
 botTestingServer = client.get_guild(708142506012966993)
 generalTextChannel = botTestingServer.get_channel(708142506520608828)
 
+# ---------------------------------------------
 # ----- EVENT HELPER FUNCTION DEFINITIONS -----
+# ---------------------------------------------
 # ReMBot is capable of a number of actions. Oftentimes these actions involve checking/confirming user input.
 # The code specific to each action is listed here.
 
@@ -113,6 +117,8 @@ async def checkAsyncInput(an_input):
     else:
         return 0
 
+# Global variables here are manually maintained to work with the concurrency framework. It isn't really the best
+# solution since it must be scaled manually, but it is the easiest solution for short-term proof of concept.
 valid_concurrent_keywords = [
     'help',
     'chocolate',
@@ -198,8 +204,9 @@ async def performConcurrentActions(a_message):
     # The asyncio.gather function runs all tasks provided to it concurrently, so this one line is all we need.
     await asyncio.gather(task_list)
 
-
+# -----------------------------
 # ----- EVENT DEFINITIONS -----
+# -----------------------------
 # Here the events which define how ReMBot actually interacts with the server are defined.
 
 # Sanity check event which prints a message to the terminal when the bot is online.
@@ -213,6 +220,7 @@ async def on_ready():
 # on the message.
 @client.event
 async def on_message(message):
+    # Ignore all messages sent by ReMBot itself to avoid potential infinite chat loops.
     if message.author == client.user:
         return
 
@@ -224,6 +232,11 @@ async def on_message(message):
     # solve the problem, and return the result.
     if message.content.startswith('$chocolate'):
         await chocolateProblem(message)
+
+    # The user is requesting to run multiple events at once. Launch the framework to parse the event inputs
+    # and run them concurrently.
+    if message.content.startswith('$async'):
+        await performConcurrentActions(message)
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
 # asynchronous event loop that allows all these lines of code to actually run.
