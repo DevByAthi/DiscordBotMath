@@ -8,15 +8,25 @@
 # whenever certain events occur within the server. 
 
 import discord
+#from asyncio import create_task, gather
 import asyncio
 from chocolate.chocolateBar import breakBar
 
 client = discord.Client()
+botTestingServer = []
+generalTextChannel = []
 
-# Get the guild object. This is the object representing the server we are using to develop this bot.
-# It is used to allow us deeper programmatic control, such as sending messages to specific channels within the server.
-botTestingServer = client.get_guild(708142506012966993)
-generalTextChannel = botTestingServer.get_channel(708142506520608828)
+# Sanity check event which prints a message to the terminal when the bot is online.
+# It should appear after ./ReMBot.py is run.
+@client.event
+async def on_ready():
+    print('We have logged in as {0.user}'.format(client))
+    # Get the guild object. This is the object representing the server we are using to develop this bot.
+    # It is used to allow us deeper programmatic control, such as sending messages to specific channels within the server.
+    global botTestingServer
+    global generalTextChannel
+    botTestingServer = client.get_guild(708142506012966993)
+    generalTextChannel = botTestingServer.get_channel(708142506520608828)
 
 # ---------------------------------------------
 # ----- EVENT HELPER FUNCTION DEFINITIONS -----
@@ -71,6 +81,7 @@ async def chocolateProblemAsync(barLength, barHeight, numSquares):
 
     # Sb: The chocolate problem has been solved and the solution steps have been printed to the #chocolate channel.
     chocolateChannel = botTestingServer.get_channel(726816875899650109)
+    await chocolateChannel.send('Now concurrently breaking a new bar for you!\n')
     sequence = []
     chocolateBarSolution = breakBar(barLength, barHeight, numSquares, sequence, 2)
     for step in sequence:
@@ -90,7 +101,7 @@ async def directMessageUser(a_user, a_message):
     else:
         await userToMessage.send(a_message)
 
-async def checkAsyncInput(an_input):
+def checkAsyncInput(an_input):
     # Helper function for checking the action inputs and associated parameters. This has to be hard coded for each
     # action due to the wide range of possible actions the bot might perform.
     # Precondition: an_input should be a list of strings, where an_input[0] specifies the action and an_input[1:]
@@ -130,10 +141,10 @@ help_message = ('$async command documentation:\n'
                 'you must provide me with certain inputs that are specific to the action you want me to perform. '
                 'Below are examples showing how to format inputs for each action I can perform for you through this '
                 'command. You may provide these commands in any order, as long as they follow the patterns below.\n\n'
-                '-help              Display this help message.\n'
-                '-chocolate l h m   Solve the chocolate problem for bar length l, bar height h, and desired area m, where l, h, and m are all integers.\n'
-                '-google text       Perform a google image search for the string given by text, and return the top result.\n'
-                '-dm user text      Send a dm to the server member specified by user, containing the text specified by text.\n\n\n'
+                '-help\n    Display this help message.\n'
+                '-chocolate L H M\n    Solve the chocolate problem for bar length L, bar height H, and desired area M, where L, H, and M are all integers.\n'
+                '-google text\n    Perform a google image search for the string given by text, and return the top result.\n'
+                '-dm user text\n    Send a dm to the server member specified by user, containing the text specified by text.\n\n\n'
                 'Example usage:\n   $async -chocolate 8 9 17 -google dog wearing hat -dm flubblemolubble you are cool')
 
 async def performConcurrentActions(a_message):
@@ -155,18 +166,23 @@ async def performConcurrentActions(a_message):
 
     # Transform the input string into an easily parse-able form.
     a_message_text = a_message.content
-    a_message_text = a_message_text[7:].split(' -')
+    a_message_text = a_message_text[8:].split(' -')
     a_message_text = [item.split() for item in a_message_text]
+    if not a_message_text[0]:
+        await generalTextChannel.send('Please specify at least one action.')
+        return
 
     for i in range(len(a_message_text)):
         # At each step, check if the action is valid. If it isn't, print the help text for the concurrent framework.
         if not (a_message_text[i][0] in valid_concurrent_keywords):
+            await generalTextChannel.send('I don\'t know what {} is! Please check the doc message for available actions.'.format(a_message_text[i][0]))
             await generalTextChannel.send(help_message)
             return
 
         # Use helper function to check specific input parameters
         result = checkAsyncInput(a_message_text[i])
         if result == -1:
+            await generalTextChannel.send('Whoops! I caught some bad input parameters. Please check the doc message.')
             await generalTextChannel.send(help_message)
             return
 
@@ -175,6 +191,7 @@ async def performConcurrentActions(a_message):
     # corresponding task in task_list.
 
     # We have parsed the inputs and confirmed their correctness, so we can create the specific tasks incrementally.
+    # Tasks are created as Task objects via asyncio.ensure_future(). These Tasks will later be run concurrently.
     # Note that the states listed below are optional in that a user's request to the async framework may or may not
     # ask for some action to be performed. However, at least one of the Sb_* states will be accomplished.
     task_list = []
@@ -182,12 +199,12 @@ async def performConcurrentActions(a_message):
         if a_message_text[i][0] == 'help':
             # Sb_1: Task t_1 has been created, where t_1 achieves the printing of an async framework documentation
             # message to the #general text channel in the discord server.
-            task_list.append(asyncio.create_task(
+            task_list.append(asyncio.ensure_future(
                 generalTextChannel.send(help_message)))
         elif a_message_text[i][0] == 'chocolate':
             # Sb_2: Task t_2 has been created, where t_2 achieves the solving of the chocolate problem and the printing
             # of the solution to the #chocolate text channel in the discord server.
-            task_list.append(asyncio.create_task(
+            task_list.append(asyncio.ensure_future(
                 chocolateProblemAsync(a_message_text[i][1], a_message_text[i][2], a_message_text[i][3])))
         elif a_message_text[i][0] == 'google':
             # Sb_3: Task t_3 has been created, where t_3 achieves the searching of Google Images for a given query
@@ -197,23 +214,17 @@ async def performConcurrentActions(a_message):
         elif a_message_text[i][0] == 'dm':
             # Sb_4: Task t_4 has been created, where t_4 achieves the goal of sending a direct message to a named user
             # containing the provided text.
-            task_list.append(asyncio.create_task(
+            task_list.append(asyncio.ensure_future(
                 directMessageUser(a_message_text[i][1], ' '.join(a_message_text[i][2:]))))
 
     # Sc: Each task described in task_list has started.
     # The asyncio.gather function runs all tasks provided to it concurrently, so this one line is all we need.
-    await asyncio.gather(task_list)
+    await asyncio.gather(*task_list)
 
 # -----------------------------
 # ----- EVENT DEFINITIONS -----
 # -----------------------------
 # Here the events which define how ReMBot actually interacts with the server are defined.
-
-# Sanity check event which prints a message to the terminal when the bot is online.
-# It should appear after ./ReMBot.py is run.
-@client.event
-async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
 
 # Here we create an event which triggers whenever a text message is sent in the server.
 # We can parse messages sent by users and perform whatever actions we want depending
@@ -237,6 +248,10 @@ async def on_message(message):
     # and run them concurrently.
     if message.content.startswith('$async'):
         await performConcurrentActions(message)
+
+    # The user would like ReMBot to send a direct message to a named member of the server.
+    if message.content.startswith('$dm'):
+        await directMessageUser(message)
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
 # asynchronous event loop that allows all these lines of code to actually run.
