@@ -60,28 +60,16 @@ async def chocolateProblem(message):
     barLength = int(barSize[1])
 
     await message.channel.send('Sounds good. Let me show you how to break that up. Meet me in the #chocolate channel!')
+    await chocolateProblemSolver(barLength, barHeight, numSquares)
+
+async def chocolateProblemSolver(barLength, barHeight, numSquares):
+    # Function that actually initiates the solving of the chocolate problem. It is implemented as a separate function
+    # so that it can be integrated with the async framework, which does not employ the same thorough user dialogue as
+    # the standalone chocolate problem solver.
+
+    # Sa: The chocolate problem has been solved and the solution steps have been printed to the #chocolate channel.
     chocolateChannel = botTestingServer.get_channel(726816875899650109)
-
-    # chocolate bar problem solving occurs here
-    sequence = []
-    chocolateBarSolution = breakBar(barLength, barHeight, numSquares, sequence, 2)
-    for step in sequence:
-        await chocolateChannel.send(step)
-    if chocolateBarSolution != -1:
-        await chocolateChannel.send('A total of {} breaks were needed'.format(chocolateBarSolution))
-
-async def chocolateProblemAsync(barLength, barHeight, numSquares):
-    # A slightly modified version of the chocolateProblem function, for use with the asynchronous problem-solving
-    # framework in performConcurrentActions().
-
-    # Sa: The inputs have been converted from strings to integers.
-    barLength = int(barLength)
-    barHeight = int(barHeight)
-    numSquares = int(numSquares)
-
-    # Sb: The chocolate problem has been solved and the solution steps have been printed to the #chocolate channel.
-    chocolateChannel = botTestingServer.get_channel(726816875899650109)
-    await chocolateChannel.send('Now concurrently breaking a new bar for you!\n')
+    await chocolateChannel.send('Now breaking up a new bar for you!\n')
     sequence = []
     chocolateBarSolution = breakBar(barLength, barHeight, numSquares, sequence, 2)
     for step in sequence:
@@ -117,7 +105,11 @@ def checkAsyncInput(an_input):
     elif action == 'chocolate':
         if len(parameters) != 3:
             return -1
-        elif not (x.isdecimal() for x in parameters):
+        try:
+            int(parameters[0])
+            int(parameters[1])
+            int(parameters[2])
+        except ValueError:
             return -1
     elif action == 'google':
         if len(parameters) == 0:
@@ -205,7 +197,7 @@ async def performConcurrentActions(a_message):
             # Sb_2: Task t_2 has been created, where t_2 achieves the solving of the chocolate problem and the printing
             # of the solution to the #chocolate text channel in the discord server.
             task_list.append(asyncio.ensure_future(
-                chocolateProblemAsync(a_message_text[i][1], a_message_text[i][2], a_message_text[i][3])))
+                chocolateProblemSolver(int(a_message_text[i][1]), int(a_message_text[i][2]), int(a_message_text[i][3]))))
         elif a_message_text[i][0] == 'google':
             # Sb_3: Task t_3 has been created, where t_3 achieves the searching of Google Images for a given query
             # and the printing of the image in the #google text channel in the discord server.
