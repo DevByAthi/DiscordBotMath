@@ -26,12 +26,34 @@ def checkFormat(events):
     print(validity)
     return all(validity)
 
+def parseStr(in_str):
+    raw_list = in_str.split()
+    processed_list = []
+    for term in raw_list:
+        try:
+            processed_list.append(int(term))
+        except ValueError:
+            return
+
+    if len(processed_list) % 2 == 1:
+        return
+
+    events = []
+    for i in range(0, len(processed_list), 2):
+        events.append((processed_list[i], processed_list[i+1]))
+    print(events)
+
 # ==============================================================
 
 
 
 
 if __name__ == '__main__':
+
+    parseStr("1 2 3 4 5 8 ")
+
+    print("===============")
+
     events = [(1, 2), (1.0, 2), (1.0, 2.0), (5,7), (4,6)]
     print(checkFormat(events))
     sortByEndTime(events)

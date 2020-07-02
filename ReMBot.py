@@ -10,6 +10,7 @@
 import discord
 import asyncio
 from chocolate.chocolateBar import breakBar
+from schedule.schedule import parseStr
 
 client = discord.Client()
 botTestingServer = []
@@ -96,9 +97,11 @@ async def directMessageUser(a_user, a_message):
 async def scheduleForBreak(message):
     if message.attachments:
         f = await discord.Attachment.to_file(message.attachments[0])
+        s = f.fp.read().decode("utf-8")
+        print(s)
+        parseStr(s)
     else:
         await generalTextChannel.send("No file attached!")
-
 
 
 def checkAsyncInput(an_input):
