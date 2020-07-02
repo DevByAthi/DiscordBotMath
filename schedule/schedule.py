@@ -29,11 +29,10 @@ def checkFormat(events):
 def parseStr(in_str):
     raw_list = in_str.split()
     processed_list = []
-    for term in raw_list:
-        try:
-            processed_list.append(int(term))
-        except ValueError:
-            return
+    try:
+        processed_list = list(map(int, raw_list))
+    except ValueError:
+        return
 
     if len(processed_list) % 2 == 1:
         return
@@ -50,7 +49,7 @@ def parseStr(in_str):
 
 if __name__ == '__main__':
 
-    parseStr("1 2 3 4 5 8 ")
+    parseStr("1 2 3 4 5 8 5 8")
 
     print("===============")
 
