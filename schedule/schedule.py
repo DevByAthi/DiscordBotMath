@@ -3,11 +3,19 @@
 # Precondition 2: For each tuple (s,f) in events, 9 <= s < f <= 17,
 #   where s and f refer to the start and end times of an event in 24-hr time
 def sortByEndTime(events):
-    if not (checkFormat(events)):
-        return
+    for event in events:
+        # check that event has start and end times within working hours
+        if not(900 <= event[0] <= event[1] <= 1700):
+            return False
+        # check that time format is valid, with minutes within an hour
+        elif event[0] % 100 > 59 or event[1] % 100 > 59:
+            return False
 
+    print(events)
     # TODO: Create sorting function from scratch, according to Dr. Braude (1 Jul 2020)
     events.sort(key=lambda x: x[1])
+
+    return True
 
 
 # INVARIANT: events_sorted contains the same tuples as events
@@ -40,8 +48,7 @@ def parseStr(in_str):
     events = []
     for i in range(0, len(processed_list), 2):
         events.append((processed_list[i], processed_list[i+1]))
-    print(events)
-
+    return events
 # ==============================================================
 
 
@@ -54,6 +61,6 @@ if __name__ == '__main__':
     print("===============")
 
     events = [(1, 2), (1.0, 2), (1.0, 2.0), (5,7), (4,6)]
-    print(checkFormat(events))
-    sortByEndTime(events)
+    sortByEndTime(parseStr("1 2 3 4 5 8 5 8"))
+    sortByEndTime(parseStr("900 930 1045 1100"))
     print(events)
