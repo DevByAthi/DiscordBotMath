@@ -136,7 +136,7 @@ help_message = ('$async command documentation:\n'
                 '-chocolate L H M\n    Solve the chocolate problem for bar length L, bar height H, and desired area M, where L, H, and M are all integers.\n'
                 '-hello\n    Send a greeting into the general chat.\n'
                 '-dm user text\n    Send a dm to the server member specified by user, containing the text specified by text.\n\n\n'
-                'Example usage:\n   $async -chocolate 8 9 17 -emojistory 10 -dm flubblemolubble you are cool')
+                'Example usage:\n   $async -chocolate 8 9 17 -hello -dm flubblemolubble you are cool')
 
 async def performConcurrentActions(a_message):
     # Abstract: This function provides a flexible framework for performing numerous actions in response to one query by
