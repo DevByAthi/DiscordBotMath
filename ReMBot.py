@@ -110,11 +110,11 @@ def checkAsyncInput(an_input):
             int(parameters[2])
         except ValueError:
             return -1
-    elif action == 'google':
-        if len(parameters) == 0:
-            return -1
     elif action == 'dm':
         if len(parameters) < 2:
+            return -1
+    elif action == 'hello':
+        if parameters:
             return -1
     else:
         return 0
@@ -125,7 +125,7 @@ valid_concurrent_keywords = [
     'help',
     'chocolate',
     'dm',
-    'google']
+    'hello']
 
 help_message = ('$async command documentation:\n'
                 'The $async command allows you to ask me to perform multiple actions at once. In order to do this, '
@@ -134,18 +134,16 @@ help_message = ('$async command documentation:\n'
                 'command. You may provide these commands in any order, as long as they follow the patterns below.\n\n'
                 '-help\n    Display this help message.\n'
                 '-chocolate L H M\n    Solve the chocolate problem for bar length L, bar height H, and desired area M, where L, H, and M are all integers.\n'
-                '-google text\n    Perform a google image search for the string given by text, and return the top result.\n'
+                '-hello\n    Send a greeting into the general chat.\n'
                 '-dm user text\n    Send a dm to the server member specified by user, containing the text specified by text.\n\n\n'
-                'Example usage:\n   $async -chocolate 8 9 17 -google dog wearing hat -dm flubblemolubble you are cool')
+                'Example usage:\n   $async -chocolate 8 9 17 -hello -dm flubblemolubble you are cool')
 
 async def performConcurrentActions(a_message):
     # Abstract: This function provides a flexible framework for performing numerous actions in response to one query by
     # a user. Through use of this function, the user can ask ReMBot to solve more than one math puzzle at once and/or
-    # perform other simple actions as well. The states/tasks described in this function's comments are somewhat vague in
-    # terms of the actions actually being carried out, because those actions will vary depending on the content of the
-    # user input.
+    # perform other simple actions as well.
 
-    # Example input: $async -chocolate 8 9 17 -google dog wearing hat -dm @flubblemolubble you're a nerd
+    # Example input: $async -chocolate 8 9 17 -hello -dm @flubblemolubble you're a nerd
 
     # Intent: Complete all actions detailed in a_message concurrently
     # Precondition: a_message is a string describing all desired actions and required input parameters.
@@ -197,11 +195,11 @@ async def performConcurrentActions(a_message):
             # of the solution to the #chocolate text channel in the discord server.
             task_list.append(asyncio.ensure_future(
                 chocolateProblemSolver(int(a_message_text[i][1]), int(a_message_text[i][2]), int(a_message_text[i][3]))))
-        elif a_message_text[i][0] == 'google':
-            # Sb_3: Task t_3 has been created, where t_3 achieves the searching of Google Images for a given query
-            # and the printing of the image in the #google text channel in the discord server.
-            print('placeholder')
-            # Holding off on implementing this for now, since it might be more effort than it's worth at this point.
+        elif a_message_text[i][0] == 'hello':
+            # Sb_3: Task t_3 has been created, where t_3 achieves the sending of a message containing a friendly
+            # greeting to the #general text channel in the discord server.
+            task_list.append(asyncio.ensure_future(
+                generalTextChannel.send('Hello!')))
         elif a_message_text[i][0] == 'dm':
             # Sb_4: Task t_4 has been created, where t_4 achieves the goal of sending a direct message to a named user
             # containing the provided text.
