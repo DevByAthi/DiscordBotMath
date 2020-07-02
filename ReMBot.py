@@ -8,7 +8,6 @@
 # whenever certain events occur within the server. 
 
 import discord
-#from asyncio import create_task, gather
 import asyncio
 from chocolate.chocolateBar import breakBar
 
@@ -243,7 +242,10 @@ async def on_message(message):
 
     # The user would like ReMBot to send a direct message to a named member of the server.
     if message.content.startswith('$dm'):
-        await directMessageUser(message)
+        message = message.content
+        a_user = message[4:].split(' ')[0]
+        a_message = ' '.join(message[4:].split(' ')[1:])
+        await directMessageUser(a_user, a_message)
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
 # asynchronous event loop that allows all these lines of code to actually run.
