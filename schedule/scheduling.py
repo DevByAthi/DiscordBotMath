@@ -11,20 +11,26 @@ class Section:
         self.start = times[0]
         self.end = times[1]
 
+    def __repr__(self) -> str:
+        return str(self)
+
     def __str__(self) -> str:
         s = str(self.course_name) + ": (" + str(self.start) + ", " + str(self.end) + ")"
         return s
+
+    def __lt__(self, other):
+        return self.end < other.end
 
 
 # Intent: Sort a list of events by their end times
 # Precondition 1: events is a non-empty list of 2-element tuples of floats
 # Precondition 2: For each tuple (s,f) in events, 9 <= s < f <= 17,
 #   where s and f refer to the start and end times of an event in 24-hr time
-def sortByEndTime(courses):
-    print(courses)
+def sortByEndTime(sections):
+    print(sections)
     # TODO: Create sorting function from scratch, according to Dr. Braude (1 Jul 2020)
-    courses.sort(key=lambda x: x[1])
-    print(courses)
+    sections.sort()
+    print(sections)
 
 
 # INVARIANT: events_sorted contains the same tuples as events
@@ -58,7 +64,6 @@ def retrieveSections(courses_str):
 
 
 if __name__ == '__main__':
-    course_str = "Calc_I 900 945 1201 1320  1030 1115 1345 1500 / Physics_II 1450 1700 1600 1630 1645 1700"
+    course_str = "Calc_I 900 945 1201 1320  1030 1115 1345 1700 / Physics_II 1450 1700 1600 1630 1645 1700"
     sections = retrieveSections(course_str)
-    for s in sections:
-        print(s)
+    sortByEndTime(sections)
