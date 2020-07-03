@@ -1,3 +1,8 @@
+class ScheduleFormatError(Exception):
+    def __init__(self,message):
+        self.message = message
+
+
 class TimeFormatError(ValueError):
     def __init__(self, message):
         self.message = message
@@ -8,7 +13,7 @@ def convertToTimeInt(inStr):
     try:
         val = int(inStr)
     except ValueError:
-        raise TimeFormatError("input must be an integer value representing a time between 900 and 1700")
+        raise TimeFormatError("Input must be an integer value representing a time between 900 and 1700")
 
     if val < 900:
         raise TimeFormatError("Given time is too early. Must be on or after 9 am.")
