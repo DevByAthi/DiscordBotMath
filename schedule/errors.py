@@ -1,0 +1,2 @@
+class TimeFormatError(Exception):
+    pass

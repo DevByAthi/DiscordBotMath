@@ -1,3 +1,5 @@
+from schedule.parse import *
+
 # Intent: Sort a list of events by their end times
 # Precondition 1: events is a non-empty list of 2-element tuples of floats
 # Precondition 2: For each tuple (s,f) in events, 9 <= s < f <= 17,
@@ -33,22 +35,6 @@ def checkFormat(events):
                 for x in events]
     print(validity)
     return all(validity)
-
-def parseStr(in_str):
-    raw_list = in_str.split()
-    processed_list = []
-    try:
-        processed_list = list(map(int, raw_list))
-    except ValueError:
-        return
-
-    if len(processed_list) % 2 == 1:
-        return
-
-    events = []
-    for i in range(0, len(processed_list), 2):
-        events.append((processed_list[i], processed_list[i+1]))
-    return events
 # ==============================================================
 
 

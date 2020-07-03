@@ -10,7 +10,8 @@
 import discord
 import asyncio
 from chocolate.chocolateBar import breakBar
-from schedule.schedule import parseStr, sortByEndTime
+from schedule.schedule import sortByEndTime
+from schedule.parse import *
 
 client = discord.Client()
 botTestingServer = []
