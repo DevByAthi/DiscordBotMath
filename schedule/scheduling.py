@@ -1,4 +1,4 @@
-from schedule.parse import *
+# from schedule import parse
 
 # Intent: Sort a list of events by their end times
 # Precondition 1: events is a non-empty list of 2-element tuples of floats
@@ -29,11 +29,11 @@ def sortByEndTime(events):
 
 if __name__ == '__main__':
 
-    convertCourseToTime("1 2 3 4 5 8 5 8")
+    # convertCourseToTime("1 2 3 4 5 8 5 8")
 
     print("===============")
 
     events = [(1, 2), (1.0, 2), (1.0, 2.0), (5,7), (4,6)]
-    sortByEndTime(convertCourseToTime("1 2 3 4 5 8 5 8"))
-    sortByEndTime(convertCourseToTime("900 930 1045 1100"))
+    # sortByEndTime(convertCourseToTime("1 2 3 4 5 8 5 8"))
+    # sortByEndTime(convertCourseToTime("900 930 1045 1100"))
     print(events)
