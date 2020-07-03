@@ -3,7 +3,7 @@ class TimeFormatError(ValueError):
         self.message = message
 
 
-def parseFormat(inStr):
+def convertToTimeInt(inStr):
     val = -1
     try:
         val = int(inStr)
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     good = ["945", "1232","1700","900","1459","1432"]
     for time in good:
         try:
-            parseFormat(time)
+            convertToTimeInt(time)
         except TimeFormatError as error:
             print("Error ", error, " with time ", time)
 
@@ -37,6 +37,6 @@ if __name__ == "__main__":
 
     for time in bad:
         try:
-            parseFormat(time)
+            convertToTimeInt(time)
         except TimeFormatError as error:
             print("Error ", error, " with time ", time)

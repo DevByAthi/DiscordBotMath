@@ -99,7 +99,7 @@ async def scheduleForBreak(message):
     if message.attachments:
         f = await discord.Attachment.to_file(message.attachments[0])
         s = f.fp.read().decode("utf-8")
-        events = parseStr(s)
+        events = convertCourseToTime(s)
         if (sortByEndTime(events)):
             await generalTextChannel.send(events)
         else:

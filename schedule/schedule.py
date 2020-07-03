@@ -42,11 +42,11 @@ def checkFormat(events):
 
 if __name__ == '__main__':
 
-    parseStr("1 2 3 4 5 8 5 8")
+    convertCourseToTime("1 2 3 4 5 8 5 8")
 
     print("===============")
 
     events = [(1, 2), (1.0, 2), (1.0, 2.0), (5,7), (4,6)]
-    sortByEndTime(parseStr("1 2 3 4 5 8 5 8"))
-    sortByEndTime(parseStr("900 930 1045 1100"))
+    sortByEndTime(convertCourseToTime("1 2 3 4 5 8 5 8"))
+    sortByEndTime(convertCourseToTime("900 930 1045 1100"))
     print(events)

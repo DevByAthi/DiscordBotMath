@@ -1,4 +1,4 @@
-def parseStr(in_str):
+def convertCourseToTime(in_str):
     raw_list = in_str.split()
     processed_list = []
     try:
