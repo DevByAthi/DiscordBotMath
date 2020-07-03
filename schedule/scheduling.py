@@ -51,14 +51,17 @@ def flattenCourses(courses) -> deque:
 
 def retrieveSections(courses_str):
     raw_section_data  = list(map(parse.convertCourseToTime, parse.splitByCourse(courses_str)))
-    res = []
+    res = dict()
     for section in raw_section_data:
+        if not section[0] in res:
+            res[section[0]] = []
         for time in section[1]:
-            res.append(Section(section[0], time))
+            res[section[0]].append(Section(section[0], time))
 
     return res
 
-
+# POSTCONDITION: A dictionary with keys as the class names
+# and values as lists of Section objects is returned
 
 # ==============================================================
 
@@ -66,4 +69,4 @@ def retrieveSections(courses_str):
 if __name__ == '__main__':
     course_str = "Calc_I 900 945 1201 1320  1030 1115 1345 1700 / Physics_II 1450 1700 1600 1630 1645 1700"
     sections = retrieveSections(course_str)
-    sortByEndTime(sections)
+    print(sections)
