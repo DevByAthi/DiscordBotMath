@@ -95,6 +95,8 @@ async def directMessageUser(a_user, a_message):
         await userToMessage.send(a_message)
 
 
+# TODO: Need to have try/except blocks for scheduling calls
+
 async def scheduleForBreak(message):
     if message.attachments:
         f = await discord.Attachment.to_file(message.attachments[0])
@@ -108,6 +110,8 @@ async def scheduleForBreak(message):
     else:
         await generalTextChannel.send("No file attached!")
 
+
+# TODO: Need to require 1 parameter for $schedule (break duration)
 
 def checkAsyncInput(an_input):
     # Helper function for checking the action inputs and associated parameters. This has to be hard coded for each
