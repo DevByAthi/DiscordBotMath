@@ -1,13 +1,19 @@
 from collections import deque
 
 from schedule import parse
+from schedule import errors
 
 
 class Section:
 
-    def __init__(self, course_name, times):
+    def __init__(self, course_name, times: tuple):
         self.course_name = course_name
-        self.times = times
+        self.start = times[0]
+        self.end = times[1]
+
+    def __str__(self) -> str:
+        s = str(self.course_name) + ": (" + str(self.start) + ", " + str(self.end) + ")"
+        return s
 
 
 # Intent: Sort a list of events by their end times
@@ -27,16 +33,32 @@ def sortByEndTime(courses):
 
 # ==============================================================
 
-def flattenCourses(course_name, sessions) -> deque:
-    print(course_name)
-    print(sessions)
+# PRECONDITION:
+
+def flattenCourses(courses) -> deque:
+
     x = deque()
     return x
 
 
 # ==============================================================
 
+def retrieveSections(courses_str):
+    raw_section_data  = list(map(parse.convertCourseToTime, parse.splitByCourse(courses_str)))
+    res = []
+    for section in raw_section_data:
+        for time in section[1]:
+            res.append(Section(section[0], time))
+
+    return res
+
+
+
+# ==============================================================
+
 
 if __name__ == '__main__':
-    course_str = "Calc_I 900 945 1201 1320  1030 1115 1345 1500"
-    print(flattenCourses(*parse.convertCourseToTime(course_str)))
+    course_str = "Calc_I 900 945 1201 1320  1030 1115 1345 1500 / Physics_II 1450 1700 1600 1630 1645 1700"
+    sections = retrieveSections(course_str)
+    for s in sections:
+        print(s)

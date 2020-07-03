@@ -31,8 +31,8 @@ def convertToTimeInt(inStr):
     return val
 
 
-def convertCourseToTime(course):
-    raw_list = course.split()
+def convertCourseToTime(course_str):
+    raw_list = course_str.split()
     course_name = raw_list[0]
     processed_list = list(map(convertToTimeInt, raw_list[1:]))
 
