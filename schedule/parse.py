@@ -54,3 +54,21 @@ if __name__ == "__main__":
         print(convertCourseToTime(course)[1])
 
     print(list(map(convertCourseToTime, courses)))
+
+    print("Good:")
+    good = ["945", "1232","1700","900","1459","1432"]
+    for time in good:
+        try:
+            convertToTimeInt(time)
+        except errors.TimeFormatError as error:
+            print("Error ", error, " with time ", time)
+
+    bad = ["0645","645","859","960","1275","1701","-1432", "a1432", "Zee", "10:45"]
+
+    print("Good completed\n\nBad:")
+
+    for time in bad:
+        try:
+            convertToTimeInt(time)
+        except errors.TimeFormatError as err:
+            print("Error ", err, " with time ", time)
