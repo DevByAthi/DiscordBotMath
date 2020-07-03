@@ -26,19 +26,6 @@ def sortByEndTime(events):
 
 # ==============================================================
 
-# Checks that input list is a list of only tuples of floats/ints
-
-def checkFormat(events):
-    validity = [(isinstance(x, tuple)) and (len(x) == 2)
-                and (isinstance(x[0], int) or isinstance(x[0], float))
-                and (isinstance(x[1], int) or isinstance(x[1], float))
-                for x in events]
-    print(validity)
-    return all(validity)
-# ==============================================================
-
-
-
 
 if __name__ == '__main__':
 
