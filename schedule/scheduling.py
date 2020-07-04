@@ -47,6 +47,10 @@ def sortByEndTime(sections):
 
 # PRECONDITION: each
 
+# Note: This is NOT a stable sort, as sections that have the same end time
+# but different start times may be in different positions depending on
+# where in the dictionary they are found
+
 def flattenCourses(sections_input) -> list:
     res = []
     while len(sections_input) > 0:
@@ -71,8 +75,29 @@ def flattenCourses(sections_input) -> list:
 
 # ==============================================================
 
+# PRECONDITION: section_sort is a sorted list of the sections given
+# PRECONDITION: 0 < desired_duration < 480 (the number of minutes in a workday)
+
+def generateSchedule(section_sort, desired_duration: int) -> list:
+    taken_courses = set()
+    for section in section_sort:
+        if section.course_name in taken_courses:
+            continue
+
+
+# [
+# POSTCONDITION: There exists a return_list that is an ordered subset of sorted_list
+# POSTCONDITION: return_list has exactly one Section of each course given in the original input
+# POSTCONDITION: no two Sections in return list have overlapping start and end times, i.e. no conflicts
+# POSTCONDITION: There is enough time at the end of the workday
+#                (between the last class and 1700) for a break of length desired_duration
+# ]
+# XOR
+# POSTCONDITION: There exists no subset of section_sorted that meets all of the above conditions
+# ==============================================================
+
 def retrieveSections(courses_str):
-    raw_section_data  = list(map(parse.convertCourseToTime, parse.splitByCourse(courses_str)))
+    raw_section_data = list(map(parse.convertCourseToTime, parse.splitByCourse(courses_str)))
     res = dict()
     for section in raw_section_data:
         if not section[0] in res:
@@ -81,6 +106,7 @@ def retrieveSections(courses_str):
             res[section[0]].append(Section(section[0], time))
 
     return res
+
 
 # POSTCONDITION: A dictionary with keys as the class names
 # and values as lists of Section objects is returned
@@ -92,4 +118,5 @@ if __name__ == '__main__':
     course_str = "Calc_I 900 945  1030 1115 1201 1320 1345 1700 / Physics_II 1600 1630 1645 1700 1450 1700"
     sections = retrieveSections(course_str)
     print(sections)
-    flattenCourses(sections)
+    res = flattenCourses(sections)
+    print(res)
