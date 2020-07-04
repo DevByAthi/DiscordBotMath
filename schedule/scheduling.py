@@ -19,11 +19,11 @@ class Section:
         return s
 
     def __lt__(self, other):
-        return self.end < other.end
+        return self.end <= other.end
 
 
 def doesConflict(section1, section2):
-    return (section1.start <= section2.start < section1.end) or (section2.start <= section1.start <= section2.end)
+    return (section1.start <= section2.start < section1.end) or (section2.start <= section1.start < section2.end)
 
 
 # Intent: Sort a list of events by their end times
