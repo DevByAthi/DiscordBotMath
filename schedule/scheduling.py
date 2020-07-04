@@ -4,6 +4,10 @@ from schedule import parse
 from schedule import errors
 
 
+# A helper class designed to encapsulate a section available in a course
+# Includes the course's name for reference, as well as the section's start and end times
+# Finally, this class also has a comparison operator to allow for sorting operations
+
 class Section:
 
     def __init__(self, course_name, times: tuple):
@@ -81,12 +85,22 @@ def sectionSort(sections_input) -> list:
 
 # ==============================================================
 
+# PRECONDITION: `selected_sections` is a sorted list of Sections
+# PRECONDITION: 0 <= duration < 480 (the number of minutes in the 9-5 workday)
+
 def isBreakAvailable(selected_sections, duration) -> bool:
+    # Select the latest-ending course section
     last_class = selected_sections[-1]
     last_time = datetime.datetime.strptime(str(last_class.end), "%H%M")
     end_of_day = datetime.datetime.strptime("1700", "%H%M")
     print("Time left", ((end_of_day - last_time)))
     return ((end_of_day - last_time) / datetime.timedelta(minutes=1)) >= duration
+
+# POSTCONDITION: The time between the end of the last class
+#                and the end of the workday (1700) allows for a sufficient break of length duration
+# XOR
+# POSTCONDITION: The time between the end of the last class and
+#                the end of the workday (1700) does not allow for a sufficient break
 
 # ==============================================================
 
@@ -103,10 +117,21 @@ def generateSchedule(section_sort, desired_duration: int) -> list:
     # List of sections returned to user
     return_list = []
 
+    # Iterate through sorted list
+    # Because the list is given to be sorted and it is being traversed in that same order,
+    # POSTCONDITION 1a is thus fulfilled
     for section in section_sort:
+        # Only add the earliest section of a course to achieve optimal solution
+        # Fulfills POSTCONDITION 1a
         if section.course_name in taken_courses:
+            # S_nil: Earlier course section already recorded and selected
             continue
+
+        # Comparison to ensure current section will not conflict with already selected courses
+        # Fulfills POSTCONDITION 1c
+
         if section.start >= latest_end_time:
+            # Sa: Section does not conflict with previously selected sections
             taken_courses.add(section.course_name)
             latest_end_time = section.end
             return_list.append(section)
@@ -114,15 +139,18 @@ def generateSchedule(section_sort, desired_duration: int) -> list:
     print(return_list)
     # Check if result_list admits a break of length
     #  desired_duration at the end of workday
-    if isBreakAvailable(return_list,desired_duration):
+    # Fulfills POSTCONDITION 1d
+    if isBreakAvailable(return_list, desired_duration):
+        # Sb: The selected sections allow for a break of the desired duration. Success.
         return return_list
+    # Sc: The selected sections do NOT allow for a break of the desired duration. Failure
     return []
 
 
 # [
-# POSTCONDITION 1a: There exists a return_list that is an ordered subset of sorted_list
-# POSTCONDITION 1b: return_list has exactly one Section of each course given in the original input
-# POSTCONDITION 1c: no two Sections in return list have overlapping start and end times, i.e. no conflicts
+# POSTCONDITION 1a: There exists a return_list that is an ordered subset of sorted_list AND
+# POSTCONDITION 1b: return_list has exactly one Section of each course given in the original input AND
+# POSTCONDITION 1c: no two Sections in return list have overlapping start and end times, i.e. no conflicts AND
 # POSTCONDITION 1d: There is enough time at the end of the workday
 #                (between the last class and 1700) for a break of length desired_duration
 # ]
@@ -131,9 +159,11 @@ def generateSchedule(section_sort, desired_duration: int) -> list:
 
 # ==============================================================
 
-# PRECONDITION:
+# PRECONDITION: courses_str is a string with all of the text in the input file given.
+#               As such, it follows the format described for the input file
 
 def retrieveSections(courses_str) -> dict:
+    # Generate course names and tuples of start and end times from raw string data
     raw_section_data = list(map(parse.convertCourseToTime, parse.splitByCourse(courses_str)))
     res = dict()
     for section in raw_section_data:
