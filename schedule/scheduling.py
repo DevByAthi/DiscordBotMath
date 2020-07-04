@@ -1,5 +1,5 @@
 from collections import deque
-
+import datetime
 from schedule import parse
 from schedule import errors
 
@@ -75,6 +75,15 @@ def flattenCourses(sections_input) -> list:
 
 # ==============================================================
 
+def isBreakAvailable(selected_sections, duration) -> bool:
+    last_class = selected_sections[-1]
+    last_time = datetime.datetime.strptime(str(last_class.end), "%H%M")
+    end_of_day = datetime.datetime.strptime("1700", "%H%M")
+    print("Time left", ((end_of_day - last_time)))
+    return ((end_of_day - last_time) / datetime.timedelta(minutes=1)) >= duration
+
+# ==============================================================
+
 # PRECONDITION: section_sort is a sorted list of the sections given
 # PRECONDITION: 0 <= desired_duration < 480 (the number of minutes in a workday)
 
@@ -96,9 +105,13 @@ def generateSchedule(section_sort, desired_duration: int) -> list:
             latest_end_time = section.end
             return_list.append(section)
 
-    # TODO: Check if result_list admits a break of length
+    print(return_list)
+    # Check if result_list admits a break of length
     #  desired_duration at the end of workday
-    return return_list
+    if isBreakAvailable(return_list,desired_duration):
+        return return_list
+    return []
+
 
 
 # [
@@ -134,6 +147,12 @@ if __name__ == '__main__':
     course_str = "Calc_I 900 945  1030 1115 1201 1320 1345 1700 / Physics_II 900 1030 1600 1630 1645 1700 1450 1700"
     sections = retrieveSections(course_str)
     print(sections)
-    res = flattenCourses(sections)
-    print(res)
-    print(generateSchedule(res, 10))
+    availableSections = flattenCourses(sections)
+    print(availableSections)
+    desired_duration = 31
+    resulting_schedule = generateSchedule(availableSections, desired_duration)
+    print(resulting_schedule)
+    if len(resulting_schedule) == 0:
+        print("There exists no schedule that will accommodate your desired break time of ", desired_duration, " minutes")
+    else:
+        print(isBreakAvailable(resulting_schedule,desired_duration))
