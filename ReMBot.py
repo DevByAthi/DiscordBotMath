@@ -10,8 +10,8 @@
 import discord
 import asyncio
 from chocolate.chocolateBar import breakBar
-from schedule.scheduling import sortByEndTime
-from schedule.parse import *
+from schedule.scheduling import *
+from schedule.errors import *
 
 client = discord.Client()
 botTestingServer = []
@@ -109,12 +109,24 @@ async def scheduleForBreak(message):
             return
 
         s = f.fp.read().decode("utf-8")
-        # events = convertCourseToTime(s)
-        # if (sortByEndTime(events)):
-        #     await generalTextChannel.send(events)
-        # else:
-        #     await generalTextChannel.send("Format not acceptable. Please give a schedule with meeting times between 900 and "
-        #                             "1700, military time, inclusive")
+
+        try:
+            section_dict = retrieveSections(s)
+            sorted_list = sectionSort(section_dict)
+            desired_duration = 30
+            resulting_schedule = generateSchedule(sorted_list, desired_duration)
+            if len(resulting_schedule) == 0:
+                await generalTextChannel.send("There exists no schedule that will accommodate your desired break time "
+                                              "of ", desired_duration, " minutes")
+            else:
+                await generalTextChannel.send("Your schedule is as follows: ")
+                for elem in resulting_schedule:
+                    await generalTextChannel.send(elem)
+                await generalTextChannel.send("And then you'll have time for a nice break!")
+        except errors.TimeFormatError as err:
+            await generalTextChannel.send(err.message)
+        except errors.ScheduleFormatError as err:
+            await generalTextChannel.send(err.message)
     else:
         await generalTextChannel.send("No file attached!")
 
