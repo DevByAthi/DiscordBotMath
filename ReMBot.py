@@ -96,6 +96,22 @@ async def directMessageUser(a_user, a_message):
 
 
 async def scheduleForBreak(message):
+    message_str = message.content[:].split()
+    duration = 30
+    if len(message_str) != 2:
+        await generalTextChannel.send("One value for desired break duration expected!")
+        return
+    else:
+        try:
+            duration_user = int(message_str[1])
+            if not (0 <= duration_user < 480):
+                generalTextChannel.send("Desired break duration must be a nonnegative number under 480 minutes")
+                raise ValueError()
+        except ValueError:
+            await generalTextChannel.send("Invalid input for desired break duration!")
+        else:
+            duration = duration_user
+
     if message.attachments:
         f = await discord.Attachment.to_file(message.attachments[0])
 
@@ -114,13 +130,11 @@ async def scheduleForBreak(message):
             # String is parsed to yield sorted list of Section objects
             section_dict = retrieveSections(s)
             sorted_list = sectionSort(section_dict)
-            desired_duration = 30
-            resulting_schedule = generateSchedule(sorted_list, desired_duration)
+            resulting_schedule = generateSchedule(sorted_list, duration)
             if len(resulting_schedule) == 0:
                 # See scheduling.generateSchedule, POSTCONDITION 2
                 # Sa: No schedules exist to fulfill constraints
-                await generalTextChannel.send("There exists no schedule that will accommodate your desired break time "
-                                              "of ", desired_duration, " minutes")
+                await generalTextChannel.send("There exists no schedule that will accommodate your desired break time of " + str(duration) + " minutes")
             else:
                 # See scheduling.generateSchedule, POSTCONDITION 1a-d
                 # Sb: Schedule existing fulfilling constraints
@@ -151,6 +165,8 @@ def checkAsyncInput(an_input):
 
     action = an_input[0]
     parameters = an_input[1:]
+
+    # TODO: Simplify this using a dictionary mapping keywords to a list of parameters numbers
 
     if action == 'help':
         if len(parameters) != 0:
