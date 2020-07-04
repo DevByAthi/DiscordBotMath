@@ -95,8 +95,6 @@ async def directMessageUser(a_user, a_message):
         await userToMessage.send(a_message)
 
 
-# TODO: Need to have try/except blocks for scheduling calls
-
 async def scheduleForBreak(message):
     if message.attachments:
         f = await discord.Attachment.to_file(message.attachments[0])
@@ -104,21 +102,28 @@ async def scheduleForBreak(message):
         # Check that attachment is a .txt file
         file_name = str(f.filename).split('.')
         if len(file_name) < 2 or file_name[1].lower() != "txt":
+            # S_nil2: File is not of acceptable .txt format
             print(file_name)
             await generalTextChannel.send("You need to attach a .txt file!")
             return
 
+        # File text is read into a string
         s = f.fp.read().decode("utf-8")
 
         try:
+            # String is parsed to yield sorted list of Section objects
             section_dict = retrieveSections(s)
             sorted_list = sectionSort(section_dict)
             desired_duration = 30
             resulting_schedule = generateSchedule(sorted_list, desired_duration)
             if len(resulting_schedule) == 0:
+                # See scheduling.generateSchedule, POSTCONDITION 2
+                # Sa: No schedules exist to fulfill constraints
                 await generalTextChannel.send("There exists no schedule that will accommodate your desired break time "
                                               "of ", desired_duration, " minutes")
             else:
+                # See scheduling.generateSchedule, POSTCONDITION 1a-d
+                # Sb: Schedule existing fulfilling constraints
                 await generalTextChannel.send("Your schedule is as follows: ")
                 for elem in resulting_schedule:
                     await generalTextChannel.send(elem)
@@ -128,6 +133,7 @@ async def scheduleForBreak(message):
         except errors.ScheduleFormatError as err:
             await generalTextChannel.send(err.message)
     else:
+        # S_nil: No file is attached
         await generalTextChannel.send("No file attached!")
 
 

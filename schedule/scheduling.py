@@ -63,19 +63,19 @@ def sectionSort(sections_input) -> list:
 
             # Minimum of this course's sections is less than current minimum
             if (cur_deque)[0].end < min_val:
-                # Sa --- min_val is a valid time. This course's earliest-ending
+                # Sa: min_val is a valid time. This course's earliest-ending
                 #        section has been recorded as the "minimum"
                 min_val = (cur_deque)[0].end
                 min_key = (cur_deque)[0].course_name
 
-        # Sb --- there exists no deque of sections in the dictionary with any elements left
+        # Sb: there exists no deque of sections in the dictionary with any elements left
         if min_key == "":
             break
 
         # Shift minimum value from its deque in the dictionary to the sorted list
         val = sections_input[min_key].popleft()
         res.append(val)
-        # Sc --- the course in the dictionary with the earliest end time (the "minimum) is now in the sorted list
+        # Sc: the course in the dictionary with the earliest end time (the "minimum) is now in the sorted list
 
     # Return sorted list of Sections
     return res
