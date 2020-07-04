@@ -100,13 +100,21 @@ async def directMessageUser(a_user, a_message):
 async def scheduleForBreak(message):
     if message.attachments:
         f = await discord.Attachment.to_file(message.attachments[0])
+
+        # Check that attachment is a .txt file
+        file_name = str(f.filename).split('.')
+        if len(file_name) < 2 or file_name[1].lower() != "txt":
+            print(file_name)
+            await generalTextChannel.send("You need to attach a .txt file!")
+            return
+
         s = f.fp.read().decode("utf-8")
-        events = convertCourseToTime(s)
-        if (sortByEndTime(events)):
-            await generalTextChannel.send(events)
-        else:
-            await generalTextChannel.send("Format not acceptable. Please give a schedule with meeting times between 900 and "
-                                    "1700, military time, inclusive")
+        # events = convertCourseToTime(s)
+        # if (sortByEndTime(events)):
+        #     await generalTextChannel.send(events)
+        # else:
+        #     await generalTextChannel.send("Format not acceptable. Please give a schedule with meeting times between 900 and "
+        #                             "1700, military time, inclusive")
     else:
         await generalTextChannel.send("No file attached!")
 
