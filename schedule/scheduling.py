@@ -21,57 +21,61 @@ class Section:
     def __lt__(self, other):
         return self.end <= other.end
 
-
-def doesConflict(section1, section2):
-    return (section1.start <= section2.start < section1.end) or (section2.start <= section1.start < section2.end)
-
-
-# Intent: Sort a list of events by their end times
-# Precondition 1: events is a non-empty list of 2-element tuples of floats
-# Precondition 2: For each tuple (s,f) in events, 9 <= s < f <= 17,
-#   where s and f refer to the start and end times of an event in 24-hr time
-def sortByEndTime(sections):
-    print(sections)
-    # TODO: Create sorting function from scratch, according to Dr. Braude (1 Jul 2020)
-    sections.sort()
-    print(sections)
-
-
-# INVARIANT: events_sorted contains the same tuples as events
-
-# POSTCONDITION: events are sorted by their end time
-
 # ==============================================================
 
-# INTENT: Sort from dictionary of sections, where
+# INTENT: Sort from dictionary of sections, where the keys are the names of courses
+#         and the values are double-ended queues (deque) containing, in order,
+#         the sections available for that course
 
-# PRECONDITION: each
+# PRECONDITION: the dictionary sections_input is nonempty
+# PRECONDITION: each deque in sections_input has its Section elements in sorted order,
+#               that is, from earliest end time to latest
 
 # Note: This is NOT a stable sort, as sections that have the same end time
 # but different start times may be in different positions depending on
 # where in the dictionary they are found
 
-def flattenCourses(sections_input) -> list:
+def sectionSort(sections_input) -> list:
+
+    # INVARIANT: At any point in this sorting operation, the total number of Sections
+    # between the input dictionary and the output list will be the same
+
+    # List of sorted Sections to be returned
     res = []
+
+    # Iterate while not all Sections have been sorted and moved to res
     while len(sections_input) > 0:
+        # Default values meant to be overwritten
         min_val = 1701
         min_key = ""
+
+        # Iterate through each course
         for course_name in sections_input.keys():
             cur_deque = sections_input[course_name]
-            # print("DEQUE: ", cur_deque)
+            # Check if any of course's sections remain to be sorted
             if len(cur_deque) == 0:
                 continue
+
+            # Minimum of this course's sections is less than current minimum
             if (cur_deque)[0].end < min_val:
+                # Sa --- min_val is a valid time
+                # Record this course's earliest-ending section as the minimum
                 min_val = (cur_deque)[0].end
                 min_key = (cur_deque)[0].course_name
-                # print(min_key, min_val)
+
+        # Sb --- there exists no deque of sections in the dictionary with any elements left
         if min_key == "":
             break
+
+        # Shift minimum value from its deque in the dictionary to the sorted list
         val = sections_input[min_key].popleft()
         res.append(val)
-        # print("TEST ", val, min_val)
+
+    # Return sorted list of Sections
     return res
 
+# POSTCONDITION:
+# POSTCONDITION:
 
 # ==============================================================
 
@@ -125,7 +129,7 @@ def generateSchedule(section_sort, desired_duration: int) -> list:
 # POSTCONDITION 2: There exists no subset of section_sorted that meets all of the above conditions
 # ==============================================================
 
-def retrieveSections(courses_str):
+def retrieveSections(courses_str) -> dict:
     raw_section_data = list(map(parse.convertCourseToTime, parse.splitByCourse(courses_str)))
     res = dict()
     for section in raw_section_data:
@@ -147,7 +151,7 @@ if __name__ == '__main__':
     course_str = "Calc_I 900 945  1030 1115 1201 1320 1345 1700 / Physics_II 900 1030 1600 1630 1645 1700 1450 1700"
     sections = retrieveSections(course_str)
     print(sections)
-    availableSections = flattenCourses(sections)
+    availableSections = sectionSort(sections)
     print(availableSections)
     desired_duration = 31
     resulting_schedule = generateSchedule(availableSections, desired_duration)
