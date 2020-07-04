@@ -2,9 +2,10 @@ import schedule
 from schedule import errors
 
 
-def checkPartialSorting(events):
-    for i in range(len(events) - 1):
-        if events[i + 1] < events[i]:
+def checkPartialSorting(start_end_pair):
+    for i in range(len(start_end_pair) - 1):
+        if start_end_pair[i + 1][1] < start_end_pair[i][1]:
+            print(start_end_pair[i + 1], start_end_pair[i])
             return False
     return True
 
