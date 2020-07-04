@@ -40,7 +40,8 @@ def convertCourseToTime(course_str):
     for i in range(0, len(processed_list), 2):
         events.append((processed_list[i], processed_list[i + 1]))
 
-    checkPartialSorting(events)
+    if not(checkPartialSorting(events)):
+        raise errors.ScheduleFormatError("A course in your input does not have its section correctly ordered!")
 
     return course_name, events
 

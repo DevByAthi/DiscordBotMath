@@ -15,11 +15,15 @@ class Section:
         return str(self)
 
     def __str__(self) -> str:
-        s = str(self.course_name) + ": (" + str(self.start) + ", " + str(self.end) + ")"
+        s = str(self.course_name) + " from " + str(self.start) + " to " + str(self.end)
         return s
 
     def __lt__(self, other):
         return self.end < other.end
+
+
+def doesConflict(section1, section2):
+    return (section1.start <= section2.start < section1.end) or (section2.start <= section1.start <= section2.end)
 
 
 # Intent: Sort a list of events by their end times
