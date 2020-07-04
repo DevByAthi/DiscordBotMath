@@ -10,10 +10,13 @@
 import discord
 import asyncio
 from chocolate.chocolateBar import breakBar
+from schedule.scheduling import *
+from schedule.errors import *
 
 client = discord.Client()
 botTestingServer = []
 generalTextChannel = []
+
 
 # Sanity check event which prints a message to the terminal when the bot is online.
 # It should appear after ./ReMBot.py is run.
@@ -26,6 +29,7 @@ async def on_ready():
     global generalTextChannel
     botTestingServer = client.get_guild(708142506012966993)
     generalTextChannel = botTestingServer.get_channel(708142506520608828)
+
 
 # ---------------------------------------------
 # ----- EVENT HELPER FUNCTION DEFINITIONS -----
@@ -61,6 +65,7 @@ async def chocolateProblem(message):
     await message.channel.send('Sounds good. Let me show you how to break that up. Meet me in the #chocolate channel!')
     await chocolateProblemSolver(barLength, barHeight, numSquares)
 
+
 async def chocolateProblemSolver(barLength, barHeight, numSquares):
     # Function that actually initiates the solving of the chocolate problem. It is implemented as a separate function
     # so that it can be integrated with the async framework, which does not employ the same thorough user dialogue as
@@ -76,6 +81,7 @@ async def chocolateProblemSolver(barLength, barHeight, numSquares):
     if chocolateBarSolution != -1:
         await chocolateChannel.send('A total of {} breaks were needed'.format(chocolateBarSolution))
 
+
 async def directMessageUser(a_user, a_message):
     # Precondition: a_user is a string which is the username of a member of the discord server ReMBot is in. a_message
     # is a string.
@@ -88,6 +94,66 @@ async def directMessageUser(a_user, a_message):
     else:
         await userToMessage.send(a_message)
 
+
+async def scheduleForBreak(message):
+    message_str = message.content[:].split()
+    duration = 30
+    if len(message_str) != 2:
+        await generalTextChannel.send("One value for desired break duration expected!")
+        return
+    else:
+        try:
+            duration_user = int(message_str[1])
+            if not (0 <= duration_user < 480):
+                generalTextChannel.send("Desired break duration must be a nonnegative number under 480 minutes")
+                raise ValueError()
+        except ValueError:
+            await generalTextChannel.send("Invalid input for desired break duration!")
+        else:
+            duration = duration_user
+
+    if message.attachments:
+        f = await discord.Attachment.to_file(message.attachments[0])
+
+        # Check that attachment is a .txt file
+        file_name = str(f.filename).split('.')
+        if len(file_name) < 2 or file_name[1].lower() != "txt":
+            # S_nil2: File is not a .txt file
+            print(file_name)
+            await generalTextChannel.send("You need to attach a .txt file!")
+            return
+
+        # File text is read into a string
+        s = f.fp.read().decode("utf-8")
+
+        try:
+            # String is parsed to yield sorted list of Section objects
+            section_dict = retrieveSections(s)
+            sorted_list = sectionSort(section_dict)
+            resulting_schedule = generateSchedule(sorted_list, duration)
+            if len(resulting_schedule) == 0:
+                # See scheduling.generateSchedule, POSTCONDITION 2
+                # Sa: No schedules exist to fulfill constraints
+                await generalTextChannel.send("There exists no schedule that will accommodate your desired break time of " + str(duration) + " minutes")
+            else:
+                # See scheduling.generateSchedule, POSTCONDITION 1a-d
+                # Sb: Schedule existing fulfilling constraints
+                await generalTextChannel.send("Your schedule is as follows: ")
+                for elem in resulting_schedule:
+                    await generalTextChannel.send(elem)
+                await generalTextChannel.send("And then you'll have time for a nice break!")
+        except errors.TimeFormatError as err:
+            await generalTextChannel.send(err.message)
+        except errors.ScheduleFormatError as err:
+            await generalTextChannel.send(err.message)
+    else:
+        # S_nil: No file is attached
+        await generalTextChannel.send("No file attached!")
+        await generalTextChannel.send("Please attach a .txt file in the format of `input_format.txt` on GitHub")
+        await generalTextChannel.send("To do this, press the plus icon, select the .txt file you'd like and type "
+                                      "$schedule in the same message")
+
+
 def checkAsyncInput(an_input):
     # Helper function for checking the action inputs and associated parameters. This has to be hard coded for each
     # action due to the wide range of possible actions the bot might perform.
@@ -97,6 +163,8 @@ def checkAsyncInput(an_input):
 
     action = an_input[0]
     parameters = an_input[1:]
+
+    # TODO: Simplify this using a dictionary mapping keywords to a list of parameters numbers
 
     if action == 'help':
         if len(parameters) != 0:
@@ -119,6 +187,7 @@ def checkAsyncInput(an_input):
     else:
         return 0
 
+
 # Global variables here are manually maintained to work with the concurrency framework. It isn't really the best
 # solution since it must be scaled manually, but it is the easiest solution for short-term proof of concept.
 valid_concurrent_keywords = [
@@ -137,6 +206,7 @@ help_message = ('$async command documentation:\n'
                 '-hello\n    Send a greeting into the general chat.\n'
                 '-dm user text\n    Send a dm to the server member specified by user, containing the text specified by text.\n\n\n'
                 'Example usage:\n   $async -chocolate 8 9 17 -hello -dm flubblemolubble you are cool')
+
 
 async def performConcurrentActions(a_message):
     # Abstract: This function provides a flexible framework for performing numerous actions in response to one query by
@@ -164,7 +234,9 @@ async def performConcurrentActions(a_message):
     for i in range(len(a_message_text)):
         # At each step, check if the action is valid. If it isn't, print the help text for the concurrent framework.
         if not (a_message_text[i][0] in valid_concurrent_keywords):
-            await generalTextChannel.send('I don\'t know what {} is! Please check the doc message for available actions.'.format(a_message_text[i][0]))
+            await generalTextChannel.send(
+                'I don\'t know what {} is! Please check the doc message for available actions.'.format(
+                    a_message_text[i][0]))
             await generalTextChannel.send(help_message)
             return
 
@@ -210,6 +282,7 @@ async def performConcurrentActions(a_message):
     # The asyncio.gather function runs all tasks provided to it concurrently, so this one line is all we need.
     await asyncio.gather(*task_list)
 
+
 # -----------------------------
 # ----- EVENT DEFINITIONS -----
 # -----------------------------
@@ -244,6 +317,10 @@ async def on_message(message):
         a_user = message[4:].split(' ')[0]
         a_message = ' '.join(message[4:].split(' ')[1:])
         await directMessageUser(a_user, a_message)
+
+    if message.content.startswith('$schedule'):
+        await scheduleForBreak(message)
+
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
 # asynchronous event loop that allows all these lines of code to actually run.
