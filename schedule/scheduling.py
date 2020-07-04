@@ -39,12 +39,30 @@ def sortByEndTime(sections):
 
 # ==============================================================
 
-# PRECONDITION:
+# INTENT: Sort from dictionary of sections, where
 
-def flattenCourses(courses) -> deque:
+# PRECONDITION: each
 
-    x = deque()
-    return x
+def flattenCourses(sections_input) -> list:
+    res = []
+    while len(sections_input) > 0:
+        min_val = 1701
+        min_key = ""
+        for course_name in sections_input.keys():
+            cur_deque = sections_input[course_name]
+            print("DEQUE: ", cur_deque)
+            if len(cur_deque) == 0:
+                continue
+            if (cur_deque)[0].end < min_val:
+                min_val = (cur_deque)[0].end
+                min_key = (cur_deque)[0].course_name
+                print(min_key, min_val)
+        if min_key == "":
+            break
+        val = sections_input[min_key].popleft()
+        res.append(val)
+        print("TEST ", val, min_val)
+    return res
 
 
 # ==============================================================
@@ -54,7 +72,7 @@ def retrieveSections(courses_str):
     res = dict()
     for section in raw_section_data:
         if not section[0] in res:
-            res[section[0]] = []
+            res[section[0]] = deque()
         for time in section[1]:
             res[section[0]].append(Section(section[0], time))
 
@@ -67,6 +85,7 @@ def retrieveSections(courses_str):
 
 
 if __name__ == '__main__':
-    course_str = "Calc_I 900 945 1201 1320  1030 1115 1345 1700 / Physics_II 1450 1700 1600 1630 1645 1700"
+    course_str = "Calc_I 900 945  1030 1115 1201 1320 1345 1700 / Physics_II 1600 1630 1645 1700 1450 1700"
     sections = retrieveSections(course_str)
     print(sections)
+    flattenCourses(sections)

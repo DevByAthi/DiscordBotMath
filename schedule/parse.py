@@ -2,15 +2,11 @@ import schedule
 from schedule import errors
 
 
-def splitByCourse(raw_str):
-    derived_courses = raw_str.split('/')
-    for derived_course in derived_courses:
-        if derived_course.strip() == '':
-            raise errors.ScheduleFormatError("A course with no sections is listed. Remove any extra / in the file, "
-                                             "including the very end")
-
-    return derived_courses
-
+def checkPartialSorting(events):
+    for i in range(len(events) - 1):
+        if events[i + 1] < events[i]:
+            return False
+    return True
 
 def convertToTimeInt(inStr):
     val = -1
@@ -43,8 +39,19 @@ def convertCourseToTime(course_str):
     events = []
     for i in range(0, len(processed_list), 2):
         events.append((processed_list[i], processed_list[i + 1]))
+
+    checkPartialSorting(events)
+
     return course_name, events
 
+def splitByCourse(raw_str):
+    derived_courses = raw_str.split('/')
+    for derived_course in derived_courses:
+        if derived_course.strip() == '':
+            raise errors.ScheduleFormatError("A course with no sections is listed. Remove any extra / in the file, "
+                                             "including the very end")
+
+    return derived_courses
 
 if __name__ == "__main__":
     raw_in = "Calc_I 900 945 1030 1115 1345 1500 / Physics_II 1450 1700"
