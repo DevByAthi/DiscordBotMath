@@ -43,7 +43,7 @@ def sectionSort(sections_input) -> list:
     # List of sorted Sections to be returned
     res = []
 
-    # Iterate while not all Sections have been sorted and moved to res
+    # Iterate while there still exist Sections in the input dictionary
     while len(sections_input) > 0:
         # Default values meant to be overwritten
         min_val = 1701
@@ -53,13 +53,14 @@ def sectionSort(sections_input) -> list:
         for course_name in sections_input.keys():
             cur_deque = sections_input[course_name]
             # Check if any of course's sections remain to be sorted
+            # S_nil: No sections remain in this course's deque to move
             if len(cur_deque) == 0:
                 continue
 
             # Minimum of this course's sections is less than current minimum
             if (cur_deque)[0].end < min_val:
-                # Sa --- min_val is a valid time
-                # Record this course's earliest-ending section as the minimum
+                # Sa --- min_val is a valid time. This course's earliest-ending
+                #        section has been recorded as the "minimum"
                 min_val = (cur_deque)[0].end
                 min_key = (cur_deque)[0].course_name
 
@@ -70,12 +71,13 @@ def sectionSort(sections_input) -> list:
         # Shift minimum value from its deque in the dictionary to the sorted list
         val = sections_input[min_key].popleft()
         res.append(val)
+        # Sc --- the course in the dictionary with the earliest end time (the "minimum) is now in the sorted list
 
     # Return sorted list of Sections
     return res
 
-# POSTCONDITION:
-# POSTCONDITION:
+# POSTCONDITION: The output list `res` has the same elements as the original input dictionary
+# POSTCONDITION: The Sections stored in `res` are sorted from earliest end time to latest
 
 # ==============================================================
 
@@ -117,7 +119,6 @@ def generateSchedule(section_sort, desired_duration: int) -> list:
     return []
 
 
-
 # [
 # POSTCONDITION 1a: There exists a return_list that is an ordered subset of sorted_list
 # POSTCONDITION 1b: return_list has exactly one Section of each course given in the original input
@@ -127,7 +128,10 @@ def generateSchedule(section_sort, desired_duration: int) -> list:
 # ]
 # XOR
 # POSTCONDITION 2: There exists no subset of section_sorted that meets all of the above conditions
+
 # ==============================================================
+
+# PRECONDITION:
 
 def retrieveSections(courses_str) -> dict:
     raw_section_data = list(map(parse.convertCourseToTime, parse.splitByCourse(courses_str)))
