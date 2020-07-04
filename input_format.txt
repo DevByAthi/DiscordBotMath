@@ -1,0 +1,19 @@
+# This block of text is merely an explanatory comment
+# but SHOULD NOT be included when a schedule file is actually submitted to ReMBot
+# The ellipses (...) in this example denote possible additional entries
+# Note the delimiter '/' used to distinguish sections from different courses
+# Also, note that all terms (Course_B, start_time_courseA_1) should not have whitespace in them
+# Finally, any start time and end time must be an integer between 900 and 1700, inclusive,
+# referring to the 24-hour representation of time
+
+Course_A
+start_time_courseA_1  	end_time_courseA_1
+start_time_courseA_2 		end_time_courseA_2
+…
+/
+Course_B start_time_courseB_1		 end_time_courseB_1
+start_time_courseB_2       end_time_courseB_2
+start_time_courseB_3 		 end_time_courseB_3
+…
+/
+…
