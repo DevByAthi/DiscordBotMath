@@ -58,42 +58,58 @@ def flattenCourses(sections_input) -> list:
         min_key = ""
         for course_name in sections_input.keys():
             cur_deque = sections_input[course_name]
-            print("DEQUE: ", cur_deque)
+            # print("DEQUE: ", cur_deque)
             if len(cur_deque) == 0:
                 continue
             if (cur_deque)[0].end < min_val:
                 min_val = (cur_deque)[0].end
                 min_key = (cur_deque)[0].course_name
-                print(min_key, min_val)
+                # print(min_key, min_val)
         if min_key == "":
             break
         val = sections_input[min_key].popleft()
         res.append(val)
-        print("TEST ", val, min_val)
+        # print("TEST ", val, min_val)
     return res
 
 
 # ==============================================================
 
 # PRECONDITION: section_sort is a sorted list of the sections given
-# PRECONDITION: 0 < desired_duration < 480 (the number of minutes in a workday)
+# PRECONDITION: 0 <= desired_duration < 480 (the number of minutes in a workday)
 
 def generateSchedule(section_sort, desired_duration: int) -> list:
+    # Set of all course names currently added to schedule (to avoid duplicates)
     taken_courses = set()
+
+    # Updated as more sections are added to result list (to avoid course conflicts)
+    latest_end_time = 859
+
+    # List of sections returned to user
+    return_list = []
+
     for section in section_sort:
         if section.course_name in taken_courses:
             continue
+        if section.start >= latest_end_time:
+            taken_courses.add(section.course_name)
+            latest_end_time = section.end
+            return_list.append(section)
+
+    # TODO: Check if result_list admits a break of length
+    #  desired_duration at the end of workday
+    return return_list
 
 
 # [
-# POSTCONDITION: There exists a return_list that is an ordered subset of sorted_list
-# POSTCONDITION: return_list has exactly one Section of each course given in the original input
-# POSTCONDITION: no two Sections in return list have overlapping start and end times, i.e. no conflicts
-# POSTCONDITION: There is enough time at the end of the workday
+# POSTCONDITION 1a: There exists a return_list that is an ordered subset of sorted_list
+# POSTCONDITION 1b: return_list has exactly one Section of each course given in the original input
+# POSTCONDITION 1c: no two Sections in return list have overlapping start and end times, i.e. no conflicts
+# POSTCONDITION 1d: There is enough time at the end of the workday
 #                (between the last class and 1700) for a break of length desired_duration
 # ]
 # XOR
-# POSTCONDITION: There exists no subset of section_sorted that meets all of the above conditions
+# POSTCONDITION 2: There exists no subset of section_sorted that meets all of the above conditions
 # ==============================================================
 
 def retrieveSections(courses_str):
@@ -115,8 +131,9 @@ def retrieveSections(courses_str):
 
 
 if __name__ == '__main__':
-    course_str = "Calc_I 900 945  1030 1115 1201 1320 1345 1700 / Physics_II 1600 1630 1645 1700 1450 1700"
+    course_str = "Calc_I 900 945  1030 1115 1201 1320 1345 1700 / Physics_II 900 1030 1600 1630 1645 1700 1450 1700"
     sections = retrieveSections(course_str)
     print(sections)
     res = flattenCourses(sections)
     print(res)
+    print(generateSchedule(res, 10))
