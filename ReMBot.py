@@ -102,7 +102,7 @@ async def scheduleForBreak(message):
         # Check that attachment is a .txt file
         file_name = str(f.filename).split('.')
         if len(file_name) < 2 or file_name[1].lower() != "txt":
-            # S_nil2: File is not of acceptable .txt format
+            # S_nil2: File is not a .txt file
             print(file_name)
             await generalTextChannel.send("You need to attach a .txt file!")
             return
@@ -135,6 +135,9 @@ async def scheduleForBreak(message):
     else:
         # S_nil: No file is attached
         await generalTextChannel.send("No file attached!")
+        await generalTextChannel.send("Please attach a .txt file in the format of `input_format.txt` on GitHub")
+        await generalTextChannel.send("To do this, press the plus icon, select the .txt file you'd like and type "
+                                      "$schedule in the same message")
 
 
 # TODO: Need to require 1 parameter for $schedule (break duration)
