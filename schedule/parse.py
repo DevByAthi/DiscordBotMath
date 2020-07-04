@@ -35,14 +35,14 @@ def convertCourseToTime(course_str):
 
     if len(processed_list) % 2 == 1:
         print("fail")
-        raise errors.ScheduleFormatError("A listed section is missing either a start or end time")
+        raise errors.ScheduleFormatError(course_name + " has a section is missing either a start or end time")
 
     events = []
     for i in range(0, len(processed_list), 2):
         events.append((processed_list[i], processed_list[i + 1]))
 
     if not(checkPartialSorting(events)):
-        raise errors.ScheduleFormatError("A course in your input does not have its section correctly ordered!")
+        raise errors.ScheduleFormatError(course_name + " does not have its sections correctly ordered!")
 
     return course_name, events
 
