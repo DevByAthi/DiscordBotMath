@@ -154,8 +154,6 @@ async def scheduleForBreak(message):
                                       "$schedule in the same message")
 
 
-# TODO: Need to require 1 parameter for $schedule (break duration)
-
 def checkAsyncInput(an_input):
     # Helper function for checking the action inputs and associated parameters. This has to be hard coded for each
     # action due to the wide range of possible actions the bot might perform.
