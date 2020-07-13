@@ -50,12 +50,12 @@ def getLongestSnakeSequence(a_grid):
 
     return longestSnakeSeq
 
-# Testing
-print("Easier test.\nExpected: [1, 2, 3, 4]\nActual:")
-test_array_1 = np.array([[1,2,3], [3,4,4]])
-print(getLongestSnakeSequence(test_array_1))
+if __name__ == "__main__":
+    # Testing
+    print("Easier test.\nExpected: [1, 2, 3, 4]\nActual:")
+    test_array_1 = np.array([[1,2,3], [3,4,4]])
+    print(getLongestSnakeSequence(test_array_1))
 
-print("\nDifficult test.\nExpected: [9, 8, 7, 6, 5, 6, 7]\nActual:")
-test_array_2 = np.array([[9,6,5,2], [8,7,6,5], [7,3,1,6], [1,1,1,7]])
-print(getLongestSnakeSequence(test_array_2))
-
+    print("\nDifficult test.\nExpected: [9, 8, 7, 6, 5, 6, 7]\nActual:")
+    test_array_2 = np.array([[9,6,5,2], [8,7,6,5], [7,3,1,6], [1,1,1,7]])
+    print(getLongestSnakeSequence(test_array_2))
