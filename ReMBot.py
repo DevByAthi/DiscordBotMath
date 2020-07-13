@@ -9,9 +9,11 @@
 
 import discord
 import asyncio
+import numpy as np
 from chocolate.chocolateBar import breakBar
 from schedule.scheduling import *
 from schedule.errors import *
+from snakesequence.snake_seq_solver import getLongestSnakeSequence
 
 client = discord.Client()
 botTestingServer = []
@@ -282,6 +284,25 @@ async def performConcurrentActions(a_message):
     # The asyncio.gather function runs all tasks provided to it concurrently, so this one line is all we need.
     await asyncio.gather(*task_list)
 
+async def snakeSequenceTask():
+    # If the user wants to find the longest snake sequence, ask them for the grid of numbers to use, then call
+    # the snake sequence solver. Right now this function assumes perfect input because I'm too lazy to do input
+    # checking. TODO for later.
+
+    snakeChannel = botTestingServer.get_channel(732026639512240229)
+    await generalTextChannel.send('Let me find the longest snake sequence in a grid for you! Please provide your grid as a single message.')
+    grid = await client.wait_for('message')
+    grid = grid.content
+    grid = grid.split('\n')
+    for i in range(len(grid)):
+        grid[i] = grid[i].split(' ')
+        grid[i] = list(map(int, grid[i]))
+    grid = np.array(grid)
+    longest_seq = getLongestSnakeSequence(grid)
+    await generalTextChannel.send('Perfect! Meet me in the #snake channel for your solution.')
+    await snakeChannel.send('I\'ve got an answer for you! First, here\'s your grid again:')
+    await snakeChannel.send(str(grid))
+    await snakeChannel.send('The longest snake sequence in your grid is: ' + str(longest_seq))
 
 # -----------------------------
 # ----- EVENT DEFINITIONS -----
@@ -320,6 +341,10 @@ async def on_message(message):
 
     if message.content.startswith('$schedule'):
         await scheduleForBreak(message)
+
+    # The user would like ReMBot to find the longest snake sequence in a grid.
+    if message.content.startswith('$snake'):
+        await snakeSequenceTask()
 
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
