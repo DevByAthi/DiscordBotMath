@@ -23,9 +23,9 @@ def getLongestSnakeSequence(a_grid):
     # and below the current element to see if it qualifies being added to the snake sequence.
     for i in range(knownS.shape[0]):
         for j in range(knownS.shape[1]):
-            if (j < knownS.shape[1] - 1) and ((a_grid[i,j+1] == a_grid[i,j] + 1) or (a_grid[i,j+1] == a_grid[i,j] - 1)):
+            if (j < knownS.shape[1] - 1) and (abs(a_grid[i,j+1] - a_grid[i,j]) == 1):
                 knownS[i,j+1] = knownS[i,j] + 1
-            if (i < knownS.shape[0] - 1) and ((a_grid[i+1,j] == a_grid[i,j] + 1) or (a_grid[i+1,j] == a_grid[i,j] - 1)):
+            if (i < knownS.shape[0] - 1) and (abs(a_grid[i,j+1] - a_grid[i,j]) == 1):
                 knownS[i+1,j] = knownS[i,j] + 1
 
     # Sb (output): longestSnakeSeq is a list of integers representing the longest snake sequence in a_grid and has been
