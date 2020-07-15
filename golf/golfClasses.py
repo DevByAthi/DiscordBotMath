@@ -37,23 +37,34 @@ class GolfGraph:
         # print("    ")
 
         # UP direction
-        # TODO: Optimize this code
-        # TODO: Repeat for other directions, extracting into separate function
         flag = False
-        for i in range(row_init - 1, -1, -1):
+        bound, increment, init_point = self.selectBound(Direction.UP)
+        for i in range(init_point + increment, bound, increment):
             # print(i, grid[i][col])
             flag = self.atHorizon(row_init,col_init, i, col_init, available_new_positions)
-
             # A horizon was found before reaching the edge of grid
             if (flag):
                 break
-
         if not flag and not(self.atBoundary(row_init, col_init, Direction.UP)):
             available_new_positions.append([0, col_init])
+
+
 
         for line in grid:
             print(line)
         return available_new_positions
+
+    def selectBound(self, direction, row_init, col_init):
+        d = {
+            Direction.UP : (-1, -1, row_init),
+            Direction.DOWN : (len(grid) - 1, 1, row_init),
+            Direction.LEFT : (-1, -1, col_init),
+            Direction.RIGHT : (len(grid[0]) - 1, 1, col_init)
+        }
+        return d[direction]
+
+    def findHorizon(self):
+        pass
 
     def atHorizon(self, row_init, col_init, row, col, available_new_positions):
         horizon_found = False
