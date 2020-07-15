@@ -31,17 +31,17 @@ class GolfGraph:
     # Determines where the player can hit the ball from its current position
     def findPaths(self):
         row, col = self.ball.position
-        print(row, col)
+        # print(row, col)
         current_height = grid[row][col]
         available_new_positions = []
-        print("    ")
+        # print("    ")
 
         # UP direction
         # TODO: Optimize this code
         # TODO: Repeat for other directions, extracting into separate function
         flag = False
         for i in range(row - 1, -1, -1):
-            print(i, grid[i][col])
+            # print(i, grid[i][col])
             # if there is an unvisited position that has a greater height,
             # set this as the horizon for this direction
             if grid[i][col] > current_height and self.notYetVisited((i,col)):
@@ -52,12 +52,21 @@ class GolfGraph:
                 # Otherwise, explore the position just before the horizon
                 else:
                     available_new_positions.append([i + 1, col])
+
+                # This horizon position within view has now been visited
+                self.visited.add((i, col))
+
                 flag = True
                 break
+            # This position within view has now been visited,
+            # even though it is not the horizon itself
+            self.visited.add((i,col))
 
         if not(flag):
             available_new_positions.append([0, col])
 
+        for line in grid:
+            print(line)
         return available_new_positions
 
     def notYetVisited(self, pos):
@@ -75,9 +84,9 @@ class GolfGraph:
 
 if __name__ == "__main__":
     grid = parseGolf.readFileIntoArray('sampleGrid1.txt')
-    ball = GolfBall(position=[3,1])
+    ball = GolfBall(position=[3,2])
     graph = GolfGraph(grid, ball)
-    print(grid)
+    # print(grid)
     print(len(grid), len(grid[0]))
 
     # newBall = ball + Direction.LEFT
