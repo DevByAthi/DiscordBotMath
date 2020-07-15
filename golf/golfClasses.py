@@ -49,7 +49,7 @@ class GolfGraph:
             if (flag):
                 break
             # No horizon was found and edge was reached
-            elif i == bound - 1:
+            elif i == bound - increment:
                 available_new_positions.append([i, col_init])
 
         # for line in grid:
