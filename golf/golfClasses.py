@@ -66,7 +66,7 @@ class GolfGraph:
             # even though it is not the horizon itself
             self.visited.add((i,col_init))'''
 
-        if not(flag):
+        if not flag and not(self.atBoundary(row_init, col_init, Direction.UP)):
             available_new_positions.append([0, col_init])
 
         for line in grid:
@@ -89,6 +89,12 @@ class GolfGraph:
         # This horizon position within view has now been visited
         self.visited.add((row, col))
         return horizon_found
+
+    def atBoundary(self, row, col, direction):
+        if direction == Direction.UP or direction == Direction.DOWN:
+            return not(0 < row < (len(grid) - 1))
+        elif direction == Direction.LEFT or direction == Direction.RIGHT:
+            return not(0 < col < (len(grid[0]) - 1))
 
     def notYetVisited(self, pos):
         return not(pos in self.visited)
