@@ -9,6 +9,10 @@ def readFileIntoArray(name):
             raise ValueError("Must provide nonnegative heights")
 
         arr.append(cols)
+
+    length_validity = set([len(row) for row in arr])
+    if len(length_validity) != 1:
+        raise ValueError("Row lengths do not match")
     return arr
 
 
