@@ -5,7 +5,10 @@
 # --------------------------------
 # This file allows the bot to operate in a discord server. A bot itself doesn't actually
 # need to be a class. Instead, it exists as a set of callback functions which are triggered
-# whenever certain events occur within the server. 
+# whenever certain events occur within the server. This file contains only the code which
+# directly pertains to ReMBot listening for events. All functions managing specific event-related
+# actions are defined in ReMBot_events.py. Additionally, some global variables and the start-up
+# event are defined in ReMBot_starter.py
 
 import discord
 import asyncio
@@ -14,11 +17,19 @@ from chocolate.chocolateBar import breakBar
 from schedule.scheduling import *
 from schedule.errors import *
 from snakesequence.snake_seq_solver import getLongestSnakeSequence
+from enum import Enum
 
 client = discord.Client()
 botTestingServer = []
 generalTextChannel = []
 
+class ServerIDs(Enum):
+    TOKEN = 'NzIxNzc5NDc1MDIwNTEzMzkx.XuZfkg.LnP80sKgvtyEVSSYwbK2t5nmeJo'
+    SERVER_ID = 708142506012966993
+    GENERAL_ID = 708142506520608828
+    CHOCOLATE_ID = 726816875899650109
+    SNAKE_ID = 732026639512240229
+    GOLF_ID = 732954147380265040
 
 # Sanity check event which prints a message to the terminal when the bot is online.
 # It should appear after ./ReMBot.py is run.
@@ -29,9 +40,8 @@ async def on_ready():
     # It is used to allow us deeper programmatic control, such as sending messages to specific channels within the server.
     global botTestingServer
     global generalTextChannel
-    botTestingServer = client.get_guild(708142506012966993)
-    generalTextChannel = botTestingServer.get_channel(708142506520608828)
-
+    botTestingServer = client.get_guild(ServerIDs.SERVER_ID.value)
+    generalTextChannel = botTestingServer.get_channel(ServerIDs.GENERAL_ID.value)
 
 # ---------------------------------------------
 # ----- EVENT HELPER FUNCTION DEFINITIONS -----
@@ -74,7 +84,7 @@ async def chocolateProblemSolver(barLength, barHeight, numSquares):
     # the standalone chocolate problem solver.
 
     # Sa: The chocolate problem has been solved and the solution steps have been printed to the #chocolate channel.
-    chocolateChannel = botTestingServer.get_channel(726816875899650109)
+    chocolateChannel = botTestingServer.get_channel(ServerIDs.CHOCOLATE_ID.value)
     await chocolateChannel.send('Now breaking up a new bar for you!\n')
     sequence = []
     chocolateBarSolution = breakBar(barLength, barHeight, numSquares, sequence, 2)
@@ -289,7 +299,7 @@ async def snakeSequenceTask():
     # the snake sequence solver. Right now this function assumes perfect input because I'm too lazy to do input
     # checking. TODO for later.
 
-    snakeChannel = botTestingServer.get_channel(732026639512240229)
+    snakeChannel = botTestingServer.get_channel(ServerIDs.SNAKE_ID.value)
     await generalTextChannel.send('Let me find the longest snake sequence in a grid for you! Please provide your grid as a single message.')
     grid = await client.wait_for('message')
     grid = grid.content
@@ -303,6 +313,34 @@ async def snakeSequenceTask():
     await snakeChannel.send('I\'ve got an answer for you! First, here\'s your grid again:')
     await snakeChannel.send(str(grid))
     await snakeChannel.send('The longest snake sequence in your grid is: ' + str(longest_seq))
+
+async def codeGolfHelper():
+    # If the user wants ReMBot to play some code golf, query them for the input grid, and ask if they have a preferred
+    # optimization for ReMBot to use. Finally, call the code golf solver and return the output as a message in the
+    # discord #codegolf text channel.
+
+    golfChannel = botTestingServer.get_channel(ServerIDs.GOLF_ID.value)
+    await generalTextChannel.send('Let me play some code golf for you! Please provide your grid as a single message.')
+    grid = await client.wait_for('message')
+    grid = grid.content
+    grid = grid.split('\n')
+    for i in range(len(grid)):
+        grid[i] = grid[i].split(' ')
+        grid[i] = list(map(int, grid[i]))
+    grid = np.array(grid)
+    await generalTextChannel.send(('Thanks! Now, would you like to optimize for fewest hits, least effort, or a balance of both?' 
+                                   'Please respond \'-hits\', \'-effort\', or \'-balanced\'.'))
+    optimization = await client.wait_for('message')
+    optimization = optimization.content
+    while not (optimization == '-hits' or optimization == '-effort' or optimization == '-balance'):
+        await generalTextChannel.send('Please specify your response as \'-hits\', \'-effort\', or \'-balance\'.')
+        optimization = await client.wait_for('message')
+        optimization = optimization.content
+    await generalTextChannel.send('Perfect! Meet me in the #codegolf channel for your optimal series of hits.')
+    # TODO: function call to code golf solver happens here
+    await golfChannel.send('I\'ve got a route for you! First, here\'s your golf course terrain again:')
+    await golfChannel.send(str(grid))
+    await golfChannel.send('The route you should take to optimize for ' + optimization + ' is: ')  # TODO print route when done
 
 # -----------------------------
 # ----- EVENT DEFINITIONS -----
@@ -346,7 +384,11 @@ async def on_message(message):
     if message.content.startswith('$snake'):
         await snakeSequenceTask()
 
+    # The user would like ReMBot to play some code golf.
+    if message.content.startswith('$golf'):
+        await codeGolfHelper()
+
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
 # asynchronous event loop that allows all these lines of code to actually run.
-client.run('NzIxNzc5NDc1MDIwNTEzMzkx.XuZfkg.LnP80sKgvtyEVSSYwbK2t5nmeJo')
+client.run(ServerIDs.TOKEN.value)
