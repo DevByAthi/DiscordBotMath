@@ -42,7 +42,12 @@ class GolfGraph:
         flag = False
         for i in range(row_init - 1, -1, -1):
             # print(i, grid[i][col])
-            # if there is an unvisited position that has a greater height,
+            flag = self.atHorizon(row_init,col_init, i, col_init, available_new_positions)
+
+            # A horizon was found before reaching the edge of grid
+            if (flag):
+                break
+            '''# if there is an unvisited position that has a greater height,
             # set this as the horizon for this direction
             if grid[i][col_init] > current_height and self.notYetVisited((i,col_init)):
                 # If horizon is adjacent to current position, explore this position
@@ -59,7 +64,7 @@ class GolfGraph:
                 break
             # This position within view has now been visited,
             # even though it is not the horizon itself
-            self.visited.add((i,col_init))
+            self.visited.add((i,col_init))'''
 
         if not(flag):
             available_new_positions.append([0, col_init])
@@ -100,12 +105,17 @@ class GolfGraph:
 
 if __name__ == "__main__":
     grid = parseGolf.readFileIntoArray('sampleGrid1.txt')
-    ball = GolfBall(position=[3,4])
-    graph = GolfGraph(grid, ball)
-    # print(grid)
     print(len(grid), len(grid[0]))
+    print()
+    positions_to_test = [[0,0], [3,0], [2,3], [3,4]]
+    for position in positions_to_test:
+        ball = GolfBall(position=position)
+        graph = GolfGraph(grid, ball)
+        print(position)
+        print(graph.findPaths())
+        print()
+    # print(grid)
 
     # newBall = ball + Direction.LEFT
     # print(newBall.position)
-    print(graph.findPaths())
 
