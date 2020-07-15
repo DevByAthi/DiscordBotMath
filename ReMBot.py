@@ -29,6 +29,7 @@ class ServerIDs(Enum):
     GENERAL_ID = 708142506520608828
     CHOCOLATE_ID = 726816875899650109
     SNAKE_ID = 732026639512240229
+    GOLF_ID = 732954147380265040
 
 # Sanity check event which prints a message to the terminal when the bot is online.
 # It should appear after ./ReMBot.py is run.
@@ -313,6 +314,34 @@ async def snakeSequenceTask():
     await snakeChannel.send(str(grid))
     await snakeChannel.send('The longest snake sequence in your grid is: ' + str(longest_seq))
 
+async def codeGolfHelper():
+    # If the user wants ReMBot to play some code golf, query them for the input grid, and ask if they have a preferred
+    # optimization for ReMBot to use. Finally, call the code golf solver and return the output as a message in the
+    # discord #codegolf text channel.
+
+    golfChannel = botTestingServer.get_channel(ServerIDs.GOLF_ID.value)
+    await generalTextChannel.send('Let me play some code golf for you! Please provide your grid as a single message.')
+    grid = await client.wait_for('message')
+    grid = grid.content
+    grid = grid.split('\n')
+    for i in range(len(grid)):
+        grid[i] = grid[i].split(' ')
+        grid[i] = list(map(int, grid[i]))
+    grid = np.array(grid)
+    await generalTextChannel.send(('Thanks! Now, would you like to optimize for fewest hits, least effort, or a balance of both?' 
+                                   'Please respond \'-hits\', \'-effort\', or \'-balanced\'.'))
+    optimization = await client.wait_for('message')
+    optimization = optimization.content
+    while not (optimization == '-hits' or optimization == '-effort' or optimization == '-balance'):
+        await generalTextChannel.send('Please specify your response as \'-hits\', \'-effort\', or \'-balance\'.')
+        optimization = await client.wait_for('message')
+        optimization = optimization.content
+    await generalTextChannel.send('Perfect! Meet me in the #codegolf channel for your optimal series of hits.')
+    # TODO: function call to code golf solver happens here
+    await golfChannel.send('I\'ve got a route for you! First, here\'s your golf course terrain again:')
+    await golfChannel.send(str(grid))
+    await golfChannel.send('The route you should take to optimize for ' + optimization + ' is: ')  # TODO print route when done
+
 # -----------------------------
 # ----- EVENT DEFINITIONS -----
 # -----------------------------
@@ -354,6 +383,10 @@ async def on_message(message):
     # The user would like ReMBot to find the longest snake sequence in a grid.
     if message.content.startswith('$snake'):
         await snakeSequenceTask()
+
+    # The user would like ReMBot to play some code golf.
+    if message.content.startswith('$golf'):
+        await codeGolfHelper()
 
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
