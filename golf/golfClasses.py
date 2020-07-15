@@ -47,24 +47,6 @@ class GolfGraph:
             # A horizon was found before reaching the edge of grid
             if (flag):
                 break
-            '''# if there is an unvisited position that has a greater height,
-            # set this as the horizon for this direction
-            if grid[i][col_init] > current_height and self.notYetVisited((i,col_init)):
-                # If horizon is adjacent to current position, explore this position
-                if abs(row_init - i) == 1:
-                    available_new_positions.append([i, col_init])
-                # Otherwise, explore the position preceding horizon
-                else:
-                    available_new_positions.append([i + 1, col_init])
-
-                # This horizon position within view has now been visited
-                self.visited.add((i, col_init))
-
-                flag = True
-                break
-            # This position within view has now been visited,
-            # even though it is not the horizon itself
-            self.visited.add((i,col_init))'''
 
         if not flag and not(self.atBoundary(row_init, col_init, Direction.UP)):
             available_new_positions.append([0, col_init])
