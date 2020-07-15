@@ -45,11 +45,10 @@ class GolfGraph:
             # if there is an unvisited position that has a greater height,
             # set this as the horizon for this direction
             if grid[i][col_init] > current_height and self.notYetVisited((i,col_init)):
-                # If horizon is adjacent to current position,
-                # then mark this as the place you must explore
+                # If horizon is adjacent to current position, explore this position
                 if abs(row_init - i) == 1:
                     available_new_positions.append([i, col_init])
-                # Otherwise, explore the position just before the horizon
+                # Otherwise, explore the position preceding horizon
                 else:
                     available_new_positions.append([i + 1, col_init])
 
@@ -69,6 +68,23 @@ class GolfGraph:
             print(line)
         return available_new_positions
 
+    def atHorizon(self, row_init, col_init, row, col, available_new_positions):
+        horizon_found = False
+        # if there is an unvisited position that has a greater height,
+        # set this as the horizon for this direction
+        if grid[row][col] > grid[row_init][col_init] and self.notYetVisited((row, col)):
+            # If horizon is adjacent to current position, explore this position
+            if abs(row_init - row) == 1 or abs(col_init - col) == 1:
+                available_new_positions.append([row, col])
+            # Otherwise, explore the position preceding horizon
+            else:
+                available_new_positions.append([row + 1, col])
+            horizon_found = True
+
+        # This horizon position within view has now been visited
+        self.visited.add((row, col))
+        return horizon_found
+
     def notYetVisited(self, pos):
         return not(pos in self.visited)
 
@@ -84,7 +100,7 @@ class GolfGraph:
 
 if __name__ == "__main__":
     grid = parseGolf.readFileIntoArray('sampleGrid1.txt')
-    ball = GolfBall(position=[3,2])
+    ball = GolfBall(position=[3,4])
     graph = GolfGraph(grid, ball)
     # print(grid)
     print(len(grid), len(grid[0]))
