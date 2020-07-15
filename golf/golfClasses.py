@@ -37,6 +37,8 @@ class GolfGraph:
         print("    ")
 
         # UP direction
+        # TODO: Optimize this code
+        # TODO: Repeat for other directions, extracting into separate function
         flag = False
         for i in range(row - 1, -1, -1):
             print(i, grid[i][col])
@@ -64,6 +66,9 @@ class GolfGraph:
 
     # Selection portion of greedy algorithm
     # Uses the information visible to ReMBot at its current poisiton to
+    # TODO: Implement greedy algorithm to select position from available
+    #  based on weighted criteria
+    # TODO: Implement base case to stop when bottom-right corner is found
     def makeMove(self):
         pass
 
