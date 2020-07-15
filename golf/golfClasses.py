@@ -26,10 +26,15 @@ class GolfGraph:
         self.path = []
         self.numHits = 0
         self.totalEnergySpent = 0
+        self.visited = set()
 
+    # Determines where the player can hit the ball from its current position
     def findPaths(self):
-        pass
+        row, col = self.ball.position
 
+
+    # Selection portion of greedy algorithm
+    # Uses the information visible to ReMBot at its current poisiton to
     def makeMove(self):
         pass
 
