@@ -30,9 +30,9 @@ class GolfGraph:
 
     # Determines where the player can hit the ball from its current position
     def findPaths(self):
-        row, col = self.ball.position
+        row_init, col_init = self.ball.position
         # print(row, col)
-        current_height = grid[row][col]
+        current_height = grid[row_init][col_init]
         available_new_positions = []
         # print("    ")
 
@@ -40,30 +40,30 @@ class GolfGraph:
         # TODO: Optimize this code
         # TODO: Repeat for other directions, extracting into separate function
         flag = False
-        for i in range(row - 1, -1, -1):
+        for i in range(row_init - 1, -1, -1):
             # print(i, grid[i][col])
             # if there is an unvisited position that has a greater height,
             # set this as the horizon for this direction
-            if grid[i][col] > current_height and self.notYetVisited((i,col)):
+            if grid[i][col_init] > current_height and self.notYetVisited((i,col_init)):
                 # If horizon is adjacent to current position,
                 # then mark this as the place you must explore
-                if abs(row - i) == 1:
-                    available_new_positions.append([i, col])
+                if abs(row_init - i) == 1:
+                    available_new_positions.append([i, col_init])
                 # Otherwise, explore the position just before the horizon
                 else:
-                    available_new_positions.append([i + 1, col])
+                    available_new_positions.append([i + 1, col_init])
 
                 # This horizon position within view has now been visited
-                self.visited.add((i, col))
+                self.visited.add((i, col_init))
 
                 flag = True
                 break
             # This position within view has now been visited,
             # even though it is not the horizon itself
-            self.visited.add((i,col))
+            self.visited.add((i,col_init))
 
         if not(flag):
-            available_new_positions.append([0, col])
+            available_new_positions.append([0, col_init])
 
         for line in grid:
             print(line)
