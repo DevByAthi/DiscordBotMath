@@ -2,10 +2,12 @@ from enum import Enum
 from golf import parseGolf
 
 class Direction(Enum):
-    UP = (-1,0)
-    DOWN = (1,0)
-    LEFT = (0,-1)
-    RIGHT = (0,1)
+    VERTICAL = 0
+    HORIZONTAL = 1
+    UP = (-1,0, VERTICAL)
+    DOWN = (1,0, VERTICAL)
+    LEFT = (0,-1, HORIZONTAL)
+    RIGHT = (0,1, HORIZONTAL)
 
 
 class GolfBall:
@@ -44,7 +46,8 @@ class GolfGraph:
         bound, increment, init_point = self.selectBound(cur_direction, row_init, col_init)
         for i in range(init_point + increment, bound, increment):
             # print(i, grid[i][col])
-            flag = self.atHorizon(row_init,col_init, i, col_init, increment, available_new_positions)
+            if cur_direction.value[2] == Direction.VERTICAL:
+                flag = self.atHorizon(row_init,col_init, i, col_init, increment, available_new_positions)
             # A horizon was found before reaching the edge of grid
             if (flag):
                 break
