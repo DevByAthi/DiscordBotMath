@@ -34,26 +34,41 @@ class GolfGraph:
     def findPaths(self):
         row_init, col_init = self.ball.position
         # print(row, col)
-        current_height = grid[row_init][col_init]
+        height_init = grid[row_init][col_init]
         available_new_positions = []
-        # print("    ")
-        # TODO: Allow this to be iterable over Directions Enum
-        # UP direction
-        cur_direction = Direction.DOWN
-        # TODO: Have short-circuit evaluation if we are at the boundary
-        #  and can't go in cur_direction
-        flag = False
-        bound, increment, init_point = self.selectBound(cur_direction, row_init, col_init)
-        for i in range(init_point + increment, bound, increment):
-            # print(i, grid[i][col])
-            if cur_direction.value[2] == Direction.VERTICAL:
-                flag = self.atHorizon(row_init,col_init, i, col_init, increment, available_new_positions)
-            # A horizon was found before reaching the edge of grid
-            if (flag):
-                break
-            # No horizon was found and edge was reached
-            elif i == bound - increment:
-                available_new_positions.append([i, col_init])
+
+        # Not using ENUM anymore, too tedious
+
+        # UP Direction
+        if row_init > 0:
+            for i in range(row_init - 1, -1, -1):
+                height_current = grid[i][col_init]
+
+                # We have found the horizon
+                if height_current > height_init:
+                    # The horizon is adjacent to our initial position
+                    if abs(row_init - i) == 1:
+                        available_new_positions.append((i, col_init))
+                    else:
+                        # Aim for the position just before the horizon
+                        available_new_positions.append((i + 1, col_init))
+                    break
+
+                if i == 0:
+                    available_new_positions.append((i, col_init))
+                    break
+
+        # DOWN Direction
+        if row_init < len(grid) - 1:
+            pass
+
+        # LEFT Direction
+        if col_init > 0:
+            pass
+
+        # RIGHT Direction
+        if col_init < len(grid[0]) - 1:
+            pass
 
         # for line in grid:
         #     print(line)
