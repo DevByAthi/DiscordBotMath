@@ -33,6 +33,10 @@ class GolfGraph:
     # Determines where the player can hit the ball from its current position
     def findPaths(self):
         row_init, col_init = self.ball.position
+
+        if row_init == 2 and col_init == 2:
+            print("HI")
+
         # print(row, col)
         height_init = grid[row_init][col_init]
         available_new_positions = []
@@ -79,11 +83,41 @@ class GolfGraph:
 
         # LEFT Direction
         if col_init > 0:
-            pass
+            for i in range(col_init - 1, -1, -1):
+                height_current = grid[row_init][i]
+
+                # We have found the horizon
+                if height_current > height_init:
+                    # The horizon is adjacent to our initial position
+                    if abs(col_init - i) == 1:
+                        available_new_positions.append(("Left", row_init, i))
+                    else:
+                        # Aim for the position just before the horizon
+                        available_new_positions.append(("Left", row_init, i + 1))
+                    break
+
+                if i == 0:
+                    available_new_positions.append(("Left", row_init, i))
+                    break
 
         # RIGHT Direction
         if col_init < len(grid[0]) - 1:
-            pass
+            for i in range(col_init + 1, len(grid[0])):
+                height_current = grid[row_init][i]
+
+                # We have found the horizon
+                if height_current > height_init:
+                    # The horizon is adjacent to our initial position
+                    if abs(col_init - i) == 1:
+                        available_new_positions.append(("Right", row_init, i))
+                    else:
+                        # Aim for the position just before the horizon
+                        available_new_positions.append(("Right", row_init, i - 1))
+                    break
+
+                if i == len(grid[0]) - 1:
+                    available_new_positions.append(("Right", row_init, i))
+                    break
 
         # for line in grid:
         #     print(line)
