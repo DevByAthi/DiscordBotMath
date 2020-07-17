@@ -60,7 +60,22 @@ class GolfGraph:
 
         # DOWN Direction
         if row_init < len(grid) - 1:
-            pass
+            for i in range(row_init + 1, len(grid)):
+                height_current = grid[i][col_init]
+
+                # We have found the horizon
+                if height_current > height_init:
+                    # The horizon is adjacent to our initial position
+                    if abs(row_init - i) == 1:
+                        available_new_positions.append((i, col_init))
+                    else:
+                        # Aim for the position just before the horizon
+                        available_new_positions.append((i - 1, col_init))
+                    break
+
+                if i == len(grid) - 1:
+                    available_new_positions.append((i, col_init))
+                    break
 
         # LEFT Direction
         if col_init > 0:
