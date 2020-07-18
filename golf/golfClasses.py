@@ -25,7 +25,7 @@ class GolfGraph:
         height_init = grid[row_init][col_init]
         available_new_positions = []
 
-        # Not using ENUM anymore, too tedious
+        # TODO: Refactor into manageable pieces
 
         # UP Direction
         if row_init > 0:
