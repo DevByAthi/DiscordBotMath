@@ -38,9 +38,6 @@ def getLongestSnakeSequence(a_grid):
     y = crds[0]
     longestSnakeSeq = [a_grid[y,x]]
 
-    print("a_grid:\n", a_grid)
-    print("knownS:\n", knownS)
-
     while knownS[y,x] != 0:
         if (y > 0) and (knownS[y-1,x] == knownS[y,x] - 1) and (abs(a_grid[y-1,x] - a_grid[y,x]) == 1):
             y = y - 1
@@ -63,6 +60,6 @@ if __name__ == "__main__":
     test_array_2 = np.array([[9,6,5,2], [8,7,6,5], [7,3,1,6], [1,1,1,7]])
     print("Actual: ",getLongestSnakeSequence(test_array_2))
 
-    print("\nTest that used to fail.\nExpected: [11, 12, 11]")
+    print("\nTest that used to fail.\nExpected: [9, 8, 7, 6, 7, 6, 5, 4]")
     test_array_3 = np.array([[9, 8, 7, 3, 6, 7], [1, 5, 6, 7, 6, 2], [11, 12, 11, 5, 5, 4]])
     print("Actual: ", getLongestSnakeSequence(test_array_3))

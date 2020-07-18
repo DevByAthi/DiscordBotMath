@@ -86,11 +86,11 @@ can only see as far as the next piece of terrain which is higher than the golfer
 the golfer has limited information at any given square. The golfer may be very lazy, in which case they will want to 
 avoid hitting to terrain with a height much higher than their own, even if it means they take more overall hits to 
 get to the end of the course. Alternatively, the golfer may be very strong, in which case they won't care about
-hitting over a mountain if it gets them closer to the end of the course. ReMBot allows the user to specify which type
-of golfer they are. Based on this specification, ReMBot will attempt to optimize for a different goal. The user
-may query ReMBot for this service by calling `$golf`. ReMBot will then ask the user to provide a grid of
+hitting over a mountain if it gets them closer to the end of the course. ReMBot allows the user to specify which of 
+these two types of golfer they are. Based on this specification, ReMBot will attempt to optimize for a different goal. 
+The user may query ReMBot for this service by calling `$golf`. ReMBot will then ask the user to provide a grid of
 numbers representing the golf course terrain, followed by a specification of what to optimize for: 
-`-hits`, `-effort`, or `-balanced`. ReMBot will return a list of tuples representing which squares the user
+`-hits` or `-effort`. ReMBot will return a list of tuples representing which squares the user
 should hit towards to achieve their solution of the course.
 
 ## References
