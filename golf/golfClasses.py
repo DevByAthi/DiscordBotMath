@@ -121,52 +121,7 @@ class GolfGraph:
         #     print(line)
         return available_new_positions
 
-    def __edgePosition(self, direction, row_init, col_init):
-        d = {
-            Direction.UP: (0, col_init),
-            Direction.DOWN: (len(grid) - 1, col_init),
-            Direction.LEFT: (row_init, 0),
-            Direction.RIGHT: (row_init, len(grid[0]) - 1)
-        }
-        return d[direction]
 
-    def selectBound(self, direction, row_init, col_init):
-        d = {
-            Direction.UP : (-1, -1, row_init),
-            Direction.DOWN : (len(grid), 1, row_init),
-            Direction.LEFT : (-1, -1, col_init),
-            Direction.RIGHT : (len(grid[0]), 1, col_init)
-        }
-        return d[direction]
-
-    def findHorizon(self):
-        pass
-
-    def atHorizon(self, row_init, col_init, row, col, increment, available_new_positions):
-        horizon_found = False
-        # if there is an unvisited position that has a greater height,
-        # set this as the horizon for this direction
-        if grid[row][col] > grid[row_init][col_init] and self.notYetVisited((row, col)):
-            # If horizon is adjacent to current position, explore this position
-            if abs(row_init - row) == 1 or abs(col_init - col) == 1:
-                available_new_positions.append([row, col])
-            # Otherwise, explore the position preceding horizon
-            else:
-                available_new_positions.append([row - increment, col])
-            horizon_found = True
-
-        # This horizon position within view has now been visited
-        self.visited.add((row, col))
-        return horizon_found
-
-    def atBoundary(self, row, col, direction):
-        if direction == Direction.UP or direction == Direction.DOWN:
-            return not(0 < row < (len(grid) - 1))
-        elif direction == Direction.LEFT or direction == Direction.RIGHT:
-            return not(0 < col < (len(grid[0]) - 1))
-
-    def notYetVisited(self, pos):
-        return not(pos in self.visited)
 
 
     # Selection portion of greedy algorithm
