@@ -26,8 +26,8 @@ class GolfGraph:
 
     # Determines where the player can hit the ball from its current position
     # TODO: Simplify this code!!!!!!!!!!
-    def findAvailablePositions(self):
-        row_init, col_init = self.ball.position
+    def findAvailablePositions(self, row_init, col_init):
+        # row_init, col_init = self.ball.position
 
         # print(row, col)
         height_init = grid[row_init][col_init]
@@ -180,7 +180,7 @@ if __name__ == "__main__":
             ball = GolfBall(position=[i,j])
             graph = GolfGraph(grid, ball)
             print(ball.position)
-            print(graph.findAvailablePositions())
+            print(graph.findAvailablePositions(ball.position[0], ball.position[1]))
             print()
     # print(grid)
 
