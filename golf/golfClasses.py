@@ -34,9 +34,6 @@ class GolfGraph:
     def findPaths(self):
         row_init, col_init = self.ball.position
 
-        if row_init == 2 and col_init == 2:
-            print("HI")
-
         # print(row, col)
         height_init = grid[row_init][col_init]
         available_new_positions = []
@@ -46,6 +43,11 @@ class GolfGraph:
         # UP Direction
         if row_init > 0:
             for i in range(row_init - 1, -1, -1):
+                # TODO: Double check that there will be no logical errors
+                #  if loop is exited when visited position is found
+                if (i, col_init) in self.visited:
+                    break
+
                 height_current = grid[i][col_init]
 
                 # We have found the horizon
@@ -65,6 +67,9 @@ class GolfGraph:
         # DOWN Direction
         if row_init < len(grid) - 1:
             for i in range(row_init + 1, len(grid)):
+                if (i, col_init) in self.visited:
+                    break
+
                 height_current = grid[i][col_init]
 
                 # We have found the horizon
@@ -84,6 +89,9 @@ class GolfGraph:
         # LEFT Direction
         if col_init > 0:
             for i in range(col_init - 1, -1, -1):
+                if (row_init, i) in self.visited:
+                    continue
+
                 height_current = grid[row_init][i]
 
                 # We have found the horizon
@@ -103,6 +111,9 @@ class GolfGraph:
         # RIGHT Direction
         if col_init < len(grid[0]) - 1:
             for i in range(col_init + 1, len(grid[0])):
+                if (row_init, i) in self.visited:
+                    continue
+
                 height_current = grid[row_init][i]
 
                 # We have found the horizon
