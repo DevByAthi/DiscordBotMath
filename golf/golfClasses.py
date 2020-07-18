@@ -18,8 +18,11 @@ class GolfGraph:
         self.totalEnergySpent = 0
         self.visited = set()
 
-    class Test:
-        pass
+    class Position:
+        def __init__(self, r, c):
+            self.row = r
+            self.col = c
+            self.height = grid[r][c]
 
     # Determines where the player can hit the ball from its current position
     # TODO: Simplify this code!!!!!!!!!!
@@ -138,6 +141,9 @@ class GolfGraph:
     def weight(self, cur_row, cur_col, neighbor_row, neighbor_col):
         pass
 
+    # We treat the grid as a weighted digraph
+    # The weight for the connection between adjacent positions
+    # is assigned using a special function that takes in the difference in height (see weight above)
     def dijkstra(self):
 
         # Create a grid for the upper bounds of weighted distance estimates
@@ -149,6 +155,11 @@ class GolfGraph:
         cur_row, cur_col = self.ball.position
         dist[cur_row][cur_col] = 0
 
+        minh = [(0,0,0)]
+
+        while not(len(minh) == 0):
+            current = heappop(minh)
+            neighbors = self.findAvailablePositions()
 
 
 
