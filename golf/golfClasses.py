@@ -1,4 +1,6 @@
 from enum import Enum
+from heapq import *
+from math import inf
 from golf import parseGolf
 
 class GolfBall:
@@ -15,6 +17,9 @@ class GolfGraph:
         self.numHits = 0
         self.totalEnergySpent = 0
         self.visited = set()
+
+    class Test:
+        pass
 
     # Determines where the player can hit the ball from its current position
     # TODO: Simplify this code!!!!!!!!!!
@@ -122,8 +127,6 @@ class GolfGraph:
         return available_new_positions
 
 
-
-
     # Selection portion of greedy algorithm
     # Uses the information visible to ReMBot at its current poisiton to
     # TODO: Implement greedy algorithm to select position from available
@@ -131,6 +134,22 @@ class GolfGraph:
     # TODO: Implement base case to stop when bottom-right corner is found
     def makeMove(self):
         pass
+
+    def weight(self, cur_row, cur_col, neighbor_row, neighbor_col):
+        pass
+
+    def dijkstra(self):
+
+        # Create a grid for the upper bounds of weighted distance estimates
+        rows = len(grid)
+        cols = len(grid[0])
+        dist = [[inf] * cols for i in range(rows)]
+
+        # Set the start position weighted distance as zero
+        cur_row, cur_col = self.ball.position
+        dist[cur_row][cur_col] = 0
+
+
 
 
 if __name__ == "__main__":
