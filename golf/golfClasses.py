@@ -1,24 +1,10 @@
 from enum import Enum
 from golf import parseGolf
 
-class Direction(Enum):
-    VERTICAL = 0
-    HORIZONTAL = 1
-    UP = (-1,0, VERTICAL)
-    DOWN = (1,0, VERTICAL)
-    LEFT = (0,-1, HORIZONTAL)
-    RIGHT = (0,1, HORIZONTAL)
-
-
 class GolfBall:
     def __init__(self, position=[0, 0], velocity=[0, 0]):
         self.position = position
         self.velocity = velocity
-
-    def __add__(self, other : Direction):
-        new_row = self.position[0] + other.value[0]
-        new_col = self.position[1] + other.value[1]
-        return GolfBall(position=[new_row, new_col])
 
 
 class GolfGraph:
