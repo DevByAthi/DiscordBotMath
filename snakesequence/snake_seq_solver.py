@@ -23,9 +23,9 @@ def getLongestSnakeSequence(a_grid):
     # and below the current element to see if it qualifies being added to the snake sequence.
     for i in range(knownS.shape[0]):
         for j in range(knownS.shape[1]):
-            if (j < knownS.shape[1] - 1) and (abs(a_grid[i,j+1] - a_grid[i,j]) == 1):
+            if (j < knownS.shape[1] - 1) and (abs(a_grid[i,j+1] - a_grid[i,j]) == 1) and (knownS[i,j] + 1 > knownS[i, j+1]):
                 knownS[i,j+1] = knownS[i,j] + 1
-            if (i < knownS.shape[0] - 1) and (abs(a_grid[i,j+1] - a_grid[i,j]) == 1):
+            if (i < knownS.shape[0] - 1) and (abs(a_grid[i+1,j] - a_grid[i,j]) == 1) and (knownS[i,j] + 1 > knownS[i+1, j]):
                 knownS[i+1,j] = knownS[i,j] + 1
 
     # Sb (output): longestSnakeSeq is a list of integers representing the longest snake sequence in a_grid and has been
@@ -38,12 +38,15 @@ def getLongestSnakeSequence(a_grid):
     y = crds[0]
     longestSnakeSeq = [a_grid[y,x]]
 
+    print("a_grid:\n", a_grid)
+    print("knownS:\n", knownS)
+
     while knownS[y,x] != 0:
-        if (y > 0) and (knownS[y-1,x] == knownS[y,x] - 1):
+        if (y > 0) and (knownS[y-1,x] == knownS[y,x] - 1) and (abs(a_grid[y-1,x] - a_grid[y,x]) == 1):
             y = y - 1
             longestSnakeSeq.insert(0,a_grid[y,x])
             continue
-        if (x > 0) and (knownS[y,x-1] == knownS[y,x] - 1):
+        if (x > 0) and (knownS[y,x-1] == knownS[y,x] - 1) and (abs(a_grid[y,x-1] - a_grid[y,x]) == 1):
             x = x - 1
             longestSnakeSeq.insert(0,a_grid[y,x])
             continue
@@ -52,10 +55,14 @@ def getLongestSnakeSequence(a_grid):
 
 if __name__ == "__main__":
     # Testing
-    print("Easier test.\nExpected: [1, 2, 3, 4]\nActual:")
+    print("Easier test.\nExpected: [1, 2, 3, 4]")
     test_array_1 = np.array([[1,2,3], [3,4,4]])
-    print(getLongestSnakeSequence(test_array_1))
+    print("Actual: ",getLongestSnakeSequence(test_array_1))
 
-    print("\nDifficult test.\nExpected: [9, 8, 7, 6, 5, 6, 7]\nActual:")
+    print("\nDifficult test.\nExpected: [9, 8, 7, 6, 5, 6, 7]")
     test_array_2 = np.array([[9,6,5,2], [8,7,6,5], [7,3,1,6], [1,1,1,7]])
-    print(getLongestSnakeSequence(test_array_2))
+    print("Actual: ",getLongestSnakeSequence(test_array_2))
+
+    print("\nTest that used to fail.\nExpected: [11, 12, 11]")
+    test_array_3 = np.array([[9, 8, 7, 3, 6, 7], [1, 5, 6, 7, 6, 2], [11, 12, 11, 5, 5, 4]])
+    print("Actual: ", getLongestSnakeSequence(test_array_3))
