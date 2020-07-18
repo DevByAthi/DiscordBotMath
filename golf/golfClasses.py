@@ -31,6 +31,7 @@ class GolfGraph:
         self.visited = set()
 
     # Determines where the player can hit the ball from its current position
+    # TODO: Simplify this code!!!!!!!!!!
     def findPaths(self):
         row_init, col_init = self.ball.position
 
