@@ -314,6 +314,9 @@ async def snakeSequenceTask():
     await snakeChannel.send(str(grid))
     await snakeChannel.send('The longest snake sequence in your grid is: ' + str(longest_seq))
 
+# TODO: Change format of input to accept a file attachment
+#  as input, instead of manually typing in grid input
+
 async def codeGolfHelper():
     # If the user wants ReMBot to play some code golf, query them for the input grid, and ask if they have a preferred
     # optimization for ReMBot to use. Finally, call the code golf solver and return the output as a message in the

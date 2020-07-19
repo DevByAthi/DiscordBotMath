@@ -157,6 +157,9 @@ class GolfGraph:
             height_diff = pow(abs(height_diff) + 1, -1)
         return height_diff
 
+    # TODO: See if heuristic can incorporate Manhattan weighted distance into value,
+    #  i.e. take minimum sum of weighted distance from current position to an edge
+    #  with that from edge to goal
     def heuristic(self, cur_row, cur_col):
         return self.weight(cur_row, cur_col, len(self.grid) - 1, len(grid[0]) - 1)
 
