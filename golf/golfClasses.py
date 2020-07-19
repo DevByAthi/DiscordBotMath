@@ -31,7 +31,7 @@ class GolfGraph:
         # row_init, col_init = self.ball.position
 
         # print(row, col)
-        height_init = grid[row_init][col_init]
+        height_init = self.grid[row_init][col_init]
         available_new_positions = []
 
         # TODO: Refactor into manageable pieces
@@ -44,7 +44,7 @@ class GolfGraph:
                 if (i, col_init) in self.visited:
                     break
 
-                height_current = grid[i][col_init]
+                height_current = self.grid[i][col_init]
 
                 # We have found the horizon
                 if height_current > height_init:
@@ -61,12 +61,12 @@ class GolfGraph:
                     break
 
         # DOWN Direction
-        if row_init < len(grid) - 1:
-            for i in range(row_init + 1, len(grid)):
+        if row_init < len(self.grid) - 1:
+            for i in range(row_init + 1, len(self.grid)):
                 if (i, col_init) in self.visited:
                     break
 
-                height_current = grid[i][col_init]
+                height_current = self.grid[i][col_init]
 
                 # We have found the horizon
                 if height_current > height_init:
@@ -78,7 +78,7 @@ class GolfGraph:
                         available_new_positions.append((i - 1, col_init))
                     break
 
-                if i == len(grid) - 1:
+                if i == len(self.grid) - 1:
                     available_new_positions.append((i, col_init))
                     break
 
@@ -88,7 +88,7 @@ class GolfGraph:
                 if (row_init, i) in self.visited:
                     continue
 
-                height_current = grid[row_init][i]
+                height_current = self.grid[row_init][i]
 
                 # We have found the horizon
                 if height_current > height_init:
@@ -105,12 +105,12 @@ class GolfGraph:
                     break
 
         # RIGHT Direction
-        if col_init < len(grid[0]) - 1:
-            for i in range(col_init + 1, len(grid[0])):
+        if col_init < len(self.grid[0]) - 1:
+            for i in range(col_init + 1, len(self.grid[0])):
                 if (row_init, i) in self.visited:
                     continue
 
-                height_current = grid[row_init][i]
+                height_current = self.grid[row_init][i]
 
                 # We have found the horizon
                 if height_current > height_init:
@@ -122,7 +122,7 @@ class GolfGraph:
                         available_new_positions.append((row_init, i - 1))
                     break
 
-                if i == len(grid[0]) - 1:
+                if i == len(self.grid[0]) - 1:
                     available_new_positions.append((row_init, i))
                     break
 
@@ -161,7 +161,7 @@ class GolfGraph:
     #  i.e. take minimum sum of weighted distance from current position to an edge
     #  with that from edge to goal
     def heuristic(self, cur_row, cur_col):
-        return self.weight(cur_row, cur_col, len(self.grid) - 1, len(grid[0]) - 1)
+        return self.weight(cur_row, cur_col, len(self.grid) - 1, len(self.grid[0]) - 1)
 
     # We treat the grid as a weighted digraph
     # The weight for the connection between adjacent positions
@@ -169,8 +169,8 @@ class GolfGraph:
     # TODO: Change from UCS to UCS with heuristic (greedy)
     def ucs_greedy(self):
 
-        rows = len(grid)
-        cols = len(grid[0])
+        rows = len(self.grid)
+        cols = len(self.grid[0])
 
         # Create a grid for the upper bounds of weighted distance estimates
         dist = [[inf] * cols for i in range(rows)]
