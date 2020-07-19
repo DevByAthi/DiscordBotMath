@@ -146,9 +146,12 @@ class GolfGraph:
         height_diff = self.grid[neighbor_row][neighbor_col] - self.grid[cur_row][cur_col]
 
         # This strange case is dont to ensure that we don't prefer
-        # going on flat ground to going uphill
+        # going on flat ground to going downhill
+        # TODO: Should this value be 0, meaning it is preferred to go flat over going downhill,
+        #  or should if be > 0.5, meaning it is preferred to go downhill over flat?
+        # Perhaps the heuristic can compensate...
         if height_diff == 0:
-            return 0.9
+            return 0
 
         if height_diff < 0:
             height_diff = pow(abs(height_diff) + 1, -1)
@@ -181,6 +184,8 @@ class GolfGraph:
         # Start position has no predecessor
         prev[(0, 0)] = None
 
+        # Min-heap used to order available positions by weight
+        # The initial tuple stored is for the starting position, which is distance 0 away from the start
         minh = [(0.0, 0, 0)]
 
         self.visited.clear()
