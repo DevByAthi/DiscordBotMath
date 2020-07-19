@@ -174,11 +174,14 @@ class GolfGraph:
             self.visited.add((cur_row, cur_col))
 
             # If the current node is the goal point, we are done! Return the path accumulated
+            if self.atGoal(cur_row, cur_col):
+                print()
+                print(dist)
+                return
 
             # Find neighbors of current position
             neighbors = self.findAvailablePositions(cur_row, cur_col)
             for neighbor in neighbors:
-                # If neighbor hasn't already been visited, add it
 
                 # Calculate the weighted distance to neighboring position
                 # This tuple will have a better upper bound on the distance to the associated position
@@ -196,7 +199,12 @@ class GolfGraph:
                 heappush(minh, (dist[neighbor_row][neighbor_col], neighbor_row, neighbor_col))
 
                 # We can assume we haven't visited this neighbor, as this has been checked in findAvailablePositions()
+                # TODO: Figure out if this affects the outcome, might be a logical bug
                 self.visited.add((neighbor_row, neighbor_col))
+
+    # Checks if we have arrived at the bottom-right corner, our goal
+    def atGoal(self, r, c):
+        return r == len(self.grid) - 1 and c == len(self.grid[0]) - 1
 
 
 
