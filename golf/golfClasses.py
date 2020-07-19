@@ -160,30 +160,43 @@ class GolfGraph:
         dist = [[inf] * cols for i in range(rows)]
 
         # Set the start position weighted distance as zero
-        cur_row, cur_col = self.ball.position
-        dist[cur_row][cur_col] = 0
+        dist[0][0] = 0
 
-        minh = [(0,cur_row,cur_col)]
+        minh = [(0.0,0,0)]
 
         while not(len(minh) == 0):
             # Retrieve position with lowest weighted distance
             current = heappop(minh)
+            cur_weight, cur_row, cur_col = current
+            print(cur_row, cur_col, dist[cur_row][cur_col])
 
             # Mark current position as visited
+            self.visited.add((cur_row, cur_col))
 
-            # If the current node is the goal point,
+            # If the current node is the goal point, we are done! Return the path accumulated
 
             # Find neighbors of current position
-            neighbors = self.findAvailablePositions(current[1], current[2])
+            neighbors = self.findAvailablePositions(cur_row, cur_col)
             for neighbor in neighbors:
                 # If neighbor hasn't already been visited, add it
 
-                # Generate the tuple with the weighted distance to that position
+                # Calculate the weighted distance to neighboring position
                 # This tuple will have a better upper bound on the distance to the associated position
                 neighbor_row, neighbor_col = neighbor
+                neighbor_weight = self.weight(cur_row, cur_col, neighbor_row, neighbor_col)
+
+                # Decrease the upper bound on distance to this neighbor from the source as needed
 
                 # Note that the weighted distance will include the weighted distance of the current position
                 # This allows for the cumulative cost to be considered, as opposed to the immediate edge weight
+                if dist[neighbor_row][neighbor_col] > neighbor_weight + dist[cur_row][cur_col]:
+                    dist[neighbor_row][neighbor_col] = neighbor_weight + dist[cur_row][cur_col]
+
+                # Add the neighbor to the min-heap
+                heappush(minh, (dist[neighbor_row][neighbor_col], neighbor_row, neighbor_col))
+
+                # We can assume we haven't visited this neighbor, as this has been checked in findAvailablePositions()
+                self.visited.add((neighbor_row, neighbor_col))
 
 
 
@@ -209,6 +222,8 @@ if __name__ == "__main__":
             print()
     # print(grid)
 
+    graph = GolfGraph(grid, GolfBall(position=[0,0]))
+    graph.dijkstra()
     # newBall = ball + Direction.LEFT
     # print(newBall.position)
 
