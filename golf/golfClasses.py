@@ -3,6 +3,7 @@ from heapq import *
 from math import inf
 from golf import parseGolf
 
+
 class GolfBall:
     def __init__(self, position=[0, 0], velocity=[0, 0]):
         self.position = position
@@ -129,7 +130,6 @@ class GolfGraph:
         #     print(line)
         return available_new_positions
 
-
     # Selection portion of greedy algorithm
     # Uses the information visible to ReMBot at its current poisiton to
     # TODO: Implement greedy algorithm to select position from available
@@ -144,6 +144,12 @@ class GolfGraph:
     # a map is made from all integer to the nonnegative reals
     def weight(self, cur_row, cur_col, neighbor_row, neighbor_col):
         height_diff = self.grid[neighbor_row][neighbor_col] - self.grid[cur_row][cur_col]
+
+        # This strange case is dont to ensure that we don't prefer
+        # going on flat ground to going uphill
+        if height_diff == 0:
+            return 0.9
+
         if height_diff < 0:
             height_diff = pow(abs(height_diff) + 1, -1)
         return height_diff
@@ -172,9 +178,9 @@ class GolfGraph:
         # Start position has no predecessor
         prev[(0, 0)] = None
 
-        minh = [(0.0,0,0)]
+        minh = [(0.0, 0, 0)]
 
-        while not(len(minh) == 0):
+        while not (len(minh) == 0):
             # Retrieve position with lowest weighted distance
             current = heappop(minh)
             cur_weight, cur_row, cur_col = current
@@ -225,7 +231,7 @@ class GolfGraph:
         current_position = (len(self.grid) - 1, len(self.grid[0]) - 1)
         keys = prev.keys()
         path = []
-        while current_position != (0,0):
+        while current_position != (0, 0):
             if current_position not in keys:
                 raise ValueError("Path not found to goal")
             path.append(current_position)
@@ -242,18 +248,17 @@ if __name__ == "__main__":
     # Test of findAvailablePositions
     for i in range(len(grid)):
         for j in range(len(grid[0])):
-            ball = GolfBall(position=[i,j])
+            ball = GolfBall(position=[i, j])
             graph = GolfGraph(grid, ball)
             print(ball.position)
             print(graph.findAvailablePositions(ball.position[0], ball.position[1]))
             print()
 
-    for i in range(1, 4+1):
+    for i in range(1, 4 + 1):
         file_name = "sampleGrid" + str(i) + ".txt"
         grid = parseGolf.readFileIntoArray(file_name)
         print(file_name)
         print(len(grid), len(grid[0]))
-        graph = GolfGraph(grid, GolfBall(position=[0,0]))
+        graph = GolfGraph(grid, GolfBall(position=[0, 0]))
         graph.dijkstra()
         print(graph.path)
-
