@@ -194,14 +194,14 @@ class GolfGraph:
             # Retrieve position with lowest weighted distance
             current = heappop(minh)
             cur_weight, cur_row, cur_col = current
-            print(cur_row, cur_col, dist[cur_row][cur_col])
+            # print(cur_row, cur_col, dist[cur_row][cur_col])
 
             # Mark current position as visited
             self.visited.add((cur_row, cur_col))
 
             # If the current node is the goal point, we are done! Return the path accumulated
             if self.atGoal(cur_row, cur_col):
-                print(prev)
+                # print(prev)
                 self.path = self.findPath(prev)
                 self.path.reverse()
                 return
@@ -259,7 +259,7 @@ class GolfGraph:
 
 
 if __name__ == "__main__":
-    grid = parseGolf.readFileIntoArray('sampleGrid5.txt')
+    '''grid = parseGolf.readFileIntoArray('sampleGrid5.txt')
     # print(len(grid), len(grid[0]))
 
     # Test of findAvailablePositions
@@ -269,9 +269,11 @@ if __name__ == "__main__":
             graph = GolfGraph(grid, ball)
             print(ball.position)
             print(graph.findAvailablePositions(ball.position[0], ball.position[1]))
-            print()
+            print()'''
 
-    for i in range(1, 9 + 1):
+    num_files = 9
+
+    for i in range(1, num_files + 1):
         file_name = "sampleGrid" + str(i) + ".txt"
         grid = parseGolf.readFileIntoArray(file_name)
         print(file_name)
@@ -279,3 +281,4 @@ if __name__ == "__main__":
         graph = GolfGraph(grid, GolfBall(position=[0, 0]))
         graph.ucs_greedy()
         print(graph.path)
+        print()
