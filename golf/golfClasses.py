@@ -154,13 +154,23 @@ class GolfGraph:
     # TODO: Change from UCS to UCS with heuristic (greedy)
     def dijkstra(self):
 
-        # Create a grid for the upper bounds of weighted distance estimates
         rows = len(grid)
         cols = len(grid[0])
+
+        # Create a grid for the upper bounds of weighted distance estimates
         dist = [[inf] * cols for i in range(rows)]
+
+        # Create a map for the predecessor of a position
+        # That is, where the ball must travel from, starting from the top-left,
+        # to reach a position
+        # This will be crucial to identifying the shortest path to the goal
+        prev = {}
 
         # Set the start position weighted distance as zero
         dist[0][0] = 0
+
+        # Start position has no predecessor
+        prev[(0, 0)] = None
 
         minh = [(0.0,0,0)]
 
@@ -175,17 +185,19 @@ class GolfGraph:
 
             # If the current node is the goal point, we are done! Return the path accumulated
             if self.atGoal(cur_row, cur_col):
-                print()
-                print(dist)
+                print(prev)
                 return
 
             # Find neighbors of current position
             neighbors = self.findAvailablePositions(cur_row, cur_col)
             for neighbor in neighbors:
+                neighbor_row, neighbor_col = neighbor
+
+                # Record the predecessor of this neighbor as current
+                prev[(neighbor_row, neighbor_col)] = (cur_row, cur_col)
 
                 # Calculate the weighted distance to neighboring position
                 # This tuple will have a better upper bound on the distance to the associated position
-                neighbor_row, neighbor_col = neighbor
                 neighbor_weight = self.weight(cur_row, cur_col, neighbor_row, neighbor_col)
 
                 # Decrease the upper bound on distance to this neighbor from the source as needed
