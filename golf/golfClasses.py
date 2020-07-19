@@ -200,9 +200,6 @@ class GolfGraph:
             for neighbor in neighbors:
                 neighbor_row, neighbor_col = neighbor
 
-                # Record the predecessor of this neighbor as current
-                prev[(neighbor_row, neighbor_col)] = (cur_row, cur_col)
-
                 # Calculate the weighted distance to neighboring position
                 # This tuple will have a better upper bound on the distance to the associated position
                 neighbor_weight = self.weight(cur_row, cur_col, neighbor_row, neighbor_col)
@@ -213,6 +210,8 @@ class GolfGraph:
                 # This allows for the cumulative cost to be considered, as opposed to the immediate edge weight
                 if dist[neighbor_row][neighbor_col] > neighbor_weight + dist[cur_row][cur_col]:
                     dist[neighbor_row][neighbor_col] = neighbor_weight + dist[cur_row][cur_col]
+                    # Record the predecessor of this neighbor as current
+                    prev[(neighbor_row, neighbor_col)] = (cur_row, cur_col)
 
                 # Add the neighbor to the min-heap
                 heappush(minh, (dist[neighbor_row][neighbor_col], neighbor_row, neighbor_col))
