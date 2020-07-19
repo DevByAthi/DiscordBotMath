@@ -370,7 +370,6 @@ async def codeGolfHelper(message):
 
     await generalTextChannel.send('Perfect! Meet me in the #codegolf channel for your optimal series of hits.')
     await golfChannel.send('I\'ve got a route for you! First, here\'s your golf course terrain again:')
-    map(str, grid)
     for row in grid:
         # TODO: Format printed row to have equal spacing
         await golfChannel.send("\t".join(["{:=5}".format(elem) for elem in row]))
