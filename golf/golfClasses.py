@@ -144,6 +144,7 @@ class GolfGraph:
     # We treat the grid as a weighted digraph
     # The weight for the connection between adjacent positions
     # is assigned using a special function that takes in the difference in height (see weight above)
+    # TODO: Change from UCS to UCS with heuristic (greedy)
     def dijkstra(self):
 
         # Create a grid for the upper bounds of weighted distance estimates
