@@ -210,28 +210,23 @@ class GolfGraph:
 
 
 if __name__ == "__main__":
-    grid = parseGolf.readFileIntoArray('sampleGrid1.txt')
-    print(len(grid), len(grid[0]))
-    print()
-    positions_to_test = [[0,0], [3,0], [2,3], [3,4], [1,0], [1,1], [2,1]]
-    '''for position in positions_to_test:
-        ball = GolfBall(position=position)
-        graph = GolfGraph(grid, ball)
-        print(position)
-        print(graph.findPaths())
-        print()'''
+    # grid = parseGolf.readFileIntoArray('sampleGrid1.txt')
+    # print(len(grid), len(grid[0]))
 
-    for i in range(len(grid)):
+    # Test of findAvailablePositions
+    '''for i in range(len(grid)):
         for j in range(len(grid[0])):
             ball = GolfBall(position=[i,j])
             graph = GolfGraph(grid, ball)
             print(ball.position)
             print(graph.findAvailablePositions(ball.position[0], ball.position[1]))
-            print()
-    # print(grid)
+            print()'''
 
-    graph = GolfGraph(grid, GolfBall(position=[0,0]))
-    graph.dijkstra()
-    # newBall = ball + Direction.LEFT
-    # print(newBall.position)
+    for i in range(1, 3+1):
+        file_name = "sampleGrid" + str(i) + ".txt"
+        grid = parseGolf.readFileIntoArray(file_name)
+        print(file_name)
+        print(len(grid), len(grid[0]))
+        graph = GolfGraph(grid, GolfBall(position=[0,0]))
+        graph.dijkstra()
 
