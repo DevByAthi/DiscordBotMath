@@ -317,33 +317,49 @@ async def snakeSequenceTask():
 # TODO: Change format of input to accept a file attachment
 #  as input, instead of manually typing in grid input
 
-async def codeGolfHelper():
+async def codeGolfHelper(message):
     # If the user wants ReMBot to play some code golf, query them for the input grid, and ask if they have a preferred
     # optimization for ReMBot to use. Finally, call the code golf solver and return the output as a message in the
     # discord #codegolf text channel.
 
     golfChannel = botTestingServer.get_channel(ServerIDs.GOLF_ID.value)
-    await generalTextChannel.send('Let me play some code golf for you! Please provide your grid as a single message.')
-    grid = await client.wait_for('message')
-    grid = grid.content
-    grid = grid.split('\n')
-    for i in range(len(grid)):
-        grid[i] = grid[i].split(' ')
-        grid[i] = list(map(int, grid[i]))
-    grid = np.array(grid)
-    await generalTextChannel.send(('Thanks! Now, would you like to optimize for fewest hits or least effort?' 
-                                   'Please respond \'-hits\' or \'-effort\'.'))
-    optimization = await client.wait_for('message')
-    optimization = optimization.content
-    while not (optimization == '-hits' or optimization == '-effort'):
-        await generalTextChannel.send('Please specify your response as \'-hits\' or \'-effort\'.')
-        optimization = await client.wait_for('message')
-        optimization = optimization.content
+    await generalTextChannel.send('Let me play some code golf for you!')
+    if message.attachments:
+        f = await discord.Attachment.to_file(message.attachments[0])
+
+        # Check that attachment is a .txt file
+        file_name = str(f.filename).split('.')
+        if len(file_name) < 2 or file_name[1].lower() != "txt":
+            # S_nil2: File is not a .txt file
+            print(file_name)
+            await generalTextChannel.send("You need to attach a .txt file!")
+            return
+
+        # File text is read into a string
+        s = f.fp.read().decode("utf-8")
+    else:
+        await generalTextChannel.send("Please attach a .txt file representing the golf course!")
+        return
+        # raise FileNotFoundError("Please attach a .txt file representing the golf course!")'''
+    # grid = grid.content
+    # grid = grid.split('\n')
+    # for i in range(len(grid)):
+    #     grid[i] = grid[i].split(' ')
+    #     grid[i] = list(map(int, grid[i]))
+    # grid = np.array(grid)
+    # await generalTextChannel.send(('Thanks! Now, would you like to optimize for fewest hits or least effort?'
+    #                                'Please respond \'-hits\' or \'-effort\'.'))
+    # optimization = await client.wait_for('message')
+    # optimization = optimization.content
+    # while not (optimization == '-hits' or optimization == '-effort'):
+    #     await generalTextChannel.send('Please specify your response as \'-hits\' or \'-effort\'.')
+    #     optimization = await client.wait_for('message')
+    #     optimization = optimization.content
     await generalTextChannel.send('Perfect! Meet me in the #codegolf channel for your optimal series of hits.')
     # TODO: function call to code golf solver happens here
     await golfChannel.send('I\'ve got a route for you! First, here\'s your golf course terrain again:')
-    await golfChannel.send(str(grid))
-    await golfChannel.send('The route you should take to optimize for ' + optimization + ' is: ')  # TODO print route when done
+    await golfChannel.send(str([]))
+    await golfChannel.send('The route you should take to optimize for ' + "" + ' is: ')  # TODO print route when done
 
 # -----------------------------
 # ----- EVENT DEFINITIONS -----
@@ -389,7 +405,7 @@ async def on_message(message):
 
     # The user would like ReMBot to play some code golf.
     if message.content.startswith('$golf'):
-        await codeGolfHelper()
+        await codeGolfHelper(message)
 
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
