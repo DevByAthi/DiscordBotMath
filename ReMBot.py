@@ -328,12 +328,12 @@ async def codeGolfHelper():
         grid[i] = grid[i].split(' ')
         grid[i] = list(map(int, grid[i]))
     grid = np.array(grid)
-    await generalTextChannel.send(('Thanks! Now, would you like to optimize for fewest hits, least effort, or a balance of both?' 
-                                   'Please respond \'-hits\', \'-effort\', or \'-balanced\'.'))
+    await generalTextChannel.send(('Thanks! Now, would you like to optimize for fewest hits or least effort?' 
+                                   'Please respond \'-hits\' or \'-effort\'.'))
     optimization = await client.wait_for('message')
     optimization = optimization.content
-    while not (optimization == '-hits' or optimization == '-effort' or optimization == '-balance'):
-        await generalTextChannel.send('Please specify your response as \'-hits\', \'-effort\', or \'-balance\'.')
+    while not (optimization == '-hits' or optimization == '-effort'):
+        await generalTextChannel.send('Please specify your response as \'-hits\' or \'-effort\'.')
         optimization = await client.wait_for('message')
         optimization = optimization.content
     await generalTextChannel.send('Perfect! Meet me in the #codegolf channel for your optimal series of hits.')
