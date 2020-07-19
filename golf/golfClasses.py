@@ -196,6 +196,7 @@ class GolfGraph:
             if self.atGoal(cur_row, cur_col):
                 print(prev)
                 self.path = self.findPath(prev)
+                self.path.reverse()
                 return
 
             # Find neighbors of current position
@@ -251,7 +252,7 @@ class GolfGraph:
 
 
 if __name__ == "__main__":
-    grid = parseGolf.readFileIntoArray('sampleGrid4.txt')
+    grid = parseGolf.readFileIntoArray('sampleGrid5.txt')
     # print(len(grid), len(grid[0]))
 
     # Test of findAvailablePositions
@@ -263,7 +264,7 @@ if __name__ == "__main__":
             print(graph.findAvailablePositions(ball.position[0], ball.position[1]))
             print()
 
-    for i in range(1, 4 + 1):
+    for i in range(1, 9 + 1):
         file_name = "sampleGrid" + str(i) + ".txt"
         grid = parseGolf.readFileIntoArray(file_name)
         print(file_name)
