@@ -1,7 +1,7 @@
 def readFileIntoArray(name):
     arr = []
     f = open(name)
-    rows_raw = f.read().split('\n')
+    rows_raw = f.read().strip().split('\n')
     for row in rows_raw:
         cols = list(map(int, row.split()))
 
