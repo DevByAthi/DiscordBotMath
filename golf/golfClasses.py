@@ -93,14 +93,14 @@ class GolfGraph:
                 if height_current > height_init:
                     # The horizon is adjacent to our initial position
                     if abs(col_init - i) == 1:
-                        available_new_positions.append(("Left", row_init, i))
+                        available_new_positions.append((row_init, i))
                     else:
                         # Aim for the position just before the horizon
-                        available_new_positions.append(("Left", row_init, i + 1))
+                        available_new_positions.append((row_init, i + 1))
                     break
 
                 if i == 0:
-                    available_new_positions.append(("Left", row_init, i))
+                    available_new_positions.append((row_init, i))
                     break
 
         # RIGHT Direction
@@ -115,14 +115,14 @@ class GolfGraph:
                 if height_current > height_init:
                     # The horizon is adjacent to our initial position
                     if abs(col_init - i) == 1:
-                        available_new_positions.append(("Right", row_init, i))
+                        available_new_positions.append((row_init, i))
                     else:
                         # Aim for the position just before the horizon
-                        available_new_positions.append(("Right", row_init, i - 1))
+                        available_new_positions.append((row_init, i - 1))
                     break
 
                 if i == len(grid[0]) - 1:
-                    available_new_positions.append(("Right", row_init, i))
+                    available_new_positions.append((row_init, i))
                     break
 
         # for line in grid:
@@ -155,11 +155,28 @@ class GolfGraph:
         cur_row, cur_col = self.ball.position
         dist[cur_row][cur_col] = 0
 
-        minh = [(0,0,0)]
+        minh = [(0,cur_row,cur_col)]
 
         while not(len(minh) == 0):
+            # Retrieve position with lowest weighted distance
             current = heappop(minh)
-            neighbors = self.findAvailablePositions()
+
+            # Mark current position as visited
+
+            # If the current node is the goal point,
+
+            # Find neighbors of current position
+            neighbors = self.findAvailablePositions(current[1], current[2])
+            for neighbor in neighbors:
+                # If neighbor hasn't already been visited, add it
+
+                # Generate the tuple with the weighted distance to that position
+                # This tuple will have a better upper bound on the distance to the associated position
+                neighbor_row, neighbor_col = neighbor
+
+                # Note that the weighted distance will include the weighted distance of the current position
+                # This allows for the cumulative cost to be considered, as opposed to the immediate edge weight
+
 
 
 
