@@ -278,7 +278,7 @@ if __name__ == "__main__":
 
     for i in range(1, num_files + 1):
         file_name = "sampleGrid" + str(i) + ".txt"
-        grid = parseGolf.readFileIntoArray(file_name)
+        grid = parseGolf.readFileIntoArray(parseGolf.readFileIntoString(file_name))
         print(file_name)
         print(len(grid), len(grid[0]))
         graph = GolfGraph(grid, GolfBall(position=[0, 0]))
