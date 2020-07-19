@@ -355,10 +355,9 @@ async def codeGolfHelper(message):
             await generalTextChannel.send("Could not read attached file")
             return
         grid = parseGolf.readIntoGrid(rows)
-        graph = golfClasses.GolfGraph(grid, golfClasses.GolfBall(position=[0, 0]))
+        graph = golfClasses.GolfGraph(grid)
         graph.ucs_greedy()
         print(graph.path)
-        await golfChannel.send(graph.path)
     else:
         await generalTextChannel.send("Please attach a .txt file representing the golf course!")
         return
@@ -373,7 +372,7 @@ async def codeGolfHelper(message):
     for row in grid:
         # TODO: Format printed row to have equal spacing
         await golfChannel.send("\t".join(["{:=5}".format(elem) for elem in row]))
-    await golfChannel.send('The route you should take to optimize for this terrain' + ' is: ' + str(graph.path))  # TODO print route when done
+    await golfChannel.send('The route you should take to optimize for this terrain' + ' is:\n' + str(graph.path))
 
 
 # -----------------------------

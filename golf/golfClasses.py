@@ -4,19 +4,10 @@ from math import inf
 from golf import parseGolf
 
 
-class GolfBall:
-    def __init__(self, position=[0, 0], velocity=[0, 0]):
-        self.position = position
-        self.velocity = velocity
-
-
 class GolfGraph:
-    def __init__(self, grid, ball, maxHits=7):
+    def __init__(self, grid):
         self.grid = grid
-        self.ball = ball
-        self.path = [ball.position]
-        self.numHits = 0
-        self.totalEnergySpent = 0
+        self.path = []
         self.visited = set()
 
     # Determines where the player can hit the ball from its current position
@@ -267,7 +258,7 @@ if __name__ == "__main__":
         grid = parseGolf.readIntoGrid(parseGolf.readFileIntoString(file_name))
         print(file_name)
         print(len(grid), len(grid[0]))
-        graph = GolfGraph(grid, GolfBall(position=[0, 0]))
+        graph = GolfGraph(grid)
         graph.ucs_greedy()
         print(graph.path)
         print()
