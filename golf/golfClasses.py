@@ -154,6 +154,9 @@ class GolfGraph:
             height_diff = pow(abs(height_diff) + 1, -1)
         return height_diff
 
+    def heuristic(self, cur_row, cur_col):
+        return self.weight(cur_row, cur_col, len(self.grid) - 1, len(grid[0]) - 1)
+
     # We treat the grid as a weighted digraph
     # The weight for the connection between adjacent positions
     # is assigned using a special function that takes in the difference in height (see weight above)
@@ -206,10 +209,17 @@ class GolfGraph:
 
                 # Decrease the upper bound on distance to this neighbor from the source as needed
 
+                # Include an admissible heuristic, which is just the ideal weight
+                # if the current position were directly connected to the goal
+                # TODO: Verify that heuristic is admissible
+                # TODO: Verify that heuristic is actually useful
+                # TODO: Verify that heuristic makes function greedy
+
                 # Note that the weighted distance will include the weighted distance of the current position
                 # This allows for the cumulative cost to be considered, as opposed to the immediate edge weight
-                if dist[neighbor_row][neighbor_col] > neighbor_weight + dist[cur_row][cur_col]:
-                    dist[neighbor_row][neighbor_col] = neighbor_weight + dist[cur_row][cur_col]
+                updated_bound = neighbor_weight + dist[cur_row][cur_col] + self.heuristic(cur_row, cur_col)
+                if dist[neighbor_row][neighbor_col] > updated_bound:
+                    dist[neighbor_row][neighbor_col] = updated_bound
                     # Record the predecessor of this neighbor as current
                     prev[(neighbor_row, neighbor_col)] = (cur_row, cur_col)
 
