@@ -183,6 +183,8 @@ class GolfGraph:
 
         minh = [(0.0, 0, 0)]
 
+        self.visited.clear()
+
         while not (len(minh) == 0):
             # Retrieve position with lowest weighted distance
             current = heappop(minh)
