@@ -3,7 +3,7 @@ def readFileIntoString(name):
     rows_raw = f.read().strip().split('\n')
     return rows_raw
 
-def readFileIntoArray(rows_raw):
+def readIntoGrid(rows_raw):
     arr = []
     for row in rows_raw:
         cols = list(map(int, row.split()))
@@ -20,5 +20,5 @@ def readFileIntoArray(rows_raw):
 
 
 if __name__ == "__main__":
-    arr = readFileIntoArray(readFileIntoString('sampleGrid6.txt'))
+    arr = readIntoGrid(readFileIntoString('sampleGrid6.txt'))
     print(arr)
