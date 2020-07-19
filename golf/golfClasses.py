@@ -19,12 +19,6 @@ class GolfGraph:
         self.totalEnergySpent = 0
         self.visited = set()
 
-    class Position:
-        def __init__(self, r, c):
-            self.row = r
-            self.col = c
-            self.height = grid[r][c]
-
     # Determines where the player can hit the ball from its current position
     # TODO: Simplify this code!!!!!!!!!!
     def findAvailablePositions(self, row_init, col_init):
@@ -130,14 +124,6 @@ class GolfGraph:
         #     print(line)
         return available_new_positions
 
-    # Selection portion of greedy algorithm
-    # Uses the information visible to ReMBot at its current poisiton to
-    # TODO: Implement greedy algorithm to select position from available
-    #  based on weighted criteria
-    # TODO: Implement base case to stop when bottom-right corner is found
-    def makeMove(self):
-        pass
-
     # Compute the weight for the edge connecting two adjacent positions
     # Since the height difference between the two positions can be negative,
     # and since Dijkstra's algorithm and UCS require nonnegative weights,
@@ -160,6 +146,9 @@ class GolfGraph:
     # TODO: See if heuristic can incorporate Manhattan weighted distance into value,
     #  i.e. take minimum sum of weighted distance from current position to an edge
     #  with that from edge to goal
+    # TODO: Verify that heuristic is admissible
+    # TODO: Verify that heuristic is actually useful
+    # TODO: Verify that heuristic makes function greedy
     def heuristic(self, cur_row, cur_col):
         return self.weight(cur_row, cur_col, len(self.grid) - 1, len(self.grid[0]) - 1)
 
@@ -222,9 +211,6 @@ class GolfGraph:
 
                 # Include an admissible heuristic, which is just the ideal weight
                 # if the current position were directly connected to the goal
-                # TODO: Verify that heuristic is admissible
-                # TODO: Verify that heuristic is actually useful
-                # TODO: Verify that heuristic makes function greedy
 
                 # Note that the weighted distance will include the weighted distance of the current position
                 # This allows for the cumulative cost to be considered, as opposed to the immediate edge weight
