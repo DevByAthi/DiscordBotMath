@@ -147,7 +147,7 @@ class GolfGraph:
     # The weight for the connection between adjacent positions
     # is assigned using a special function that takes in the difference in height (see weight above)
     # TODO: Change from UCS to UCS with heuristic (greedy)
-    def ucs_greedy(self):
+    def a_star_greedy(self):
 
         rows = len(self.grid)
         cols = len(self.grid[0])
@@ -259,6 +259,6 @@ if __name__ == "__main__":
         print(file_name)
         print(len(grid), len(grid[0]))
         graph = GolfGraph(grid)
-        graph.ucs_greedy()
+        graph.a_star_greedy()
         print(graph.path)
         print()

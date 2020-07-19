@@ -356,7 +356,7 @@ async def codeGolfHelper(message):
             return
         grid = parseGolf.readIntoGrid(rows)
         graph = golfClasses.GolfGraph(grid)
-        graph.ucs_greedy()
+        graph.a_star_greedy()
         print(graph.path)
     else:
         await generalTextChannel.send("Please attach a .txt file representing the golf course!")
