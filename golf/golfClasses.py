@@ -138,8 +138,15 @@ class GolfGraph:
     def makeMove(self):
         pass
 
+    # Compute the weight for the edge connecting two adjacent positions
+    # Since the height difference between the two positions can be negative,
+    # and since Dijkstra's algorithm and UCS require nonnegative weights,
+    # a map is made from all integer to the nonnegative reals
     def weight(self, cur_row, cur_col, neighbor_row, neighbor_col):
-        pass
+        height_diff = self.grid[neighbor_row][neighbor_col] - self.grid[cur_row][cur_col]
+        if height_diff < 0:
+            height_diff = pow(abs(height_diff) + 1, -1)
+        return height_diff
 
     # We treat the grid as a weighted digraph
     # The weight for the connection between adjacent positions
