@@ -134,15 +134,19 @@ class GolfGraph:
     # PRECONDITION: all values in self.grid are nonnegative integers
     def a_star_greedy(self):
 
+        # ==== Start of Pre-processing stage ====
+
         rows = len(self.grid)
         cols = len(self.grid[0])
 
-        # Create a grid for the upper bounds of weighted distance estimates
+        # Create a nested list for the upper bounds of weighted distance estimates
+        # Default upper bound of a weighted distance is set to positive infinity
+        # This will prove crucial to our greedy approach, as well as defining the states of the algorithm
         dist = [[inf] * cols for i in range(rows)]
 
         # Create a map for the predecessor of a position
         # That is, where the ball must travel from, starting from the top-left,
-        # to reach a position
+        # to reach a position while accruing the lowest total weight
         # This will be crucial to identifying the shortest path to the goal
         prev = {}
 
@@ -158,16 +162,22 @@ class GolfGraph:
 
         self.visited.clear()
 
+        # ==== End of Pre-processing stage ====
+
         while not (len(minh) == 0):
+
             # Retrieve position with lowest weighted distance
             current = heappop(minh)
             cur_weight, cur_row, cur_col = current
-            # print(cur_row, cur_col, dist[cur_row][cur_col])
 
             # Mark current position as visited
             self.visited.add((cur_row, cur_col))
 
             # If the current node is the goal point, we are done! Return the path accumulated
+
+            # Sc (complement): returnS is complete. In this context,
+            # this means the list of upper bounds of weighted distances (dist)
+            # allows us to find the shortest path to the goal has been found
             if self.atGoal(cur_row, cur_col):
                 # print(prev)
                 self.path = self.findPath(prev)
@@ -179,6 +189,8 @@ class GolfGraph:
             for neighbor in neighbors:
                 neighbor_row, neighbor_col = neighbor
 
+                # If this neighbor has already been visited,
+                # it is not part of the frontier and can be ignored
                 if (neighbor_row, neighbor_col) in self.visited:
                     continue
 
@@ -187,27 +199,32 @@ class GolfGraph:
                 neighbor_weight = self.weight(cur_row, cur_col, neighbor_row, neighbor_col)
 
                 # Decrease the upper bound on distance to this neighbor from the source as needed
-
-                # Include an admissible heuristic, which is just the ideal weight
-                # if the current position were directly connected to the goal
-
                 # Note that the weighted distance will include the weighted distance of the current position
                 # This allows for the cumulative cost to be considered, as opposed to the immediate edge weight
+
+                # Sa (Parts): the list of upper bounds of weighted distances (dist) contains part of the solution.
+                # That is, updated upper bounds along the frontier contain
+                # part of the weights of the shortest path fromthe start to the goal
                 updated_bound = neighbor_weight + dist[cur_row][cur_col]
                 if dist[neighbor_row][neighbor_col] > updated_bound:
+                    # Include an admissible heuristic, which is just the ideal weight
+                    # if the current position were directly connected to the goal
+
+                    # [Sb (Greed Used)]: List of upper bounds of weighted distances has been updated
+                    # to be closer to actual weighted distance
                     dist[neighbor_row][neighbor_col] = updated_bound + self.heuristic(cur_row, cur_col)
+
                     # Record the predecessor of this neighbor as current
                     prev[(neighbor_row, neighbor_col)] = (cur_row, cur_col)
 
                 # Add the neighbor to the min-heap
                 heappush(minh, (dist[neighbor_row][neighbor_col], neighbor_row, neighbor_col))
 
-                # We can assume we haven't visited this neighbor, as this has been checked in findAvailablePositions()
-                # TODO: Figure out if this affects the outcome, might be a logical bug
+                # We've now visited this neighbor
                 self.visited.add((neighbor_row, neighbor_col))
-    # POSTCONDITION: The updated list self.path contains a sequence of tuples
-    #   representing the position at which the ball rests, describing the path to the goal
-    # POSTCONDITION: minh is not empty
+
+    # POSTCONDITION: The updated list self.path contains a sequence of tuples describing a path to the goal
+    # POSTCONDITION: minh is not empty, else we would have found all
     # POSTCONDITION: (self.path)[0] = (0,0)
     # POSTCONDITION: (self.path)[-1] = (len(self.grid) - 1, len(self.grid[0]) - 1), the goal position
 
@@ -244,7 +261,7 @@ if __name__ == "__main__":
             print(graph.findAvailablePositions(ball.position[0], ball.position[1]))
             print()'''
 
-    num_files = 9
+    num_files = 10
 
     for i in range(1, num_files + 1):
         file_name = "sampleGrid" + str(i) + ".txt"
