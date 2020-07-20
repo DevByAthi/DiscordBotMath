@@ -17,11 +17,13 @@ from chocolate.chocolateBar import breakBar
 from schedule.scheduling import *
 from schedule.errors import *
 from snakesequence.snake_seq_solver import getLongestSnakeSequence
+from golf import parseGolf, golfClasses
 from enum import Enum
 
 client = discord.Client()
 botTestingServer = []
 generalTextChannel = []
+
 
 class ServerIDs(Enum):
     TOKEN = 'NzIxNzc5NDc1MDIwNTEzMzkx.XuZfkg.LnP80sKgvtyEVSSYwbK2t5nmeJo'
@@ -30,6 +32,7 @@ class ServerIDs(Enum):
     CHOCOLATE_ID = 726816875899650109
     SNAKE_ID = 732026639512240229
     GOLF_ID = 732954147380265040
+
 
 # Sanity check event which prints a message to the terminal when the bot is online.
 # It should appear after ./ReMBot.py is run.
@@ -42,6 +45,7 @@ async def on_ready():
     global generalTextChannel
     botTestingServer = client.get_guild(ServerIDs.SERVER_ID.value)
     generalTextChannel = botTestingServer.get_channel(ServerIDs.GENERAL_ID.value)
+
 
 # ---------------------------------------------
 # ----- EVENT HELPER FUNCTION DEFINITIONS -----
@@ -146,7 +150,9 @@ async def scheduleForBreak(message):
             if len(resulting_schedule) == 0:
                 # See scheduling.generateSchedule, POSTCONDITION 2
                 # Sa: No schedules exist to fulfill constraints
-                await generalTextChannel.send("There exists no schedule that will accommodate your desired break time of " + str(duration) + " minutes")
+                await generalTextChannel.send(
+                    "There exists no schedule that will accommodate your desired break time of " + str(
+                        duration) + " minutes")
             else:
                 # See scheduling.generateSchedule, POSTCONDITION 1a-d
                 # Sb: Schedule existing fulfilling constraints
@@ -278,7 +284,8 @@ async def performConcurrentActions(a_message):
             # Sb_2: Task t_2 has been created, where t_2 achieves the solving of the chocolate problem and the printing
             # of the solution to the #chocolate text channel in the discord server.
             task_list.append(asyncio.ensure_future(
-                chocolateProblemSolver(int(a_message_text[i][1]), int(a_message_text[i][2]), int(a_message_text[i][3]))))
+                chocolateProblemSolver(int(a_message_text[i][1]), int(a_message_text[i][2]),
+                                       int(a_message_text[i][3]))))
         elif a_message_text[i][0] == 'hello':
             # Sb_3: Task t_3 has been created, where t_3 achieves the sending of a message containing a friendly
             # greeting to the #general text channel in the discord server.
@@ -294,13 +301,15 @@ async def performConcurrentActions(a_message):
     # The asyncio.gather function runs all tasks provided to it concurrently, so this one line is all we need.
     await asyncio.gather(*task_list)
 
+
 async def snakeSequenceTask():
     # If the user wants to find the longest snake sequence, ask them for the grid of numbers to use, then call
     # the snake sequence solver. Right now this function assumes perfect input because I'm too lazy to do input
     # checking. TODO for later.
 
     snakeChannel = botTestingServer.get_channel(ServerIDs.SNAKE_ID.value)
-    await generalTextChannel.send('Let me find the longest snake sequence in a grid for you! Please provide your grid as a single message.')
+    await generalTextChannel.send(
+        'Let me find the longest snake sequence in a grid for you! Please provide your grid as a single message.')
     grid = await client.wait_for('message')
     grid = grid.content
     grid = grid.split('\n')
@@ -314,33 +323,57 @@ async def snakeSequenceTask():
     await snakeChannel.send(str(grid))
     await snakeChannel.send('The longest snake sequence in your grid is: ' + str(longest_seq))
 
-async def codeGolfHelper():
+
+# TODO: Change format of input to accept a file attachment
+#  as input, instead of manually typing in grid input
+
+async def codeGolfHelper(message):
     # If the user wants ReMBot to play some code golf, query them for the input grid, and ask if they have a preferred
     # optimization for ReMBot to use. Finally, call the code golf solver and return the output as a message in the
     # discord #codegolf text channel.
 
     golfChannel = botTestingServer.get_channel(ServerIDs.GOLF_ID.value)
-    await generalTextChannel.send('Let me play some code golf for you! Please provide your grid as a single message.')
-    grid = await client.wait_for('message')
-    grid = grid.content
-    grid = grid.split('\n')
-    for i in range(len(grid)):
-        grid[i] = grid[i].split(' ')
-        grid[i] = list(map(int, grid[i]))
-    grid = np.array(grid)
-    await generalTextChannel.send(('Thanks! Now, would you like to optimize for fewest hits or least effort?' 
-                                   'Please respond \'-hits\' or \'-effort\'.'))
-    optimization = await client.wait_for('message')
-    optimization = optimization.content
-    while not (optimization == '-hits' or optimization == '-effort'):
-        await generalTextChannel.send('Please specify your response as \'-hits\' or \'-effort\'.')
-        optimization = await client.wait_for('message')
-        optimization = optimization.content
+    await generalTextChannel.send('Let me play some code golf for you!')
+    graph = None
+    grid = None
+    if message.attachments:
+        f = await discord.Attachment.to_file(message.attachments[0])
+
+        # Check that attachment is a .txt file
+        file_name = str(f.filename).split('.')
+        if len(file_name) < 2 or file_name[1].lower() != "txt":
+            # S_nil2: File is not a .txt file
+            print(file_name)
+            await generalTextChannel.send("You need to attach a .txt file!")
+            return
+        rows = []
+        try:
+            # File text is read into a string
+            rows = f.fp.read().decode("utf-8").split('\n')
+        except BlockingIOError as err:
+            print(err.filename)
+            await generalTextChannel.send("Could not read attached file")
+            return
+        grid = parseGolf.readIntoGrid(rows)
+        graph = golfClasses.GolfGraph(grid)
+        graph.a_star_greedy()
+        print(graph.path)
+    else:
+        await generalTextChannel.send("Please attach a .txt file representing the golf course!")
+        return
+
+    if graph is None or grid is None:
+        await generalTextChannel.send("Hmmm seems we weren't able to find a path.")
+        await generalTextChannel.send("Check that you've given a file in the appropriate format.")
+        return
+
     await generalTextChannel.send('Perfect! Meet me in the #codegolf channel for your optimal series of hits.')
-    # TODO: function call to code golf solver happens here
     await golfChannel.send('I\'ve got a route for you! First, here\'s your golf course terrain again:')
-    await golfChannel.send(str(grid))
-    await golfChannel.send('The route you should take to optimize for ' + optimization + ' is: ')  # TODO print route when done
+    for row in grid:
+        # TODO: Format printed row to have equal spacing
+        await golfChannel.send('`' + "".join(["{:=5}".format(elem) for elem in row]) + '`')
+    await golfChannel.send('The route you should take to optimize for this terrain' + ' is:\n' + str(graph.path))
+
 
 # -----------------------------
 # ----- EVENT DEFINITIONS -----
@@ -386,7 +419,7 @@ async def on_message(message):
 
     # The user would like ReMBot to play some code golf.
     if message.content.startswith('$golf'):
-        await codeGolfHelper()
+        await codeGolfHelper(message)
 
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the

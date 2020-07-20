@@ -97,3 +97,5 @@ should hit towards to achieve their solution of the course.
 https://discordpy.readthedocs.io/en/latest/index.html
 
 http://www.cs.columbia.edu/~rjaiswal/factoring-survey.pdf
+
+https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm#Practical_optimizations_and_infinite_graphs
