@@ -116,7 +116,7 @@ class GolfGraph:
         #  or should if be > 0.5, meaning it is preferred to go downhill over flat?
         # Perhaps the heuristic can compensate...
         if height_diff == 0:
-            return 0
+            return 0.9
 
         if height_diff < 0:
             height_diff = pow(abs(height_diff) + 1, -1)
