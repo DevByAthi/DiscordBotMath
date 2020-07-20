@@ -24,10 +24,6 @@ class GolfGraph:
         # UP Direction
         if row_init > 0:
             for i in range(row_init - 1, -1, -1):
-                # TODO: Double check that there will be no logical errors
-                #  if loop is exited when visited position is found
-                if (i, col_init) in self.visited:
-                    break
 
                 height_current = self.grid[i][col_init]
 
@@ -48,8 +44,6 @@ class GolfGraph:
         # DOWN Direction
         if row_init < len(self.grid) - 1:
             for i in range(row_init + 1, len(self.grid)):
-                if (i, col_init) in self.visited:
-                    break
 
                 height_current = self.grid[i][col_init]
 
@@ -70,8 +64,6 @@ class GolfGraph:
         # LEFT Direction
         if col_init > 0:
             for i in range(col_init - 1, -1, -1):
-                if (row_init, i) in self.visited:
-                    continue
 
                 height_current = self.grid[row_init][i]
 
@@ -92,8 +84,6 @@ class GolfGraph:
         # RIGHT Direction
         if col_init < len(self.grid[0]) - 1:
             for i in range(col_init + 1, len(self.grid[0])):
-                if (row_init, i) in self.visited:
-                    continue
 
                 height_current = self.grid[row_init][i]
 
@@ -111,8 +101,6 @@ class GolfGraph:
                     available_new_positions.append((row_init, i))
                     break
 
-        # for line in grid:
-        #     print(line)
         return available_new_positions
 
     # Compute the weight for the edge connecting two adjacent positions
@@ -141,7 +129,7 @@ class GolfGraph:
     # TODO: Verify that heuristic is actually useful
     # TODO: Verify that heuristic makes function greedy
     def heuristic(self, cur_row, cur_col):
-        return self.weight(cur_row, cur_col, len(self.grid) - 1, len(self.grid[0]) - 1)
+        return pow(self.grid[cur_row][cur_col] + 1, -1)
 
     # We treat the grid as a weighted digraph
     # The weight for the connection between adjacent positions
@@ -193,6 +181,9 @@ class GolfGraph:
             neighbors = self.findAvailablePositions(cur_row, cur_col)
             for neighbor in neighbors:
                 neighbor_row, neighbor_col = neighbor
+
+                if (neighbor_row, neighbor_col) in self.visited:
+                    continue
 
                 # Calculate the weighted distance to neighboring position
                 # This tuple will have a better upper bound on the distance to the associated position
