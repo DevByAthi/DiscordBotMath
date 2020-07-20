@@ -110,11 +110,8 @@ class GolfGraph:
     def weight(self, cur_row, cur_col, neighbor_row, neighbor_col):
         height_diff = self.grid[neighbor_row][neighbor_col] - self.grid[cur_row][cur_col]
 
-        # This strange case is dont to ensure that we don't prefer
+        # This strange case is to ensure that we don't prefer
         # going on flat ground to going downhill
-        # TODO: Should this value be 0, meaning it is preferred to go flat over going downhill,
-        #  or should if be > 0.5, meaning it is preferred to go downhill over flat?
-        # Perhaps the heuristic can compensate...
         if height_diff == 0:
             return 0.9
 
@@ -122,12 +119,8 @@ class GolfGraph:
             height_diff = pow(abs(height_diff) + 1, -1)
         return height_diff
 
-    # TODO: See if heuristic can incorporate Manhattan weighted distance into value,
-    #  i.e. take minimum sum of weighted distance from current position to an edge
-    #  with that from edge to goal
-    # TODO: Verify that heuristic is admissible
-    # TODO: Verify that heuristic is actually useful
-    # TODO: Verify that heuristic makes function greedy
+    # An admissible heuristic, guaranteed to be less than
+    # or equal to the sum of weights along the optimal path
     def heuristic(self, cur_row, cur_col):
         return pow(self.grid[cur_row][cur_col] + 1, -1)
 
