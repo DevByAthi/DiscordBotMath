@@ -189,9 +189,9 @@ class GolfGraph:
 
                 # Note that the weighted distance will include the weighted distance of the current position
                 # This allows for the cumulative cost to be considered, as opposed to the immediate edge weight
-                updated_bound = neighbor_weight + dist[cur_row][cur_col] + self.heuristic(cur_row, cur_col)
+                updated_bound = neighbor_weight + dist[cur_row][cur_col]
                 if dist[neighbor_row][neighbor_col] > updated_bound:
-                    dist[neighbor_row][neighbor_col] = updated_bound
+                    dist[neighbor_row][neighbor_col] = updated_bound + self.heuristic(cur_row, cur_col)
                     # Record the predecessor of this neighbor as current
                     prev[(neighbor_row, neighbor_col)] = (cur_row, cur_col)
 
