@@ -124,9 +124,14 @@ class GolfGraph:
     def heuristic(self, cur_row, cur_col):
         return pow(self.grid[cur_row][cur_col] + 1, -1)
 
-    # We treat the grid as a weighted digraph
-    # The weight for the connection between adjacent positions
-    # is assigned using a special function that takes in the difference in height (see weight above)
+    # We convert the grid into a weighted digraph
+    # The weight for the connection between adjacent positions is assigned
+    # using a special function that takes in the difference in height (see weight above)
+    # INTENT: Find the optimal path from the start to the end assuming simplifying physical constraints
+    # PRECONDITION: self.grid is a non empty 2D list representing a rectangular grid
+    # PRECONDITION: start position is at (0,0), corresponding to the top-left corner of self.grid
+    # PRECONDITION: goal position is at (len(self.grid) - 1, len(self.grid[0]) - 1) the bottom right corner of self.grid
+    # PRECONDITION: all values in self.grid are nonnegative integers
     def a_star_greedy(self):
 
         rows = len(self.grid)
@@ -200,6 +205,11 @@ class GolfGraph:
                 # We can assume we haven't visited this neighbor, as this has been checked in findAvailablePositions()
                 # TODO: Figure out if this affects the outcome, might be a logical bug
                 self.visited.add((neighbor_row, neighbor_col))
+    # POSTCONDITION: The updated list self.path contains a sequence of tuples
+    #   representing the position at which the ball rests, describing the path to the goal
+    # POSTCONDITION: minh is not empty
+    # POSTCONDITION: (self.path)[0] = (0,0)
+    # POSTCONDITION: (self.path)[-1] = (len(self.grid) - 1, len(self.grid[0]) - 1), the goal position
 
     # Checks if we have arrived at the bottom-right corner, our goal
     def atGoal(self, r, c):
