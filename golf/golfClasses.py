@@ -1,6 +1,8 @@
 from enum import Enum
 from heapq import *
 from math import inf
+
+import parseTopLevel
 from golf import parseGolf
 
 
@@ -265,7 +267,7 @@ if __name__ == "__main__":
 
     for i in range(1, num_files + 1):
         file_name = "sampleGrid" + str(i) + ".txt"
-        grid = parseGolf.readIntoGrid(parseGolf.readFileIntoString(file_name))
+        grid = parseGolf.readIntoGrid(parseTopLevel.readFileIntoString(file_name))
         print(file_name)
         print(len(grid), len(grid[0]))
         graph = GolfGraph(grid)

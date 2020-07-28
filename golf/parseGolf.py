@@ -1,8 +1,4 @@
-def readFileIntoString(name):
-    f = open(name)
-    rows_raw = f.read().strip().split('\n')
-    return rows_raw
-
+from parseTopLevel import readFileIntoString
 def readIntoGrid(rows_raw):
     arr = []
     for row in rows_raw:
