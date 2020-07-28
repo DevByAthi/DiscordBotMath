@@ -3,10 +3,16 @@ LABELS = {'C': 'Customer', 'F': 'Factory', 'M': 'Mail Station', 'P': 'Potential 
 
 class Vertex:
 
-    def __init__(self, type, name):
-        Vertex.check_type(type, name)
-        self.type = type.upper()
+    def __init__(self, label_type, name):
+        Vertex.check_type(label_type, name)
+        self.type = label_type.upper()
         self.name = name
+
+    def __lt__(self, other):
+        return self.name < other.name
+
+    def __repr__(self):
+        return LABELS[self.type] + ": " + self.name
 
     @staticmethod
     def check_type(potential_type, potential_name):
