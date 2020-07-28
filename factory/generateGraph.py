@@ -2,20 +2,26 @@ from parseTopLevel import readFileIntoString
 
 
 def parseGraph(file_str_list):
-    for line in file_str_list:
-        print(line)
 
     num_vertices = 0
     num_edges = 0
     try:
-        num_vertices = int(file_str_list[0])
-        num_edges = int(file_str_list[2])
+        num_vertices, num_edges = list(map(int, file_str_list[0].split()))
     except ValueError or IndexError:
         raise ValueError("First line must contain two integers: number of vertices and number of edges")
+    except TypeError:
+        raise ValueError("Do not split input values between two lines. Must be on a single line")
 
-    for i in range(2, num_vertices + 2):
+    vertices = set()
+    edges = set()
+
+    for i in range(1, num_vertices + 1):
         pass
+
+    print(num_vertices)
+    print(num_edges)
 
 
 if __name__ == '__main__':
-    pass
+    s = readFileIntoString('graph1.txt')
+    parseGraph(s)
