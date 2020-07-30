@@ -1,7 +1,10 @@
 from factory.graphClasses import Vertex, Edge
 from parseTopLevel import readFileIntoString
 
-
+'''
+:param file_str_list List
+:throws KeyError, IndexError
+'''
 def parseGraph(file_str_list):
 
     num_vertices = 0
