@@ -13,19 +13,26 @@ def parseGraph(file_str_list):
     except TypeError:
         raise ValueError("Do not split input values between two lines. Must be on a single line")
 
-    vertices = set()
+    vertices = dict()
     edges = set()
 
     i = 0
     for i in range(1, num_vertices + 1):
         label_type, name = file_str_list[i].split()
         v = Vertex(label_type, name)
-        vertices.add(v)
+        vertices[name] = v
         print(v)
 
-    start_index = i
+    start_index = i + 1
     for i in range(start_index, len(file_str_list)):
-        pass
+        print("a" + file_str_list[i] + " b")
+        first, second, cost = file_str_list[i].split()
+        try:
+            e = Edge(vertices[first], vertices[second], cost)
+            edges.add(e)
+            print(e)
+        except KeyError:
+            raise KeyError("No existing vertex for path between {} and {}".format(first, second))
 
 
 if __name__ == '__main__':
