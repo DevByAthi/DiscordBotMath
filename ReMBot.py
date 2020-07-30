@@ -19,6 +19,7 @@ from schedule.errors import *
 from snakesequence.snake_seq_solver import getLongestSnakeSequence
 from golf import parseGolf, golfClasses
 from enum import Enum
+from factory.generateGraph import parseGraph
 
 client = discord.Client()
 botTestingServer = []
@@ -30,6 +31,7 @@ class ServerIDs(Enum):
     SERVER_ID = 708142506012966993
     GENERAL_ID = 708142506520608828
     CHOCOLATE_ID = 726816875899650109
+    CHOCOLATE_SHIPPING_ID = 738445964087656600
     SNAKE_ID = 732026639512240229
     GOLF_ID = 732954147380265040
 
@@ -375,6 +377,56 @@ async def codeGolfHelper(message):
     await golfChannel.send('The route you should take to optimize for this terrain' + ' is:\n' + str(graph.path))
 
 
+async def chocolateShippingHelper(message):
+    # If the user wants to figure out some logistics related to shipping chocolate, find out their
+    # use case (customer vs factory planner) and call the appropriate solver.
+    chocolateShippingChannel = botTestingServer.get_channel(ServerIDs.CHOCOLATE_SHIPPING_ID.value)
+
+    if message.attachments:
+        f = await discord.Attachment.to_file(message.attachments[0])
+
+        # Check that attachment is a .txt file
+        file_name = str(f.filename).split('.')
+        if len(file_name) < 2 or file_name[1].lower() != "txt":
+            # S_nil2: File is not a .txt file
+            print(file_name)
+            await generalTextChannel.send("You need to attach a .txt file!")
+            return
+        rows = []
+        try:
+            # File text is read into a string
+            rows = f.fp.read().decode("utf-8").strip().split('\n')
+            graph = parseGraph(rows)
+        except BlockingIOError as err:
+            print(err.filename)
+            await generalTextChannel.send("Could not read attached file")
+            return
+    else:
+        await generalTextChannel.send("Please attach a .txt file representing the chocolate shipping network as a graph!")
+        return
+
+    await generalTextChannel.send('Let\'s do some chocolate business. Firstly, are you a customer or planner?')
+    await generalTextChannel.send('Please respond either `customer` or `planner`.')
+    useCase = await client.wait_for('message')
+    useCase = useCase.content
+    while not ((useCase == 'customer') or (useCase == 'planner')):
+        await generalTextChannel.send('Please respond either `customer` or `planner`.')
+        useCase = await client.wait_for('message')
+        useCase = useCase.content
+
+    await generalTextChannel.send('Great! Meet me in the #chocolate-factory channel for your solution.')
+
+    if useCase == 'customer':
+        await generalTextChannel.send(('So, you\'re a chocolate-hungry customer. Let\'s look at your shipping network '
+                                       'and decide which factory you should order from to minimize shipping costs.'))
+        # TODO: Call shortest-path solver for customer and print output
+    else:
+        await generalTextChannel.send(('So, you\'re a ruthless chocolate businessperson. Let\'s look at your shipping network '
+                                       'and decide between a few locations to build your factory to minimize shipping costs ' 
+                                       'to all the customers in your network.'))
+        # TODO: Call MST solver for factory-builder and print output
+
+
 # -----------------------------
 # ----- EVENT DEFINITIONS -----
 # -----------------------------
@@ -420,6 +472,10 @@ async def on_message(message):
     # The user would like ReMBot to play some code golf.
     if message.content.startswith('$golf'):
         await codeGolfHelper(message)
+
+    # The user would like to figure out some shipping logistics for the chocolate economy.
+    if message.content.startswith('$shipping'):
+        await chocolateShippingHelper(message)
 
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
