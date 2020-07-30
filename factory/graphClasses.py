@@ -7,9 +7,13 @@ class Vertex:
         Vertex.check_type(label_type, name)
         self.type = label_type.upper()
         self.name = name
+        self.distanceValue = float('inf')
 
     def __lt__(self, other):
         return self.name < other.name
+
+    def __le__(self, other):
+        return self.distanceValue <= other.distanceValue
 
     def __repr__(self):
         return LABELS[self.type] + ": " + self.name
