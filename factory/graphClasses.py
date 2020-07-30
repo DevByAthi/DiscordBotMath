@@ -49,6 +49,9 @@ class Edge:
             # Factories cannot directly connect to potential factories
             return False
 
+    def __repr__(self):
+        return str(self.pair) + ", with transport cost " + str(self.cost)
+
 
 if __name__ == '__main__':
     vert1 = Vertex('C', 'Athreya')
