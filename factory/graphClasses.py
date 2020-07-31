@@ -53,6 +53,15 @@ class Edge:
         return str(self.pair) + ", with transport cost " + str(self.cost)
 
 
+class Graph:
+    def __init__(self, vertices: dict, edges: set):
+        self.vertices = vertices
+        self.edges = edges
+
+    def create_lookup(self):
+        pass
+
+
 if __name__ == '__main__':
     vert1 = Vertex('C', 'Athreya')
     vert2 = Vertex('M', 'UPS_Store')
