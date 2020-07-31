@@ -58,9 +58,16 @@ class Graph:
         self.vertices = vertices
         self.edges = edges
 
+        # The lookup dictionary generated maps strings combining
+        # the names of an edge's vertices to the edges themselves
+        # E.g. an edge e1, connect vertices with names a and b,
+        # would be stored in this dictionary as lookup[a_b] = e1
+
+        # TODO: Need a function to take in vertex names and return hashable string in correct order
+        #  i.e. if vertices' names are given as (b,a), the string key should still be a_b
         self.lookup = self.create_edge_lookup()
 
-    # Create dictionary
+    # Create lookup dictionary for finding edges given a string representing end vertices
     def create_edge_lookup(self):
         ret_dict = dict()
         for edge in self.edges:
