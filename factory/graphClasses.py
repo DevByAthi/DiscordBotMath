@@ -50,7 +50,7 @@ class Edge:
             return False
 
     def __repr__(self):
-        return str(self.pair) + ", with transport cost " + str(self.cost)
+        return "|" + str(self.pair) + ", with transport cost " + str(self.cost) + "|"
 
 
 class Graph:
@@ -58,8 +58,16 @@ class Graph:
         self.vertices = vertices
         self.edges = edges
 
-    def create_lookup(self):
-        pass
+        self.lookup = self.create_edge_lookup()
+
+    # Create dictionary
+    def create_edge_lookup(self):
+        ret_dict = dict()
+        for edge in self.edges:
+            edge_vertices = edge.pair
+            name_hash = "_".join(edge_vertices)
+            ret_dict[name_hash] = edge
+        return ret_dict
 
 
 if __name__ == '__main__':
@@ -67,8 +75,15 @@ if __name__ == '__main__':
     vert2 = Vertex('M', 'UPS_Store')
     vert3 = Vertex('F', 'Bakersfield_Factory')
     vert4 = Vertex('P', 'Newtown_Factory_potential')
+    vertex_set = {vert1, vert2, vert3, vert4}
+    vertices_dict = dict()
+    for v in vertex_set:
+        vertices_dict[v.name] = v
 
     e1 = Edge(vert1, vert2)
     e2 = Edge(vert2, vert3)
     e3 = Edge(vert1, vert3)
-    e4 = Edge(vert3, vert4)
+    edges = {e1, e2, e3}
+
+    g = Graph(vertices_dict, edges)
+    print(g.lookup)
