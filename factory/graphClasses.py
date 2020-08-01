@@ -1,3 +1,5 @@
+from sys import maxsize
+
 LABELS = {'C': 'Customer', 'F': 'Factory', 'M': 'Mail Station', 'P': 'Potential Factory'}
 
 
@@ -10,13 +12,10 @@ class Vertex:
         self.distanceValue = float('inf')
 
     def __lt__(self, other):
-        return self.name < other.name
-
-    def __le__(self, other):
         return self.distanceValue <= other.distanceValue
 
     def __repr__(self):
-        return LABELS[self.type] + ": " + self.name
+        return LABELS[self.type] + ": " + self.name + " " + str(self.distanceValue)
 
     @staticmethod
     def check_type(potential_type, potential_name):
@@ -93,6 +92,7 @@ class Graph:
                 neighborNodes.append(self.vertices[setDif.pop()])
 
         return neighborNodes
+
 
 if __name__ == '__main__':
     vert1 = Vertex('C', 'Athreya')
