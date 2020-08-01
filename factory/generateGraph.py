@@ -5,7 +5,7 @@ from parseTopLevel import readFileIntoString
 :param file_str_list List
 :throws KeyError, IndexError
 '''
-def parseGraph(file_str_list):
+def parseIntoGraph(file_str_list):
 
     num_vertices = 0
     num_edges = 0
@@ -41,5 +41,5 @@ def parseGraph(file_str_list):
 
 if __name__ == '__main__':
     s = readFileIntoString('graph1.txt')
-    g = parseGraph(s)
+    g = parseIntoGraph(s)
     print(g.lookup)
