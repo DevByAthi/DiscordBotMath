@@ -94,7 +94,6 @@ class Graph:
 
         return neighborNodes
 
-
 if __name__ == '__main__':
     vert1 = Vertex('C', 'Athreya')
     vert2 = Vertex('M', 'UPS_Store')
