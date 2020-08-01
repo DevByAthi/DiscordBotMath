@@ -53,14 +53,62 @@ class Edge:
             # Factories cannot directly connect to potential factories
             return False
 
+    def __repr__(self):
+        return "|" + str(self.pair) + ", with transport cost " + str(self.cost) + "|"
+
+
+class Graph:
+    def __init__(self, vertices: dict, edges: set):
+        self.vertices = vertices
+        self.edges = edges
+
+        # The lookup dictionary generated maps strings combining
+        # the names of an edge's vertices to the edges themselves
+        # E.g. an edge e1, connect vertices with names a and b,
+        # would be stored in this dictionary as lookup[a_b] = e1
+
+        # TODO: Need a function to take in vertex names and return hashable string in correct order
+        #  i.e. if vertices' names are given as (b,a), the string key should still be a_b
+        self.lookup = self.create_edge_lookup()
+
+    # Create lookup dictionary for finding edges given a string representing end vertices
+    def create_edge_lookup(self):
+        ret_dict = dict()
+        for edge in self.edges:
+            edge_vertices = edge.pair
+            name_hash = "_".join(edge_vertices)
+            ret_dict[name_hash] = edge
+        return ret_dict
+
+    def getNeighboringNodes(self, aNode):
+        # Linear search to get list of all nodes adjacent to a given node. Quick and dirty implementation since I just
+        # need it done to move forward. To be improved later.
+        if aNode.name not in self.vertices:
+            raise TypeError('Given vertex not present in this graph.')
+        neighborNodes = []
+        for edge in self.edges:
+            # Get set difference - if it is size 1, the edge contains aNode and we should add the other node.
+            setDif = edge.pair - {aNode.name}
+            if len(setDif) == 1:
+                neighborNodes.append(self.vertices[setDif.pop()])
+
+        return neighborNodes
+
 
 if __name__ == '__main__':
     vert1 = Vertex('C', 'Athreya')
     vert2 = Vertex('M', 'UPS_Store')
     vert3 = Vertex('F', 'Bakersfield_Factory')
     vert4 = Vertex('P', 'Newtown_Factory_potential')
+    vertex_set = {vert1, vert2, vert3, vert4}
+    vertices_dict = dict()
+    for v in vertex_set:
+        vertices_dict[v.name] = v
 
     e1 = Edge(vert1, vert2)
     e2 = Edge(vert2, vert3)
     e3 = Edge(vert1, vert3)
-    e4 = Edge(vert3, vert4)
+    edges = {e1, e2, e3}
+
+    g = Graph(vertices_dict, edges)
+    print(g.lookup)
