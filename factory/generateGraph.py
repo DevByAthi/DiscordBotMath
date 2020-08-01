@@ -1,4 +1,4 @@
-from factory.graphClasses import Vertex, Edge
+from factory.graphClasses import Vertex, Edge, Graph
 from parseTopLevel import readFileIntoString
 
 '''
@@ -24,20 +24,22 @@ def parseGraph(file_str_list):
         label_type, name = file_str_list[i].split()
         v = Vertex(label_type, name)
         vertices[name] = v
-        print(v)
+        # print(v)
 
     start_index = i + 1
     for i in range(start_index, len(file_str_list)):
-        print("a" + file_str_list[i] + " b")
         first, second, cost = file_str_list[i].split()
         try:
             e = Edge(vertices[first], vertices[second], cost)
             edges.add(e)
-            print(e)
+            # print(e)
         except KeyError:
             raise KeyError("No existing vertex for path between {} and {}".format(first, second))
+    return Graph(vertices, edges)
+
 
 
 if __name__ == '__main__':
     s = readFileIntoString('graph1.txt')
-    parseGraph(s)
+    g = parseGraph(s)
+    print(g.lookup)
