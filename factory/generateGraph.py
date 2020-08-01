@@ -1,11 +1,12 @@
 from factory.graphClasses import Vertex, Edge, Graph
 from parseTopLevel import readFileIntoString
 
+
 '''
 :param file_str_list List
 :throws KeyError, IndexError
 '''
-def parseIntoGraph(file_str_list):
+def parse_into_graph(file_str_list):
 
     num_vertices = 0
     num_edges = 0
@@ -36,7 +37,6 @@ def parseIntoGraph(file_str_list):
         except KeyError:
             raise KeyError("No existing vertex for path between {} and {}".format(first, second))
     return Graph(vertices, edges)
-
 
 
 if __name__ == '__main__':
