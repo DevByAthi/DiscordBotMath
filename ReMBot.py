@@ -20,6 +20,7 @@ from snakesequence.snake_seq_solver import getLongestSnakeSequence
 from golf import parseGolf, golfClasses
 from enum import Enum
 from factory.generateGraph import parseGraph
+from factory.shortestShippingPath import findCheapestShippingPath
 
 client = discord.Client()
 botTestingServer = []
@@ -392,7 +393,6 @@ async def chocolateShippingHelper(message):
             print(file_name)
             await generalTextChannel.send("You need to attach a .txt file!")
             return
-        rows = []
         try:
             # File text is read into a string
             rows = f.fp.read().decode("utf-8").strip().split('\n')
@@ -414,12 +414,30 @@ async def chocolateShippingHelper(message):
         useCase = await client.wait_for('message')
         useCase = useCase.content
 
-    await generalTextChannel.send('Great! Meet me in the #chocolate-factory channel for your solution.')
-
     if useCase == 'customer':
         await generalTextChannel.send(('So, you\'re a chocolate-hungry customer. Let\'s look at your shipping network '
                                        'and decide which factory you should order from to minimize shipping costs.'))
-        # TODO: Call shortest-path solver for customer and print output
+        await generalTextChannel.send(('But first, please tell me the name of the Customer in your shipping network '
+                                       'which you would like to ship chocolate to.'))
+        customerNode = await client.wait_for('message')
+        customerNode = customerNode.content
+        i = 0
+        while not (customerNode in graph.vertices and graph.vertices[customerNode].type == 'C'):
+            await generalTextChannel.send(('I couldn\'t find a Customer with that name in your shipping network. '
+                                           'Please try again.'))
+            customerNode = await client.wait_for('message')
+            customerNode = customerNode.content
+            i += 1
+            if i > 3:
+                # Prevent infinite loop if user submits graph with no customer nodes.
+                await generalTextChannel.send('Too many failed attempts. Please submit $shipping again and retry.')
+
+        await generalTextChannel.send('Great! Meet me in the #chocolate-factory channel for your solution.')
+        cheapestFactory = findCheapestShippingPath(graph, customerNode)
+        await chocolateShippingChannel.send('Hello, customer! I\'ve found the factory with cheapest shipping cost to you.')
+        await chocolateShippingChannel.send('The factory you should order from is: ' + cheapestFactory[0])
+        await chocolateShippingChannel.send('The total shipping cost to you will be: ' + str(cheapestFactory[1]))
+        await chocolateShippingChannel.send('Enjoy your cheap chocolate!')
     else:
         await generalTextChannel.send(('So, you\'re a ruthless chocolate businessperson. Let\'s look at your shipping network '
                                        'and decide between a few locations to build your factory to minimize shipping costs ' 

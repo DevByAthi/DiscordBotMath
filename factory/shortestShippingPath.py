@@ -9,8 +9,8 @@ def findCheapestShippingPath(a_graph, a_node_name):
     # Pre (node): a_node_name is a string corresponding to the name of one of the nodes in a_graph.
     # Post: factoryToReturn is a tuple wherein the first entry is the name of the factory node, cheapest_factory,
     #   which the customer should order chocolate from such that the path weight between cheapest_factory and
-    #   a_node_name is minimal as compared to the path weight between a_node_name and any other factory node, and the
-    #   second entry is the cost of shipping from that factory node to a_node_name.
+    #   a_node_name is minimal as compared to the path weight between a_node_name and any other factory node, the
+    #   second entry is the total cost of shipping from cheapest_factory to a_node_name.
 
     # Sa: pathQueue is a binary heap which contains every node in a_graph, ranked by the total weight needed to reach
     #   that node from a_node_name. To begin with, all nodes  have a weight of infinity, except the node with
@@ -42,8 +42,6 @@ def findCheapestShippingPath(a_graph, a_node_name):
             break
         else:
             # Get all neighbor nodes connected to cheapestNode as a list
-            print('cheapestNode: ', cheapestNode)
-            print('cheapestNode.distanceValue: ', cheapestNode.distanceValue)
             neighbouringNodes = a_graph.getNeighboringNodes(cheapestNode)
             for neighborNode in neighbouringNodes:
                 if (neighborNode not in removedNodes) and (neighborNode.type == 'F' or neighborNode.type == 'M'):
@@ -62,7 +60,7 @@ def findCheapestShippingPath(a_graph, a_node_name):
                         neighborNode.distanceValue = newDistance
                         heapify(pathQueue)
 
-                elif not (neighborNode.type == 'F' or neighborNode.type == 'M'):
+                elif (neighborNode not in removedNodes) and not (neighborNode.type == 'F' or neighborNode.type == 'M'):
                     # If neighborNode does not have the appropriate node type, remove it from pathQueue, and add it to removedNodes.
                     # No need to re-heapify pathQueue in this case, since neighborNode will always have distanceValue = inf here
                     # and thus will not disturb the order when it is removed.
@@ -86,15 +84,23 @@ if __name__ == '__main__':
     vert2 = Vertex('M', 'UPS_Store')
     vert3 = Vertex('F', 'Bakersfield_Factory')
     vert4 = Vertex('P', 'Newtown_Factory_potential')
-    vertex_set = {vert1, vert2, vert3, vert4}
+    vert5 = Vertex('M', 'UPS_Store2')
+    vert6 = Vertex('M', 'UPS_Store3')
+    vert7 = Vertex('F', 'Farmfresh_Chocolate')
+    vertex_set = {vert1, vert2, vert3, vert4, vert5, vert6, vert7}
     vertices_dict = dict()
     for v in vertex_set:
         vertices_dict[v.name] = v
 
     e1 = Edge(vert1, vert2, 1)
-    e2 = Edge(vert2, vert3, 1)
+    e2 = Edge(vert2, vert3, 6)
     e3 = Edge(vert1, vert3, 10)
-    edges = {e1, e2, e3}
+    e4 = Edge(vert2, vert5, 2)
+    e5 = Edge(vert5, vert6, 2)
+    e6 = Edge(vert6, vert3, 1)
+    e7 = Edge(vert2, vert4, 1)
+    e8 = Edge(vert5, vert7, 2)
+    edges = {e1, e2, e3, e4, e5, e6, e7, e8}
 
     g = Graph(vertices_dict, edges)
     factory = findCheapestShippingPath(g, 'Athreya')
