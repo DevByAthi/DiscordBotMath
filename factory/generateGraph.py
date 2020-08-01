@@ -41,5 +41,5 @@ def parse_into_graph(file_str_list):
 
 if __name__ == '__main__':
     s = readFileIntoString('graph1.txt')
-    g = parseIntoGraph(s)
+    g = parse_into_graph(s)
     print(g.lookup)
