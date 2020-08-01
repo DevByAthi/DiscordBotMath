@@ -7,9 +7,13 @@ class Vertex:
         Vertex.check_type(label_type, name)
         self.type = label_type.upper()
         self.name = name
+        self.distanceValue = float('inf')
 
     def __lt__(self, other):
         return self.name < other.name
+
+    def __le__(self, other):
+        return self.distanceValue <= other.distanceValue
 
     def __repr__(self):
         return LABELS[self.type] + ": " + self.name
@@ -76,6 +80,19 @@ class Graph:
             ret_dict[name_hash] = edge
         return ret_dict
 
+    def getNeighboringNodes(self, aNode):
+        # Linear search to get list of all nodes adjacent to a given node. Quick and dirty implementation since I just
+        # need it done to move forward. To be improved later.
+        if aNode.name not in self.vertices:
+            raise TypeError('Given vertex not present in this graph.')
+        neighborNodes = []
+        for edge in self.edges:
+            # Get set difference - if it is size 1, the edge contains aNode and we should add the other node.
+            setDif = edge.pair - {aNode.name}
+            if len(setDif) == 1:
+                neighborNodes.append(self.vertices[setDif.pop()])
+
+        return neighborNodes
 
 if __name__ == '__main__':
     vert1 = Vertex('C', 'Athreya')
