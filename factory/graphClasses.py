@@ -1,5 +1,3 @@
-from sys import maxsize
-
 LABELS = {'C': 'Customer', 'F': 'Factory', 'M': 'Mail Station', 'P': 'Potential Factory'}
 
 
