@@ -9,6 +9,7 @@ class Vertex:
         self.name = name
         self.distanceValue = float('inf')
 
+    # TODO: May have to make this use '<' instead of '<=', but changes behavior
     def __lt__(self, other):
         return self.distanceValue <= other.distanceValue
 
@@ -72,9 +73,12 @@ class Graph:
     def create_edge_lookup(self):
         ret_dict = dict()
         for edge in self.edges:
+            v1, v2 = tuple(edge.pair)
+            ret_dict[str(v1 + "_" + v2)] = edge
+            ret_dict[str(v2 + "_" + v1)] = edge
             edge_vertices = edge.pair
             name_hash = "_".join(edge_vertices)
-            ret_dict[name_hash] = edge
+            # ret_dict[name_hash] = edge
         return ret_dict
 
     def getNeighboringNodes(self, aNode):
