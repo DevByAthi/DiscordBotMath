@@ -92,28 +92,47 @@ def prims_algorithm(a_graph: Graph, name: str):
     # The value represents the name of key's predecessor in MST, if any
     visited_vertices = {current_vertex_name: None}
 
+    # Create min-heap for selecting next vertex on frontier by total travel cost
+    name_queue = [(0, current_vertex_name)]
+
     # TODO: MAKE THIS LOOP TERMINATE
     while True:
 
         # TODO: Update current_vertex_name
+        current_travel_cost, current_vertex_name = heappop(name_queue)
+
+        # Retrieve Current Vertex
+        current_vertex = a_graph.vertices[current_vertex_name]
 
         # Find neighbors of current node
         neighbors = a_graph.alt_lookup[current_vertex_name]
 
         # Iterate through each neighbor
-        for neighbor in neighbors.keys():
+        for neighbor_name in neighbors.keys():
 
             # TODO: If type of the neighbor is a factory or a potential factory, skip
 
-            travel_cost = neighbors[neighbor]
+            travel_cost = neighbors[neighbor_name]
+
+            neighbor_vertex = a_graph.vertices[neighbor_name]
 
             # If the neighbor has already been visited,
             # see if this current edge provides a shorter path
-            if neighbor in visited_vertices.keys():
-                pass
+            if neighbor_name in visited_vertices.keys():
+                if neighbor_vertex.distanceValue > current_travel_cost + travel_cost:
+                    # Update shortest distance to this neighbor
+                    neighbor_vertex.distanceValue = current_travel_cost + travel_cost
+                    # Mark current vertex as predecessor of neighbor in MST
+                    visited_vertices[neighbor_name] = current_vertex_name
+
             # If the neighbor has not yet been visited, add to visited_vertices
             else:
-                pass
+                # Update shortest distance to this neighbor
+                neighbor_vertex.distanceValue = current_travel_cost + travel_cost
+                # Mark current vertex as predecessor of neighbor in MST
+                visited_vertices[neighbor_name] = current_vertex_name
+
+            heappush(name_queue, (neighbor_vertex.distanceValue, neighbor_name))
 
     # Using a_graph lookup table, a_graph vertices dictionary, and visited_vertices,
     # create a Graph representing the MST of a_graph, excluding factories and other potential factories
