@@ -1,3 +1,4 @@
+from factory.generateGraph import *
 from factory.graphClasses import *
 from heapq import *
 
@@ -62,4 +63,5 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
 
 
 if __name__ == '__main__':
-    pass
+    s = readFileIntoString('graph2.txt')
+    g = parse_into_graph(s)

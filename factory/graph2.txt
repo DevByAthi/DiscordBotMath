@@ -1,0 +1,16 @@
+7 8
+C Athreya
+M UPS_Store
+F Bakersfield_Factory
+P Newtown_Factory_potential
+M UPS_Store2
+M UPS_Store3
+F Farmfresh_Chocolate
+Athreya UPS_Store 1
+UPS_Store Bakersfield_Factory 6
+Athreya Bakersfield_Factory 10
+UPS_Store UPS_Store2 2
+UPS_Store2 UPS_Store3 2
+UPS_Store3 Bakersfield_Factory 1
+UPS_Store Newtown_Factory_potential 1
+UPS_Store2 Farmfresh_Chocolate 2
