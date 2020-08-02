@@ -22,7 +22,6 @@ class Vertex:
             raise TypeError("Not a valid type for vertex ", potential_name)
 
 
-# TODO: Add __lt__ operator for implementation of Kruskal's Algorithm
 class Edge:
     def __init__(self, vertex1: Vertex, vertex2: Vertex, cost=0.0):
         if not Edge.is_valid_pairing(vertex1, vertex2):
@@ -54,6 +53,9 @@ class Edge:
 
     def __repr__(self):
         return "|" + str(self.pair) + ", with transport cost " + str(self.cost) + "|"
+
+    def __lt__(self, other):
+        return self.cost < other.cost
 
 
 class Graph:

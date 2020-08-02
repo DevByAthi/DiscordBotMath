@@ -65,3 +65,4 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
 if __name__ == '__main__':
     s = readFileIntoString('graph2.txt')
     g = parse_into_graph(s)
+    reachAllCustomers(g, g.vertices['Newtown_Factory_potential'])
