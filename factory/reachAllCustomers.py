@@ -116,14 +116,9 @@ def prims_algorithm(a_graph: Graph, name):
 
             neighbor_vertex = a_graph.vertices[neighbor_name]
 
-            # If the neighbor has already been visited,
-            # see if this current edge provides a shorter path
-            if neighbor_name in visited_vertices.keys():
-                if neighbor_vertex.distanceValue > current_travel_cost + travel_cost:
-                    # Update shortest distance to this neighbor
-                    neighbor_vertex.distanceValue = current_travel_cost + travel_cost
-                    # Mark current vertex as predecessor of neighbor in MST
-                    visited_vertices[neighbor_name] = current_vertex_name
+            # If type of the neighbor is a factory or a potential factory, skip
+            if neighbor_vertex.type == 'F' or neighbor_vertex.type == 'P':
+                continue
 
                     heappush(name_queue, (neighbor_vertex.distanceValue, neighbor_name))
 
