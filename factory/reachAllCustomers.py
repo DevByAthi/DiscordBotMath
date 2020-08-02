@@ -110,8 +110,6 @@ def prims_algorithm(a_graph: Graph, name):
         # Iterate through each neighbor
         for neighbor_name in neighbors.keys():
 
-            # TODO: If type of the neighbor is a factory or a potential factory, skip
-
             travel_cost = neighbors[neighbor_name]
 
             neighbor_vertex = a_graph.vertices[neighbor_name]
@@ -120,15 +118,18 @@ def prims_algorithm(a_graph: Graph, name):
             if neighbor_vertex.type == 'F' or neighbor_vertex.type == 'P':
                 continue
 
-                    heappush(name_queue, (neighbor_vertex.distanceValue, neighbor_name))
+            # Lambda function to determine if current distance to vertex can be further minimized
+            isMinimized = lambda a_vertex: a_vertex.distanceValue > current_travel_cost + travel_cost
 
-            # If the neighbor has not yet been visited, add to visited_vertices
-            else:
+            # If the neighbor has not yet been visited,
+            # or its distance can be minimized
+            # update the vertex's distanceValue, add vertex to MST, and add vertex to queue accordingly
+            if neighbor_name not in visited_vertices.keys() or isMinimized(neighbor_vertex):
                 # Update shortest distance to this neighbor
                 neighbor_vertex.distanceValue = current_travel_cost + travel_cost
-                # Mark current vertex as predecessor of neighbor in MST
+                # Mark current vertex as predecessor of neighbor in MST, updating the tree
                 visited_vertices[neighbor_name] = current_vertex_name
-
+                # Add updated neighbor to queue
                 heappush(name_queue, (neighbor_vertex.distanceValue, neighbor_name))
 
     # Using a_graph lookup table, a_graph vertices dictionary, and visited_vertices,
