@@ -71,6 +71,7 @@ def verify_type(a_potential_factory):
         raise TypeError("Must supply the name of a potential factory")
 
 
+# TODO: Implement Prim's Algorithm solution
 def prims_algorithm(a_graph: Graph, name: str):
     # Check that a_potential_factory is in a_graph
     if name not in a_graph.vertices.keys():
@@ -81,9 +82,41 @@ def prims_algorithm(a_graph: Graph, name: str):
 
     verify_type(a_potential_factory)
 
+    a_graph.resetDistances()
 
+    a_potential_factory.distanceValue = 0
 
+    current_vertex_name = name
 
+    # Create a temporary dict for the vertex names that have been added to the tree
+    # The value represents the name of key's predecessor in MST, if any
+    visited_vertices = {current_vertex_name: None}
+
+    # TODO: MAKE THIS LOOP TERMINATE
+    while True:
+
+        # TODO: Update current_vertex_name
+
+        # Find neighbors of current node
+        neighbors = a_graph.alt_lookup[current_vertex_name]
+
+        # Iterate through each neighbor
+        for neighbor in neighbors.keys():
+
+            # TODO: If type of the neighbor is a factory or a potential factory, skip
+
+            travel_cost = neighbors[neighbor]
+
+            # If the neighbor has already been visited,
+            # see if this current edge provides a shorter path
+            if neighbor in visited_vertices.keys():
+                pass
+            # If the neighbor has not yet been visited, add to visited_vertices
+            else:
+                pass
+
+    # Using a_graph lookup table, a_graph vertices dictionary, and visited_vertices,
+    # create a Graph representing the MST of a_graph, excluding factories and other potential factories
 
     pass
 
