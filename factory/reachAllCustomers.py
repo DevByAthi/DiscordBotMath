@@ -72,7 +72,7 @@ def verify_type(a_potential_factory):
 
 
 # TODO: Implement Prim's Algorithm solution
-def prims_algorithm(a_graph: Graph, name: str):
+def prims_algorithm(a_graph: Graph, name):
     # Check that a_potential_factory is in a_graph
     if name not in a_graph.vertices.keys():
         ret = "No existing vertex named {}".format(name)
@@ -125,6 +125,8 @@ def prims_algorithm(a_graph: Graph, name: str):
                     # Mark current vertex as predecessor of neighbor in MST
                     visited_vertices[neighbor_name] = current_vertex_name
 
+                    heappush(name_queue, (neighbor_vertex.distanceValue, neighbor_name))
+
             # If the neighbor has not yet been visited, add to visited_vertices
             else:
                 # Update shortest distance to this neighbor
@@ -132,20 +134,21 @@ def prims_algorithm(a_graph: Graph, name: str):
                 # Mark current vertex as predecessor of neighbor in MST
                 visited_vertices[neighbor_name] = current_vertex_name
 
-            heappush(name_queue, (neighbor_vertex.distanceValue, neighbor_name))
+                heappush(name_queue, (neighbor_vertex.distanceValue, neighbor_name))
 
     # Using a_graph lookup table, a_graph vertices dictionary, and visited_vertices,
     # create a Graph representing the MST of a_graph, excluding factories and other potential factories
 
-    pass
+    print("Visited: ", visited_vertices)
+    return True
 
 
 if __name__ == '__main__':
     s = readFileIntoString('graph2.txt')
     g = parse_into_graph(s)
-    mst = reachAllCustomers(g, g.vertices['Newtown_Factory_potential'])
+    mst = prims_algorithm(g, 'Newtown_Factory_potential')
 
-    # Check that non-existent vertex names will not be accepted
+    '''# Check that non-existent vertex names will not be accepted
     try:
         reachAllCustomers(g, g.vertices['ASDF'])
     except KeyError as err:
@@ -158,3 +161,4 @@ if __name__ == '__main__':
         print(err)
 
     print(mst.alt_lookup)
+    '''
