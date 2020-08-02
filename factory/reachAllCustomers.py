@@ -71,7 +71,7 @@ def verify_type(a_potential_factory):
         raise TypeError("Must supply the name of a potential factory")
 
 
-# TODO: Implement Prim's Algorithm solution
+# Prim's Algorithm solution
 def prims_algorithm(a_graph: Graph, name):
     # Check that a_potential_factory is in a_graph
     if name not in a_graph.vertices.keys():
@@ -95,10 +95,10 @@ def prims_algorithm(a_graph: Graph, name):
     # Create min-heap for selecting next vertex on frontier by total travel cost
     name_queue = [(0, current_vertex_name)]
 
-    # TODO: MAKE THIS LOOP TERMINATE
+    # This loop terminates when the minimum spanning tree cannot be further expanded
     while not(len(name_queue) == 0):
 
-        # TODO: Update current_vertex_name
+        # Update current_vertex_name
         current_travel_cost, current_vertex_name = heappop(name_queue)
 
         # Retrieve Current Vertex
