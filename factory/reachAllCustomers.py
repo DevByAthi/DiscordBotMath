@@ -31,11 +31,20 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
     heapify(remaining_edges)
 
     # Loop: terminate when all edges in a_graph have been encountered
+    while len(remaining_edges) > 0:
 
         # Pop edge with the lowest travel cost from the min heap
+        cur_edge = heappop(remaining_edges)
+        v1, v2 = tuple(cur_edge.pair)
 
         # If this current edge connects to a factory
         # or potential factory that is not a_potential_factory, skip
+        if a_graph.vertices[v1].type == 'F' or a_graph.vertices[v2].type == 'F':
+            continue
+        elif a_graph.vertices[v1].type == 'P' and a_graph.vertices[v1].name != a_potential_factory.name:
+            continue
+        elif a_graph.vertices[v2].type == 'P' and a_graph.vertices[v2].name != a_potential_factory.name:
+            continue
 
         # If this current edge already connects two vertices in the visited_nodes dictionary, skip
 
@@ -49,4 +58,8 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
     # This graph connects ONLY a_potential_factory to the customers via mail stations
     # Note that no other factories or potential factories are connected
 
+    pass
+
+
+if __name__ == '__main__':
     pass
