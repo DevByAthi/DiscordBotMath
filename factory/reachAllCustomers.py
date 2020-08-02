@@ -1,10 +1,20 @@
 from factory.graphClasses import *
 from heapq import *
 
-def reachAllCustomers(a_graph, a_potential_factory):
+def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
+
+    # Check that a_potential_factory is in a_graph
+    if a_potential_factory.name not in a_graph.vertices.keys():
+        raise KeyError("No existing vertex named {}".format(a_potential_factory.name))
 
     # Verify a_potential_factory is in fact, a potential factory
-    # Check type
+
+    # Raise a special exception if a factory is given
+    if a_potential_factory.type == 'F':
+        raise TypeError("Can only provide a potential factory, not an existing one!")
+
+    if a_potential_factory.type != 'P':
+        raise TypeError("Must supply the name of a potential factory")
 
     # Pre-processing to find number of customers in entire town
     # Note, not all customers can necessarily be reached from the potential factory
