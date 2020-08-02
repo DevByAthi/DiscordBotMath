@@ -21,10 +21,14 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
     num_customers = len([1 for val in a_graph.vertices.values() if val.type == "C"])
 
     # Create a temporary dictionary visited_nodes for the vertex names that have been added to the tree thus far
+    visited_nodes = dict()
 
     # Create a temporary set tree_edges for the edges used in minimum spanning tree
+    tree_edges = set()
 
     # Create copy of a_graph's edge set for purposes of finding MST as a min heap
+    remaining_edges = list(a_graph.edges)
+    heapify(remaining_edges)
 
     # Loop: terminate when all edges in a_graph have been encountered
 
