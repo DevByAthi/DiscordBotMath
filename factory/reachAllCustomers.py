@@ -96,7 +96,7 @@ def prims_algorithm(a_graph: Graph, name: str):
     name_queue = [(0, current_vertex_name)]
 
     # TODO: MAKE THIS LOOP TERMINATE
-    while True:
+    while not(len(name_queue) == 0):
 
         # TODO: Update current_vertex_name
         current_travel_cost, current_vertex_name = heappop(name_queue)
