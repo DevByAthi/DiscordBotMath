@@ -1,3 +1,5 @@
+import math
+
 LABELS = {'C': 'Customer', 'F': 'Factory', 'M': 'Mail Station', 'P': 'Potential Factory'}
 
 
@@ -112,6 +114,11 @@ class Graph:
                 neighborNodes.append(self.vertices[setDif.pop()])
 
         return neighborNodes
+
+    def resetDistances(self):
+        for vertex in self.vertices:
+            # TODO: Create Vertex member function to reset distanceValue
+            vertex.distanceValue = math.inf
 
 
 if __name__ == '__main__':
