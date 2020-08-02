@@ -9,14 +9,7 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
         ret = "No existing vertex named {}".format(a_potential_factory.name)
         raise KeyError()
 
-    # Verify a_potential_factory is in fact, a potential factory
-
-    # Raise a special exception if a factory is given
-    if a_potential_factory.type == 'F':
-        raise TypeError("Can only provide a potential factory, not an existing one!")
-
-    if a_potential_factory.type != 'P':
-        raise TypeError("Must supply the name of a potential factory")
+    verify_type(a_potential_factory)
 
     # Pre-processing to find number of customers in entire town
     # Note, not all customers can necessarily be reached from the potential factory
@@ -68,6 +61,30 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
     # This graph connects ONLY a_potential_factory to the customers via mail stations
     # Note that no other factories or potential factories are connected
 
+
+def verify_type(a_potential_factory):
+    # Verify a_potential_factory is in fact, a potential factory
+    # Raise a special exception if a factory is given
+    if a_potential_factory.type == 'F':
+        raise TypeError("Can only provide a potential factory, not an existing one!")
+    if a_potential_factory.type != 'P':
+        raise TypeError("Must supply the name of a potential factory")
+
+
+def prims_algorithm(a_graph: Graph, name: str):
+    # Check that a_potential_factory is in a_graph
+    if name not in a_graph.vertices.keys():
+        ret = "No existing vertex named {}".format(name)
+        raise KeyError()
+
+    a_potential_factory = a_graph.vertices[name]
+
+    verify_type(a_potential_factory)
+
+
+
+
+
     pass
 
 
@@ -88,4 +105,4 @@ if __name__ == '__main__':
     except TypeError as err:
         print(err)
 
-    print(mst.lookup)
+    print(mst.alt_lookup)
