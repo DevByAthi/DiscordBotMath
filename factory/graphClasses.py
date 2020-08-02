@@ -97,8 +97,8 @@ class Graph:
             if v2 not in ret_dict.keys():
                 ret_dict[v2] = dict()
 
-            ret_dict[v1][v2] = edge.cost
-            ret_dict[v2][v1] = edge.cost
+            ret_dict[v1][v2] = float(edge.cost)
+            ret_dict[v2][v1] = float(edge.cost)
         return ret_dict
 
     def getNeighboringNodes(self, aNode):
@@ -116,7 +116,8 @@ class Graph:
         return neighborNodes
 
     def resetDistances(self):
-        for vertex in self.vertices:
+        for name in self.vertices:
+            vertex = self.vertices[name]
             # TODO: Create Vertex member function to reset distanceValue
             vertex.distanceValue = math.inf
 
