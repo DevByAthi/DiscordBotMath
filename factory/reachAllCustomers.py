@@ -6,7 +6,8 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
 
     # Check that a_potential_factory is in a_graph
     if a_potential_factory.name not in a_graph.vertices.keys():
-        raise KeyError("No existing vertex named {}".format(a_potential_factory.name))
+        ret = "No existing vertex named {}".format(a_potential_factory.name)
+        raise KeyError()
 
     # Verify a_potential_factory is in fact, a potential factory
 
@@ -48,13 +49,21 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
             continue
 
         # If this current edge already connects two vertices in the visited_nodes dictionary, skip
+        if v1 in visited_nodes.keys() and v2 in visited_nodes.keys():
+            continue
 
         # Add names of vertices connected by current edge to visited_nodes
+        visited_nodes[v1] = a_graph.vertices[v1]
+        visited_nodes[v2] = a_graph.vertices[v2]
 
         # Add edge to tree_edges
+        tree_edges.add(cur_edge)
 
+    print(visited_nodes)
+    print(tree_edges)
     # Return Graph object representing the minimum spanning subtree of a_graph
     # Create Graph object using visited_nodes and tree_edges
+    return Graph(vertices=visited_nodes, edges=tree_edges)
 
     # This graph connects ONLY a_potential_factory to the customers via mail stations
     # Note that no other factories or potential factories are connected
@@ -65,4 +74,18 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
 if __name__ == '__main__':
     s = readFileIntoString('graph2.txt')
     g = parse_into_graph(s)
-    reachAllCustomers(g, g.vertices['Newtown_Factory_potential'])
+    mst = reachAllCustomers(g, g.vertices['Newtown_Factory_potential'])
+
+    # Check that non-existent vertex names will not be accepted
+    try:
+        reachAllCustomers(g, g.vertices['ASDF'])
+    except KeyError as err:
+        print(err)
+
+    # Check that existing factories will not be accepted
+    try:
+        reachAllCustomers(g, g.vertices['Farmfresh_Chocolate'])
+    except TypeError as err:
+        print(err)
+
+    print(mst.lookup)
