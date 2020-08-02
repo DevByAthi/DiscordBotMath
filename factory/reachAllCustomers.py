@@ -18,6 +18,7 @@ def reachAllCustomers(a_graph: Graph, a_potential_factory: Vertex):
 
     # Pre-processing to find number of customers in entire town
     # Note, not all customers can necessarily be reached from the potential factory
+    num_customers = len([1 for val in a_graph.vertices.values() if val.type == "C"])
 
     # Create a temporary dictionary visited_nodes for the vertex names that have been added to the tree thus far
 
