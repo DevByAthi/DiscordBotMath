@@ -71,6 +71,7 @@ class Graph:
         # TODO: Need a function to take in vertex names and return hashable string in correct order
         #  i.e. if vertices' names are given as (b,a), the string key should still be a_b
         self.lookup = self.create_edge_lookup()
+        self.alt_lookup = self.alt_lookup_creation()
 
     # Create lookup dictionary for finding edges given a string representing end vertices
     def create_edge_lookup(self):
@@ -82,6 +83,20 @@ class Graph:
             edge_vertices = edge.pair
             name_hash = "_".join(edge_vertices)
             # ret_dict[name_hash] = edge
+        return ret_dict
+
+    def alt_lookup_creation(self):
+        ret_dict = dict()
+        for edge in self.edges:
+            v1, v2 = tuple(edge.pair)
+
+            if v1 not in ret_dict.keys():
+                ret_dict[v1] = dict()
+            if v2 not in ret_dict.keys():
+                ret_dict[v2] = dict()
+
+            ret_dict[v1][v2] = edge.cost
+            ret_dict[v2][v1] = edge.cost
         return ret_dict
 
     def getNeighboringNodes(self, aNode):
@@ -115,4 +130,4 @@ if __name__ == '__main__':
     edges = {e1, e2, e3}
 
     g = Graph(vertices_dict, edges)
-    print(g.lookup)
+    print(g.alt_lookup)
