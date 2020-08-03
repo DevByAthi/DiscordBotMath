@@ -11,6 +11,10 @@ def verify_type(a_potential_factory):
         raise TypeError("Must supply the name of a potential factory")
 
 
+def parse_mst_dict(customer_paths: dict):
+    return [" -> ".join(path) for path in customer_paths.values()]
+
+
 def get_paths_to_customers(a_graph: Graph, visited: dict):
     visited_customers = [node for node in visited.keys()
                          if node in a_graph.vertices.keys()
@@ -101,6 +105,7 @@ if __name__ == '__main__':
     g = parse_into_graph(s)
     mst = prims_algorithm(g, 'Newtown_Factory_potential')
     print(mst)
+    print(parse_mst_dict(mst))
 
     '''# Check that non-existent vertex names will not be accepted
     try:
