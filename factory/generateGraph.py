@@ -35,7 +35,7 @@ def parse_into_graph(file_str_list):
             edges.add(e)
             # print(e)
         except KeyError:
-            raise KeyError("No existing vertex for path between {} and {}".format(first, second))
+            raise ValueError("No existing vertex for path between {} and {}".format(first, second))
     return Graph(vertices, edges)
 
 

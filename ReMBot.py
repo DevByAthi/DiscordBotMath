@@ -13,6 +13,10 @@
 import discord
 import asyncio
 import numpy as np
+
+from factory import reachAllCustomers
+from parseTopLevel import readFileIntoString
+
 from chocolate.chocolateBar import breakBar
 from schedule.scheduling import *
 from schedule.errors import *
@@ -20,7 +24,10 @@ from snakesequence.snake_seq_solver import getLongestSnakeSequence
 from golf import parseGolf, golfClasses
 from enum import Enum
 from factory.generateGraph import parse_into_graph
-from factory.shortestShippingPath import findCheapestShippingPath
+
+from factory.graphClasses import *
+from factory.generateGraph import parse_into_graph
+from factory.reachAllCustomers import *
 
 client = discord.Client()
 botTestingServer = []
@@ -308,7 +315,7 @@ async def performConcurrentActions(a_message):
 async def snakeSequenceTask():
     # If the user wants to find the longest snake sequence, ask them for the grid of numbers to use, then call
     # the snake sequence solver. Right now this function assumes perfect input because I'm too lazy to do input
-    # checking. TODO for later.
+    # checking.
 
     snakeChannel = botTestingServer.get_channel(ServerIDs.SNAKE_ID.value)
     await generalTextChannel.send(
@@ -326,9 +333,6 @@ async def snakeSequenceTask():
     await snakeChannel.send(str(grid))
     await snakeChannel.send('The longest snake sequence in your grid is: ' + str(longest_seq))
 
-
-# TODO: Change format of input to accept a file attachment
-#  as input, instead of manually typing in grid input
 
 async def codeGolfHelper(message):
     # If the user wants ReMBot to play some code golf, query them for the input grid, and ask if they have a preferred
@@ -373,7 +377,7 @@ async def codeGolfHelper(message):
     await generalTextChannel.send('Perfect! Meet me in the #codegolf channel for your optimal series of hits.')
     await golfChannel.send('I\'ve got a route for you! First, here\'s your golf course terrain again:')
     for row in grid:
-        # TODO: Format printed row to have equal spacing
+        # Format printed row to have equal spacing
         await golfChannel.send('`' + "".join(["{:=5}".format(elem) for elem in row]) + '`')
     await golfChannel.send('The route you should take to optimize for this terrain' + ' is:\n' + str(graph.path))
 
@@ -401,6 +405,12 @@ async def chocolateShippingHelper(message):
             print(err.filename)
             await generalTextChannel.send("Could not read attached file")
             return
+        except ValueError as err:
+            await generalTextChannel.send(str(err))
+            return
+        except TypeError as err:
+            await generalTextChannel.send(str(err))
+            return
     else:
         await generalTextChannel.send("Please attach a .txt file representing the chocolate shipping network as a graph!")
         return
@@ -421,6 +431,8 @@ async def chocolateShippingHelper(message):
                                        'whom you would like to ship chocolate to.'))
         customerNode = await client.wait_for('message')
         customerNode = customerNode.content
+
+        # TODO: This loop does not terminate until proper input is provided
         i = 0
         while not (customerNode in graph.vertices and graph.vertices[customerNode].type == 'C'):
             await generalTextChannel.send(('I couldn\'t find a Customer with that name in your shipping network. '
@@ -442,7 +454,22 @@ async def chocolateShippingHelper(message):
         await generalTextChannel.send(('So, you\'re a ruthless chocolate businessperson. Let\'s look at your shipping network '
                                        'and decide between a few locations to build your factory to minimize shipping costs ' 
                                        'to all the customers in your network.'))
-        # TODO: Call MST solver for factory-builder and print output
+        # Call MST solver for factory-builder and print output
+        potential_factory = await client.wait_for('message')
+        potential_factory = potential_factory.content
+        # Code segment is in a try-except block in case the user
+        # does not provide a valid potential factory name
+        try:
+            minimum_tree_dict = reachAllCustomers.prims_algorithm(graph, potential_factory)
+            parsed_customer_paths = parse_mst_dict(minimum_tree_dict)
+            await generalTextChannel.send("Go to the #chocolate-shipping channel to see the result of your query")
+            await chocolateShippingChannel.send("From the potential factory site {}, the following paths must be "
+                                                "taken to reach these customers".format(potential_factory))
+            for path in parsed_customer_paths:
+                await chocolateShippingChannel.send("`" + path + "`")
+        except TypeError as err:
+            await generalTextChannel.send(str(err))
+            return
 
 
 # -----------------------------
