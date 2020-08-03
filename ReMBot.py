@@ -15,6 +15,7 @@ import asyncio
 import numpy as np
 
 from factory import reachAllCustomers
+from factory.shortestShippingPath import findCheapestShippingPath
 from parseTopLevel import readFileIntoString
 
 from chocolate.chocolateBar import breakBar

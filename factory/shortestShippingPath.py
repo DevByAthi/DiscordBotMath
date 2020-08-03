@@ -53,7 +53,7 @@ def findCheapestShippingPath(a_graph, a_node_name):
                         edgeLookupString = cheapestNode.name + '_' + neighborNode.name
                         neighborEdge = a_graph.lookup[edgeLookupString]
 
-                    newDistance = neighborEdge.cost + cheapestNode.distanceValue
+                    newDistance = float(neighborEdge.cost) + cheapestNode.distanceValue
                     if newDistance < neighborNode.distanceValue:
                         #   If a new shortest path to neighborNode has been found, update neighborNode's distanceValue
                         #   and position in pathQueue.
