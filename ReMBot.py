@@ -405,7 +405,7 @@ async def chocolateShippingHelper(message):
             print(err.filename)
             await generalTextChannel.send("Could not read attached file")
             return
-        except ValueError or KeyError as err:
+        except ValueError as err:
             await generalTextChannel.send(str(err))
             return
     else:
@@ -450,10 +450,15 @@ async def chocolateShippingHelper(message):
                                        'and decide between a few locations to build your factory to minimize shipping costs ' 
                                        'to all the customers in your network.'))
         # Call MST solver for factory-builder and print output
-        # TODO: Put this code in a try-except block
         potential_factory = await client.wait_for('message')
         potential_factory = potential_factory.content
-        minimum_tree = reachAllCustomers.prims_algorithm(graph, potential_factory)
+        # Code segment is in a try-except block in case the user
+        # does not provide a valid potential factory name
+        try:
+            minimum_tree = reachAllCustomers.prims_algorithm(graph, potential_factory)
+        except TypeError as err:
+            await generalTextChannel.send(str(err))
+            return
         await chocolateShippingChannel.send("MST Tree: {}".format(minimum_tree))
 
 

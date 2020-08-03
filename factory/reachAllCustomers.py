@@ -15,8 +15,8 @@ def verify_type(a_potential_factory):
 def prims_algorithm(a_graph: Graph, name):
     # Check that a_potential_factory is in a_graph
     if name not in a_graph.vertices.keys():
-        ret = "No existing vertex named {}".format(name)
-        raise KeyError()
+        ret = "No existing vertex named `{}`".format(name)
+        raise TypeError(ret)
 
     a_potential_factory = a_graph.vertices[name]
 
