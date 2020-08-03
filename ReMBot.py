@@ -408,6 +408,9 @@ async def chocolateShippingHelper(message):
         except ValueError as err:
             await generalTextChannel.send(str(err))
             return
+        except TypeError as err:
+            await generalTextChannel.send(str(err))
+            return
     else:
         await generalTextChannel.send("Please attach a .txt file representing the chocolate shipping network as a graph!")
         return
