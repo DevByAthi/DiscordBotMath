@@ -1,6 +1,8 @@
 from enum import Enum
 from heapq import *
 from math import inf
+
+import parseTopLevel
 from golf import parseGolf
 
 
@@ -11,15 +13,12 @@ class GolfGraph:
         self.visited = set()
 
     # Determines where the player can hit the ball from its current position
-    # TODO: Simplify this code!!!!!!!!!!
     def findAvailablePositions(self, row_init, col_init):
         # row_init, col_init = self.ball.position
 
         # print(row, col)
         height_init = self.grid[row_init][col_init]
         available_new_positions = []
-
-        # TODO: Refactor into manageable pieces
 
         # UP Direction
         if row_init > 0:
@@ -265,7 +264,7 @@ if __name__ == "__main__":
 
     for i in range(1, num_files + 1):
         file_name = "sampleGrid" + str(i) + ".txt"
-        grid = parseGolf.readIntoGrid(parseGolf.readFileIntoString(file_name))
+        grid = parseGolf.readIntoGrid(parseTopLevel.readFileIntoString(file_name))
         print(file_name)
         print(len(grid), len(grid[0]))
         graph = GolfGraph(grid)

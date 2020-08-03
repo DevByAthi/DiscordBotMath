@@ -13,12 +13,21 @@
 import discord
 import asyncio
 import numpy as np
+
+from factory import reachAllCustomers
+from parseTopLevel import readFileIntoString
+
 from chocolate.chocolateBar import breakBar
 from schedule.scheduling import *
 from schedule.errors import *
 from snakesequence.snake_seq_solver import getLongestSnakeSequence
 from golf import parseGolf, golfClasses
 from enum import Enum
+
+from factory.graphClasses import *
+from factory.generateGraph import parse_into_graph
+from factory.reachAllCustomers import *
+from factory.shortestShippingPath import findCheapestShippingPath
 
 client = discord.Client()
 botTestingServer = []
@@ -30,6 +39,7 @@ class ServerIDs(Enum):
     SERVER_ID = 708142506012966993
     GENERAL_ID = 708142506520608828
     CHOCOLATE_ID = 726816875899650109
+    CHOCOLATE_SHIPPING_ID = 738445964087656600
     SNAKE_ID = 732026639512240229
     GOLF_ID = 732954147380265040
 
@@ -305,7 +315,7 @@ async def performConcurrentActions(a_message):
 async def snakeSequenceTask():
     # If the user wants to find the longest snake sequence, ask them for the grid of numbers to use, then call
     # the snake sequence solver. Right now this function assumes perfect input because I'm too lazy to do input
-    # checking. TODO for later.
+    # checking.
 
     snakeChannel = botTestingServer.get_channel(ServerIDs.SNAKE_ID.value)
     await generalTextChannel.send(
@@ -323,9 +333,6 @@ async def snakeSequenceTask():
     await snakeChannel.send(str(grid))
     await snakeChannel.send('The longest snake sequence in your grid is: ' + str(longest_seq))
 
-
-# TODO: Change format of input to accept a file attachment
-#  as input, instead of manually typing in grid input
 
 async def codeGolfHelper(message):
     # If the user wants ReMBot to play some code golf, query them for the input grid, and ask if they have a preferred
@@ -370,9 +377,99 @@ async def codeGolfHelper(message):
     await generalTextChannel.send('Perfect! Meet me in the #codegolf channel for your optimal series of hits.')
     await golfChannel.send('I\'ve got a route for you! First, here\'s your golf course terrain again:')
     for row in grid:
-        # TODO: Format printed row to have equal spacing
+        # Format printed row to have equal spacing
         await golfChannel.send('`' + "".join(["{:=5}".format(elem) for elem in row]) + '`')
     await golfChannel.send('The route you should take to optimize for this terrain' + ' is:\n' + str(graph.path))
+
+
+async def chocolateShippingHelper(message):
+    # If the user wants to figure out some logistics related to shipping chocolate, find out their
+    # use case (customer vs factory planner) and call the appropriate solver.
+    chocolateShippingChannel = botTestingServer.get_channel(ServerIDs.CHOCOLATE_SHIPPING_ID.value)
+
+    if message.attachments:
+        f = await discord.Attachment.to_file(message.attachments[0])
+
+        # Check that attachment is a .txt file
+        file_name = str(f.filename).split('.')
+        if len(file_name) < 2 or file_name[1].lower() != "txt":
+            # S_nil2: File is not a .txt file
+            print(file_name)
+            await generalTextChannel.send("You need to attach a .txt file!")
+            return
+        try:
+            # File text is read into a string
+            rows = f.fp.read().decode("utf-8").strip().split('\n')
+            graph = parse_into_graph(rows)
+        except BlockingIOError as err:
+            print(err.filename)
+            await generalTextChannel.send("Could not read attached file")
+            return
+        except ValueError as err:
+            await generalTextChannel.send(str(err))
+            return
+        except TypeError as err:
+            await generalTextChannel.send(str(err))
+            return
+    else:
+        await generalTextChannel.send("Please attach a .txt file representing the chocolate shipping network as a graph!")
+        return
+
+    await generalTextChannel.send('Let\'s do some chocolate business. Firstly, are you a customer or planner?')
+    await generalTextChannel.send('Please respond either `customer` or `planner`.')
+    useCase = await client.wait_for('message')
+    useCase = useCase.content
+    while not ((useCase == 'customer') or (useCase == 'planner')):
+        await generalTextChannel.send('Please respond either `customer` or `planner`.')
+        useCase = await client.wait_for('message')
+        useCase = useCase.content
+
+    if useCase == 'customer':
+        await generalTextChannel.send(('So, you\'re a chocolate-hungry customer. Let\'s look at your shipping network '
+                                       'and decide which factory you should order from to minimize shipping costs.'))
+        await generalTextChannel.send(('But first, please tell me the name of the Customer in your shipping network '
+                                       'which you would like to ship chocolate to.'))
+        customerNode = await client.wait_for('message')
+        customerNode = customerNode.content
+
+        # TODO: This loop does not terminate until proper input is provided
+        i = 0
+        while not (customerNode in graph.vertices and graph.vertices[customerNode].type == 'C'):
+            await generalTextChannel.send(('I couldn\'t find a Customer with that name in your shipping network. '
+                                           'Please try again.'))
+            customerNode = await client.wait_for('message')
+            customerNode = customerNode.content
+            i += 1
+            if i > 3:
+                # Prevent infinite loop if user submits graph with no customer nodes.
+                await generalTextChannel.send('Too many failed attempts. Please submit $shipping again and retry.')
+
+        await generalTextChannel.send('Great! Meet me in the #chocolate-factory channel for your solution.')
+        cheapestFactory = findCheapestShippingPath(graph, customerNode)
+        await chocolateShippingChannel.send('Hello, customer! I\'ve found the factory with cheapest shipping cost to you.')
+        await chocolateShippingChannel.send('The factory you should order from is: ' + cheapestFactory[0])
+        await chocolateShippingChannel.send('The total shipping cost to you will be: ' + str(cheapestFactory[1]))
+        await chocolateShippingChannel.send('Enjoy your cheap chocolate!')
+    else:
+        await generalTextChannel.send(('So, you\'re a ruthless chocolate businessperson. Let\'s look at your shipping network '
+                                       'and decide between a few locations to build your factory to minimize shipping costs ' 
+                                       'to all the customers in your network.'))
+        # Call MST solver for factory-builder and print output
+        potential_factory = await client.wait_for('message')
+        potential_factory = potential_factory.content
+        # Code segment is in a try-except block in case the user
+        # does not provide a valid potential factory name
+        try:
+            minimum_tree_dict = reachAllCustomers.prims_algorithm(graph, potential_factory)
+            parsed_customer_paths = parse_mst_dict(minimum_tree_dict)
+            await generalTextChannel.send("Go to the #chocolate-shipping channel to see the result of your query")
+            await chocolateShippingChannel.send("From the potential factory site {}, the following paths must be "
+                                                "taken to reach these customers".format(potential_factory))
+            for path in parsed_customer_paths:
+                await chocolateShippingChannel.send("`" + path + "`")
+        except TypeError as err:
+            await generalTextChannel.send(str(err))
+            return
 
 
 # -----------------------------
@@ -420,6 +517,10 @@ async def on_message(message):
     # The user would like ReMBot to play some code golf.
     if message.content.startswith('$golf'):
         await codeGolfHelper(message)
+
+    # The user would like to figure out some shipping logistics for the chocolate economy.
+    if message.content.startswith('$shipping'):
+        await chocolateShippingHelper(message)
 
 
 # This line is used for authentication purposes to allow interaction with the Discord api, and to begin the
