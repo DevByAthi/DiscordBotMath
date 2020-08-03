@@ -428,6 +428,8 @@ async def chocolateShippingHelper(message):
                                        'which you would like to ship chocolate to.'))
         customerNode = await client.wait_for('message')
         customerNode = customerNode.content
+
+        # TODO: This loop does not terminate until proper input is provided
         i = 0
         while not (customerNode in graph.vertices and graph.vertices[customerNode].type == 'C'):
             await generalTextChannel.send(('I couldn\'t find a Customer with that name in your shipping network. '
@@ -455,11 +457,14 @@ async def chocolateShippingHelper(message):
         # Code segment is in a try-except block in case the user
         # does not provide a valid potential factory name
         try:
-            minimum_tree = reachAllCustomers.prims_algorithm(graph, potential_factory)
+            minimum_tree_dict = reachAllCustomers.prims_algorithm(graph, potential_factory)
+            parsed_customer_paths = parse_mst_dict(minimum_tree_dict)
+            for path in parsed_customer_paths:
+                await chocolateShippingChannel.send(path)
         except TypeError as err:
             await generalTextChannel.send(str(err))
             return
-        await chocolateShippingChannel.send("MST Tree: {}".format(minimum_tree))
+        # await chocolateShippingChannel.send("MST Tree: {}".format(minimum_tree_dict))
 
 
 # -----------------------------
