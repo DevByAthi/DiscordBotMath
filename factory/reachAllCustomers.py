@@ -32,6 +32,7 @@ def get_paths_to_customers(a_graph: Graph, visited: dict):
         all_customer_paths[customer] = path[:]
     return all_customer_paths
 
+
 # Prim's Algorithm solution
 def prims_algorithm(a_graph: Graph, name):
     # Check that a_potential_factory is in a_graph
