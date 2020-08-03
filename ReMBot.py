@@ -23,11 +23,11 @@ from schedule.errors import *
 from snakesequence.snake_seq_solver import getLongestSnakeSequence
 from golf import parseGolf, golfClasses
 from enum import Enum
+from factory.generateGraph import parse_into_graph
 
 from factory.graphClasses import *
 from factory.generateGraph import parse_into_graph
 from factory.reachAllCustomers import *
-from factory.shortestShippingPath import findCheapestShippingPath
 
 client = discord.Client()
 botTestingServer = []
@@ -428,7 +428,7 @@ async def chocolateShippingHelper(message):
         await generalTextChannel.send(('So, you\'re a chocolate-hungry customer. Let\'s look at your shipping network '
                                        'and decide which factory you should order from to minimize shipping costs.'))
         await generalTextChannel.send(('But first, please tell me the name of the Customer in your shipping network '
-                                       'which you would like to ship chocolate to.'))
+                                       'whom you would like to ship chocolate to.'))
         customerNode = await client.wait_for('message')
         customerNode = customerNode.content
 
@@ -444,7 +444,7 @@ async def chocolateShippingHelper(message):
                 # Prevent infinite loop if user submits graph with no customer nodes.
                 await generalTextChannel.send('Too many failed attempts. Please submit $shipping again and retry.')
 
-        await generalTextChannel.send('Great! Meet me in the #chocolate-factory channel for your solution.')
+        await generalTextChannel.send('Great! Meet me in the #chocolate-shipping channel for your solution.')
         cheapestFactory = findCheapestShippingPath(graph, customerNode)
         await chocolateShippingChannel.send('Hello, customer! I\'ve found the factory with cheapest shipping cost to you.')
         await chocolateShippingChannel.send('The factory you should order from is: ' + cheapestFactory[0])
