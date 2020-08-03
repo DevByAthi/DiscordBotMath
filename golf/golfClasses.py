@@ -13,15 +13,12 @@ class GolfGraph:
         self.visited = set()
 
     # Determines where the player can hit the ball from its current position
-    # TODO: Simplify this code!!!!!!!!!!
     def findAvailablePositions(self, row_init, col_init):
         # row_init, col_init = self.ball.position
 
         # print(row, col)
         height_init = self.grid[row_init][col_init]
         available_new_positions = []
-
-        # TODO: Refactor into manageable pieces
 
         # UP Direction
         if row_init > 0:

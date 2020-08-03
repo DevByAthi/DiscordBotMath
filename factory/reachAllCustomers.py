@@ -76,7 +76,7 @@ def prims_algorithm(a_graph: Graph, name):
     # create a Graph representing the MST of a_graph, excluding factories and other potential factories
 
     print("Visited: ", visited_vertices)
-    return True
+    return visited_vertices
 
 
 if __name__ == '__main__':

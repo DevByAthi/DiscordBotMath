@@ -13,13 +13,20 @@
 import discord
 import asyncio
 import numpy as np
+
+from factory import reachAllCustomers
+from parseTopLevel import readFileIntoString
+
 from chocolate.chocolateBar import breakBar
 from schedule.scheduling import *
 from schedule.errors import *
 from snakesequence.snake_seq_solver import getLongestSnakeSequence
 from golf import parseGolf, golfClasses
 from enum import Enum
-from factory.generateGraph import parseGraph
+
+from factory.graphClasses import *
+from factory.generateGraph import parse_into_graph
+from factory.reachAllCustomers import *
 from factory.shortestShippingPath import findCheapestShippingPath
 
 client = discord.Client()
@@ -308,7 +315,7 @@ async def performConcurrentActions(a_message):
 async def snakeSequenceTask():
     # If the user wants to find the longest snake sequence, ask them for the grid of numbers to use, then call
     # the snake sequence solver. Right now this function assumes perfect input because I'm too lazy to do input
-    # checking. TODO for later.
+    # checking.
 
     snakeChannel = botTestingServer.get_channel(ServerIDs.SNAKE_ID.value)
     await generalTextChannel.send(
@@ -326,9 +333,6 @@ async def snakeSequenceTask():
     await snakeChannel.send(str(grid))
     await snakeChannel.send('The longest snake sequence in your grid is: ' + str(longest_seq))
 
-
-# TODO: Change format of input to accept a file attachment
-#  as input, instead of manually typing in grid input
 
 async def codeGolfHelper(message):
     # If the user wants ReMBot to play some code golf, query them for the input grid, and ask if they have a preferred
@@ -373,7 +377,7 @@ async def codeGolfHelper(message):
     await generalTextChannel.send('Perfect! Meet me in the #codegolf channel for your optimal series of hits.')
     await golfChannel.send('I\'ve got a route for you! First, here\'s your golf course terrain again:')
     for row in grid:
-        # TODO: Format printed row to have equal spacing
+        # Format printed row to have equal spacing
         await golfChannel.send('`' + "".join(["{:=5}".format(elem) for elem in row]) + '`')
     await golfChannel.send('The route you should take to optimize for this terrain' + ' is:\n' + str(graph.path))
 
@@ -396,7 +400,7 @@ async def chocolateShippingHelper(message):
         try:
             # File text is read into a string
             rows = f.fp.read().decode("utf-8").strip().split('\n')
-            graph = parseGraph(rows)
+            graph = parse_into_graph(rows)
         except BlockingIOError as err:
             print(err.filename)
             await generalTextChannel.send("Could not read attached file")
@@ -442,7 +446,12 @@ async def chocolateShippingHelper(message):
         await generalTextChannel.send(('So, you\'re a ruthless chocolate businessperson. Let\'s look at your shipping network '
                                        'and decide between a few locations to build your factory to minimize shipping costs ' 
                                        'to all the customers in your network.'))
-        # TODO: Call MST solver for factory-builder and print output
+        # Call MST solver for factory-builder and print output
+        # TODO: Put this code in a try-except block
+        potential_factory = await client.wait_for('message')
+        potential_factory = potential_factory.content
+        minimum_tree = reachAllCustomers.prims_algorithm(graph, potential_factory)
+        await chocolateShippingChannel.send("MST Tree: {}".format(minimum_tree))
 
 
 # -----------------------------
