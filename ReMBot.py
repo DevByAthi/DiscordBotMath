@@ -462,12 +462,14 @@ async def chocolateShippingHelper(message):
         try:
             minimum_tree_dict = reachAllCustomers.prims_algorithm(graph, potential_factory)
             parsed_customer_paths = parse_mst_dict(minimum_tree_dict)
+            await generalTextChannel.send("Go to the #chocolate-shipping channel to see the result of your query")
+            await chocolateShippingChannel.send("From the potential factory site {}, the following paths must be "
+                                                "taken to reach these customers".format(potential_factory))
             for path in parsed_customer_paths:
-                await chocolateShippingChannel.send(path)
+                await chocolateShippingChannel.send("`" + path + "`")
         except TypeError as err:
             await generalTextChannel.send(str(err))
             return
-        # await chocolateShippingChannel.send("MST Tree: {}".format(minimum_tree_dict))
 
 
 # -----------------------------

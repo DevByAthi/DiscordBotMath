@@ -2,6 +2,7 @@ from factory.generateGraph import *
 from factory.graphClasses import *
 from heapq import *
 
+
 def verify_type(a_potential_factory):
     # Verify a_potential_factory is in fact, a potential factory
     # Raise a special exception if a factory is given
@@ -12,7 +13,7 @@ def verify_type(a_potential_factory):
 
 
 def parse_mst_dict(customer_paths: dict):
-    return [" -> ".join(path) for path in customer_paths.values()]
+    return [" \u27F6 ".join(customer_paths[key]) for key in customer_paths.keys()]
 
 
 def get_paths_to_customers(a_graph: Graph, visited: dict):
@@ -34,7 +35,23 @@ def get_paths_to_customers(a_graph: Graph, visited: dict):
 
 
 # Prim's Algorithm solution
+'''
+    :param a_graph: A Graph object representing a town
+    :param name: the name of a potential factory site listed in a_graph
+    :return: a dictionary relating to each customer reachable from `name` the sequences of locations to visit
+'''
 def prims_algorithm(a_graph: Graph, name):
+    # PRECONDITION: a_graph has a non-empty vertex set
+    # PRECONDITION: name is the name of exactly one of the vertices of a_graph
+    # PRECONDITION: all edges in a_graph are nonnegative
+    # INVARIANT: the vertex set and edge set of a_graph are both constant and unchanged
+    # POSTCONDITION: the vertex represented by name is the root of a minimum spanning tree of a_graph
+    # POSTCONDITION: the returned dict has the names of customers reachable from the vertex represented by name as keys
+    #                (these customers are henceforth, "reachable customers")
+    # POSTCONDITION: the returned dictionary stores a path from the vertex represented by name
+    #                to each reachable customer as values
+
+
     # Check that a_potential_factory is in a_graph
     if name not in a_graph.vertices.keys():
         ret = "No existing vertex named `{}`".format(name)
@@ -57,8 +74,14 @@ def prims_algorithm(a_graph: Graph, name):
     # Create min-heap for selecting next vertex on frontier by total travel cost
     name_queue = [(0, current_vertex_name)]
 
-    # This loop terminates when the minimum spanning tree cannot be further expanded
-    while not(len(name_queue) == 0):
+    # Sa: name_queue is a min-heap with all vertices on the frontier in a_graph
+
+    # [Sb] Greed used: Every iteration improves the upper bound on the distance
+    # from the the vertex represented by name to another vertex in a_graph
+
+    # This loop terminates when the frontier cannot be further expanded,
+    # and thus when the minimum spanning tree has been acquired
+    while not (len(name_queue) == 0):
 
         # Update current_vertex_name
         current_travel_cost, current_vertex_name = heappop(name_queue)
@@ -66,14 +89,13 @@ def prims_algorithm(a_graph: Graph, name):
         # Retrieve Current Vertex
         current_vertex = a_graph.vertices[current_vertex_name]
 
-        # Find neighbors of current node
+        # Find neighbors of current vertex
         neighbors = a_graph.alt_lookup[current_vertex_name]
 
         # Iterate through each neighbor
         for neighbor_name in neighbors.keys():
 
             travel_cost = neighbors[neighbor_name]
-
             neighbor_vertex = a_graph.vertices[neighbor_name]
 
             # If type of the neighbor is a factory or a potential factory, skip
@@ -95,9 +117,13 @@ def prims_algorithm(a_graph: Graph, name):
                 heappush(name_queue, (neighbor_vertex.distanceValue, neighbor_name))
 
     # Using a_graph lookup table, a_graph vertices dictionary, and visited_vertices,
-    # create a Graph representing the MST of a_graph, excluding factories and other potential factories
+    # create a dictionary representing the MST of the subgraph of a_graph containing `name`,
+    # when excluding factories and other potential factories
 
-    print("Visited: ", visited_vertices)
+    # Sc: name_queue is empty, as no vertices remain on the frontier
+    # AND the minimum spanning tree has been found,
+    # AND root of this tree is the vertex represented by `name`
+
     return get_paths_to_customers(a_graph, visited_vertices)
 
 
