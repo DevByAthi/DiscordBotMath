@@ -405,6 +405,9 @@ async def chocolateShippingHelper(message):
             print(err.filename)
             await generalTextChannel.send("Could not read attached file")
             return
+        except ValueError or KeyError as err:
+            await generalTextChannel.send(str(err))
+            return
     else:
         await generalTextChannel.send("Please attach a .txt file representing the chocolate shipping network as a graph!")
         return
