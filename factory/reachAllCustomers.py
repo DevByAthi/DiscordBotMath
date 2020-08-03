@@ -11,6 +11,23 @@ def verify_type(a_potential_factory):
         raise TypeError("Must supply the name of a potential factory")
 
 
+def get_paths_to_customers(a_graph: Graph, visited: dict):
+    visited_customers = [node for node in visited.keys()
+                         if node in a_graph.vertices.keys()
+                         and a_graph.vertices[node].type == 'C']
+
+    all_customer_paths = dict()
+
+    for customer in visited_customers:
+        path = []
+        current = customer
+        while current is not None:
+            path.append(current)
+            current = visited[current]
+        path.reverse()
+        all_customer_paths[customer] = path[:]
+    return all_customer_paths
+
 # Prim's Algorithm solution
 def prims_algorithm(a_graph: Graph, name):
     # Check that a_potential_factory is in a_graph
@@ -76,13 +93,14 @@ def prims_algorithm(a_graph: Graph, name):
     # create a Graph representing the MST of a_graph, excluding factories and other potential factories
 
     print("Visited: ", visited_vertices)
-    return visited_vertices
+    return get_paths_to_customers(a_graph, visited_vertices)
 
 
 if __name__ == '__main__':
     s = readFileIntoString('graph2.txt')
     g = parse_into_graph(s)
     mst = prims_algorithm(g, 'Newtown_Factory_potential')
+    print(mst)
 
     '''# Check that non-existent vertex names will not be accepted
     try:
