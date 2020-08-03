@@ -1,4 +1,4 @@
-from graphClasses import *
+from factory.graphClasses import *
 from heapq import heapify, heappop
 
 def findCheapestShippingPath(a_graph, a_node_name):
