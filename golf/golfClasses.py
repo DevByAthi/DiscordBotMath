@@ -260,14 +260,14 @@ if __name__ == "__main__":
             print(graph.findAvailablePositions(ball.position[0], ball.position[1]))
             print()'''
 
-    num_files = 10
+    i = 11
 
-    for i in range(1, num_files + 1):
-        file_name = "sampleGrid" + str(i) + ".txt"
-        grid = parseGolf.readIntoGrid(parseTopLevel.readFileIntoString(file_name))
-        print(file_name)
-        print(len(grid), len(grid[0]))
-        graph = GolfGraph(grid)
-        graph.a_star_greedy()
-        print(graph.path)
-        print()
+    # for i in range(1, num_files + 1):
+    file_name = "sampleGrid" + str(i) + ".txt"
+    grid = parseGolf.readIntoGrid(parseTopLevel.readFileIntoString(file_name))
+    print(file_name)
+    print(len(grid), len(grid[0]))
+    graph = GolfGraph(grid)
+    graph.a_star_greedy()
+    print(graph.path)
+    print()
