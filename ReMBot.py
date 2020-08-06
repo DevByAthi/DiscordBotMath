@@ -36,13 +36,13 @@ generalTextChannel = []
 
 
 class ServerIDs(Enum):
-    TOKEN = 'NzIxNzc5NDc1MDIwNTEzMzkx.XuZfkg.LnP80sKgvtyEVSSYwbK2t5nmeJo'
-    SERVER_ID = 708142506012966993
-    GENERAL_ID = 708142506520608828
-    CHOCOLATE_ID = 726816875899650109
-    CHOCOLATE_SHIPPING_ID = 738445964087656600
-    SNAKE_ID = 732026639512240229
-    GOLF_ID = 732954147380265040
+    TOKEN = ''
+    SERVER_ID = 0
+    GENERAL_ID = 0
+    CHOCOLATE_ID = 0
+    CHOCOLATE_SHIPPING_ID = 0
+    SNAKE_ID = 0
+    GOLF_ID = 0
 
 
 # Sanity check event which prints a message to the terminal when the bot is online.
